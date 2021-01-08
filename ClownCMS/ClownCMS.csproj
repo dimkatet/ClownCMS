@@ -27,10 +27,7 @@
   <ItemGroup>
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <None Remove="ClientApp\src\store\Projects.ts" />
   </ItemGroup>
 
   <ItemGroup>
