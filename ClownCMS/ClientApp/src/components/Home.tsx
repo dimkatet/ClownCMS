@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
 import * as ProjectsStore from '../store/Projects';
+import './Home.css';
 
 
 type ProjectsProps =
@@ -31,34 +32,48 @@ class Home extends React.PureComponent<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>
-                    <h1>Выберете проект:</h1>
+                <div className='startPage'>
+                    <h2>ClownCMS</h2>
+                    <div className='projectsPreviewList'>
+                        <h4>Открыть последние: </h4>
+                        {this.renderProjectsList()}
+                    </div>
+                    <div className='startPageActions'>
+                        <h4> Начало работы </h4>
+                        {this.renderButtons()}
+                    </div>
                 </div>
-                {this.renderProjectsList()}
             </React.Fragment>
+        )
+    }
+
+    public renderButtons() {
+        return (
+            <div>
+                <StartPagesAction text='Создать' action={() => { }} />
+                <StartPagesAction text='Открыть' action={() => { }} />
+                <StartPagesAction text='Удалить' action={() => { }} />
+            </div>
         )
     }
 
     public renderProjectsList() {
         return (
-             <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.props.projects.map((projects: ProjectsStore.Project) =>
-                    <tr key={projects.projectID}>
-                      <td>{projects.projectID}</td>
-                      <td>{projects.projectName}</td>
-                    </tr>
-                  )}
-                </tbody>
-            </table>
+            <div>
+                {this.props.projects.map((projects: ProjectsStore.Project) => <div className= 'projectPreview'>{projects.projectName}</div>)}
+            </div>
         )
     }
+}
+
+const StartPagesAction = (props: any) => {
+    return (
+        <div>
+            <button className='startPageAction' onClick={props.action} >
+                {props.text}
+            </button>
+        </div>
+    )
 }
 
 export default connect(

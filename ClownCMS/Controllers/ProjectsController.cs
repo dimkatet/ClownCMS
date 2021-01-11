@@ -25,15 +25,10 @@ namespace ClownCMS.Controllers
         public IEnumerable<Project> Get()
         {
             _logger.LogInformation("FETCH");
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new Project
+            using (ApplicationContext db = new ApplicationContext())
             {
-                projectID = rng.Next(1000),
-
-                projectName = rng.Next(20).ToString()
-
-            })
-            .ToArray();
+                return db.Projects.ToArray();
+            }
         }
     }
 }

@@ -7,8 +7,8 @@ namespace ClownCMS
 {
     public class Project
     {
-        public int projectID { get; set; }
+        public int ProjectID { get; set; }
 
-        public string projectName { get; set; }
+        public string ProjectName { get; set; }
     }
 }

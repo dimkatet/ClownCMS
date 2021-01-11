@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var ProjectsStore = require("../store/Projects");
+require("./Home.css");
 var Home = /** @class */ (function (_super) {
     __extends(Home, _super);
     function Home() {
@@ -34,24 +35,30 @@ var Home = /** @class */ (function (_super) {
     };
     Home.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
-            React.createElement("div", null,
-                React.createElement("h1", null, "\u0412\u044B\u0431\u0435\u0440\u0435\u0442\u0435 \u043F\u0440\u043E\u0435\u043A\u0442:")),
-            this.renderProjectsList()));
+            React.createElement("div", { className: 'startPage' },
+                React.createElement("h2", null, "ClownCMS"),
+                React.createElement("div", { className: 'projectsPreviewList' },
+                    React.createElement("h4", null, "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435: "),
+                    this.renderProjectsList()),
+                React.createElement("div", { className: 'startPageActions' },
+                    React.createElement("h4", null, " \u041D\u0430\u0447\u0430\u043B\u043E \u0440\u0430\u0431\u043E\u0442\u044B "),
+                    this.renderButtons()))));
+    };
+    Home.prototype.renderButtons = function () {
+        return (React.createElement("div", null,
+            React.createElement(StartPagesAction, { text: '\u0421\u043E\u0437\u0434\u0430\u0442\u044C', action: function () { } }),
+            React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { } }),
+            React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () { } })));
     };
     Home.prototype.renderProjectsList = function () {
-        return (React.createElement("table", { className: 'table table-striped', "aria-labelledby": "tabelLabel" },
-            React.createElement("thead", null,
-                React.createElement("tr", null,
-                    React.createElement("th", null, "ID"),
-                    React.createElement("th", null, "Name"))),
-            React.createElement("tbody", null, this.props.projects.map(function (projects) {
-                return React.createElement("tr", { key: projects.projectID },
-                    React.createElement("td", null, projects.projectID),
-                    React.createElement("td", null, projects.projectName));
-            }))));
+        return (React.createElement("div", null, this.props.projects.map(function (projects) { return React.createElement("div", { className: 'projectPreview' }, projects.projectName); })));
     };
     return Home;
 }(React.PureComponent));
+var StartPagesAction = function (props) {
+    return (React.createElement("div", null,
+        React.createElement("button", { className: 'startPageAction', onClick: props.action }, props.text)));
+};
 exports.default = react_redux_1.connect(function (state) { return state.projects; }, // Selects which state properties are merged into the component's props
 ProjectsStore.actionCreators // Selects which action creators are merged into the component's props
 )(Home);
