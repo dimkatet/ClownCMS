@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
 import * as ProjectsStore from '../store/Projects';
+import * as StartPageAssets from '../assets/StartPageAssets';
 import './Home.css';
 
 
@@ -36,7 +37,9 @@ class Home extends React.PureComponent<ProjectsProps>
                     <h2>ClownCMS</h2>
                     <div className='projectsPreviewList'>
                         <h4>Открыть последние: </h4>
-                        {this.renderProjectsList()}
+                        <div className='projectsList'>
+                            {this.renderProjectsList()}
+                        </div>
                     </div>
                     <div className='startPageActions'>
                         <h4> Начало работы </h4>
@@ -50,9 +53,9 @@ class Home extends React.PureComponent<ProjectsProps>
     public renderButtons() {
         return (
             <div>
-                <StartPagesAction text='Создать' action={() => { }} />
-                <StartPagesAction text='Открыть' action={() => { }} />
-                <StartPagesAction text='Удалить' action={() => { }} />
+                <StartPagesAction text='Создать' action={() => { }} img={StartPageAssets.CreateProject} />
+                <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
+                <StartPagesAction text='Удалить' action={() => { }} img={StartPageAssets.DeleteProject} />
             </div>
         )
     }
@@ -60,17 +63,26 @@ class Home extends React.PureComponent<ProjectsProps>
     public renderProjectsList() {
         return (
             <div>
-                {this.props.projects.map((projects: ProjectsStore.Project) => <div className= 'projectPreview'>{projects.projectName}</div>)}
+                {this.props.projects.map((projects: ProjectsStore.Project) => <ProjectPreview projectName={projects.projectName} />)}
             </div>
         )
     }
 }
 
+const ProjectPreview = (props: any) => {
+    return (
+        <div className='projectPreview'>
+            <p>{props.projectName}</p>
+        </div>
+    )
+}
+
 const StartPagesAction = (props: any) => {
     return (
         <div>
-            <button className='startPageAction' onClick={props.action} >
-                {props.text}
+            <button className='startPageAction' onClick={props.action}>
+                <div><props.img /></div>
+                <p>{props.text}</p>
             </button>
         </div>
     )

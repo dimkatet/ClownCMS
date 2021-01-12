@@ -30,25 +30,32 @@
 .startPageActions {
     grid-area: a;
     margin-top: 25px;
-    margin-left: 25px;
+    margin-left: 35px;
     margin-right: 60px;
 }
 
 .projectsPreviewList h4 {
     color: white;
+    margin-bottom: 25px;
 }
 
-.startPageActions h4{
+.startPageActions h4 {
     color: white;
+}
+
+.startPageAction p {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+.projectPreview p {
+    margin: 0px;
 }
 
 .projectPreview {
     color: white;
-    margin: 10px;
     font-size: 20px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 10px;
+    padding: 20px;
 }
 
 .projectPreview:hover{
@@ -57,13 +64,36 @@
 
 .startPageAction {
     width: 300px;
-    height: 150px;
-    margin: 20px;
-    font-size: 30px;
+    height: 120px;
+    margin-top: 20px;
+    font-size: 15px;
     color: white;
     background-color: rgb(51, 51, 55);
+    box-shadow: none;
+    border: 0px;
 }
 
 .startPageAction:hover{
     background-color: rgb(63, 63, 64);
+}
+
+.projectsList {
+    height: 420px;
+    overflow: auto;
+}
+
+.projectsList::-webkit-scrollbar {
+    width: 20px;
+}
+
+.projectsList::-webkit-scrollbar-track {
+    background: rgb(37, 37, 37);
+}
+
+.projectsList::-webkit-scrollbar-thumb {
+    background: rgb(51, 51, 55);
+}
+
+.projectsList::-webkit-scrollbar-thumb:hover {
+    background: rgb(63, 63, 64);
 }
