@@ -27,7 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\PopUp.tsx" />
+    <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Footer.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Header.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Middle.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\Body.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\LeftMenu.tsx" />
+    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\RightMenu.tsx" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
     <None Remove="ClientApp\src\store\StartPageStore.ts" />
