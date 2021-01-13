@@ -4,5 +4,6 @@ var React = require("react");
 var react_router_1 = require("react-router");
 var Home_1 = require("./components/Home");
 require("./custom.css");
-exports.default = (function () { return (React.createElement(react_router_1.Route, { exact: true, path: '/', component: Home_1.default })); });
+exports.default = (function () { return (React.createElement(react_router_1.Switch, null,
+    React.createElement(react_router_1.Route, { exact: true, path: '/', component: Home_1.default }))); });
 //# sourceMappingURL=App.js.map
