@@ -28,7 +28,9 @@ export default class Footer extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>i'm footer</div>
+                <div>
+                    i'm footer
+                </div>
             </React.Fragment>
         )
     }

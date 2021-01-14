@@ -7,6 +7,7 @@ import { ApplicationState } from '../../../store';
 import Body from './MiddleComponents/Body';
 import LeftMenu from './MiddleComponents/LeftMenu';
 import RightMenu from './MiddleComponents/RightMenu';
+import './Middle.css';
 
 
 /*type ProjectProps =
@@ -34,9 +35,17 @@ export default class Middle extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <LeftMenu />
-                <Body />
-                <RightMenu />
+                <div className='wrapper_Middle'>
+                    <div>
+                        <LeftMenu />
+                    </div>
+                    <div>
+                        <Body />
+                    </div>
+                    <div>
+                        <RightMenu />
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

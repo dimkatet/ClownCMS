@@ -6,6 +6,7 @@ import { ApplicationState } from '../../store';
 import Header from './InerComponents/Header'
 import Footer from './InerComponents/Footer'
 import Middle from './InerComponents/Middle'
+import './Base.css'
 //import * as ProjectStore from '../../store/ProjectConfig';
 
 
@@ -33,9 +34,17 @@ export default class Base extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <Header />
-                <Middle />
-                <Footer />
+                <div className='wrapper_Base' >
+                    <div >
+                        <Header />
+                    </div>
+                    <div >
+                        <Middle />
+                    </div>
+                    <div >
+                        <Footer />
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

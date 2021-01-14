@@ -18,6 +18,7 @@ var React = require("react");
 var Body_1 = require("./MiddleComponents/Body");
 var LeftMenu_1 = require("./MiddleComponents/LeftMenu");
 var RightMenu_1 = require("./MiddleComponents/RightMenu");
+require("./Middle.css");
 /*type ProjectProps =
     ProjectsStore.ProjectsState // ... state we've requested from the Redux store
     & typeof ProjectsStore.actionCreators // ... plus action creators we've requested
@@ -39,9 +40,13 @@ var Middle = /** @class */ (function (_super) {
     };
     Middle.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
-            React.createElement(LeftMenu_1.default, null),
-            React.createElement(Body_1.default, null),
-            React.createElement(RightMenu_1.default, null)));
+            React.createElement("div", { className: 'wrapper_Middle' },
+                React.createElement("div", null,
+                    React.createElement(LeftMenu_1.default, null)),
+                React.createElement("div", null,
+                    React.createElement(Body_1.default, null)),
+                React.createElement("div", null,
+                    React.createElement(RightMenu_1.default, null)))));
     };
     return Middle;
 }(React.PureComponent //<ProjectsProps>
