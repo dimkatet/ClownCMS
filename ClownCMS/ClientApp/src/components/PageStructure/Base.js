@@ -17,6 +17,7 @@ var React = require("react");
 var Header_1 = require("./InerComponents/Header");
 var Footer_1 = require("./InerComponents/Footer");
 var Middle_1 = require("./InerComponents/Middle");
+require("./Base.css");
 //import * as ProjectStore from '../../store/ProjectConfig';
 /*type ProjectProps =
     ProjectsStore.ProjectsState // ... state we've requested from the Redux store
@@ -39,9 +40,13 @@ var Base = /** @class */ (function (_super) {
     };
     Base.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
-            React.createElement(Header_1.default, null),
-            React.createElement(Middle_1.default, null),
-            React.createElement(Footer_1.default, null)));
+            React.createElement("div", { className: 'wrapper_Base' },
+                React.createElement("div", null,
+                    React.createElement(Header_1.default, null)),
+                React.createElement("div", null,
+                    React.createElement(Middle_1.default, null)),
+                React.createElement("div", null,
+                    React.createElement(Footer_1.default, null)))));
     };
     return Base;
 }(React.PureComponent //<ProjectsProps>

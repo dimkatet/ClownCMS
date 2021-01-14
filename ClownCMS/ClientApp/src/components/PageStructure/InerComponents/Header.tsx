@@ -27,7 +27,9 @@ export default class Header extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>i'm header</div>
+                <div>
+                    i'm header
+                </div>
             </React.Fragment>
         )
     }
