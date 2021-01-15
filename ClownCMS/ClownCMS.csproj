@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\Footer.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\Header.tsx" />
