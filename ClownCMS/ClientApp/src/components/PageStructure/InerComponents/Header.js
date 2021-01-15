@@ -14,14 +14,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
-//import * as ProjectStore from '../../store/ProjectConfig';
-/*type ProjectProps =
-    ProjectsStore.ProjectsState // ... state we've requested from the Redux store
-    & typeof ProjectsStore.actionCreators // ... plus action creators we've requested
-    & RouteComponentProps<{ startDateIndex: string }>;*/
+var react_redux_1 = require("react-redux");
+var TextEditor_1 = require("../../Elements/TextEditor");
+var TestStore = require("../../../store/TestStore");
 /*similar to every page in project*/
 var Header = /** @class */ (function (_super) {
-    __extends(Header, _super); //<ProjectsProps>
+    __extends(Header, _super);
     function Header() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -33,15 +31,12 @@ var Header = /** @class */ (function (_super) {
     };
     Header.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
-            React.createElement("div", null, "i'm header")));
+            React.createElement("div", null,
+                React.createElement(TextEditor_1.TextEditor, { text: this.props.text, saveText: this.props.setValue }))));
     };
     return Header;
-}(React.PureComponent //<ProjectsProps>
-));
-exports.default = Header;
-/*
-export default connect(
-    (state: ApplicationState) => state.projects, // Selects which state properties are merged into the component's props
-    ProjectsStore.actionCreators // Selects which action creators are merged into the component's props
-)(NavigationEditor as any);*/ 
+}(React.PureComponent));
+exports.default = react_redux_1.connect(function (state) { return state.test; }, // Selects which state properties are merged into the component's props
+TestStore.actionCreators // Selects which action creators are merged into the component's props
+)(Header);
 //# sourceMappingURL=Header.js.map

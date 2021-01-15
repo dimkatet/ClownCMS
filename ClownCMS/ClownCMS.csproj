@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\Footer.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\Header.tsx" />
@@ -37,6 +38,7 @@
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
     <None Remove="ClientApp\src\store\Projects.ts" />
+    <None Remove="ClientApp\src\store\TestStore.ts" />
   </ItemGroup>
 
   <ItemGroup>

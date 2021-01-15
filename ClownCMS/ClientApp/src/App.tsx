@@ -8,7 +8,7 @@ import './custom.css'
 
 export default () => (
     <Switch>
-        {/*<Route path='/' component={Base}/>*/}
+        <Route path='/' component={Base}/>
         <Route exact path='/' component={Home} />     
     </Switch>
 );

@@ -38,17 +38,17 @@ var Home = /** @class */ (function (_super) {
             React.createElement("div", { className: 'startPage' },
                 React.createElement("h2", null, "ClownCMS"),
                 React.createElement("div", { className: 'projectsPreviewList' },
-                    React.createElement("h4", null, "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0438\u0435: "),
+                    React.createElement("h4", null, "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD: "),
                     this.renderProjectsList()),
                 React.createElement("div", { className: 'startPageActions' },
-                    React.createElement("h4", null, " \u041D\u0430\u0447\u0430\u043B\u043E \u0440\u0430\u0431\u043E\u0442\u044B "),
+                    React.createElement("h4", null, " \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD \uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD "),
                     this.renderButtons()))));
     };
     Home.prototype.renderButtons = function () {
         return (React.createElement("div", null,
-            React.createElement(StartPagesAction, { text: '\u0421\u043E\u0437\u0434\u0430\u0442\u044C', action: function () { } }),
-            React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { } }),
-            React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () { } })));
+            React.createElement(StartPagesAction, { text: '\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD', action: function () { } }),
+            React.createElement(StartPagesAction, { text: '\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD', action: function () { } }),
+            React.createElement(StartPagesAction, { text: '\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD', action: function () { } })));
     };
     Home.prototype.renderProjectsList = function () {
         return (React.createElement("div", null, this.props.projects.map(function (projects) { return React.createElement("div", { className: 'projectPreview' }, projects.projectName); })));
