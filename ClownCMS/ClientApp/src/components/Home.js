@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_redux_1 = require("react-redux");
-var ProjectsStore = require("../store/Projects");
+var ProjectsStore = require("../store/StartStageStore");
 var StartPageAssets = require("../assets/StartPageAssets");
 require("./Home.css");
 var Home = /** @class */ (function (_super) {
@@ -26,13 +26,11 @@ var Home = /** @class */ (function (_super) {
     Home.prototype.componentDidMount = function () {
         this.ensureDataFetched();
     };
-    // This method is called when the route parameters change
     Home.prototype.componentDidUpdate = function () {
         this.ensureDataFetched();
     };
     Home.prototype.ensureDataFetched = function () {
-        var startDateIndex = parseInt(this.props.match.params.startDateIndex, 10) || 0;
-        this.props.requestProjects(startDateIndex);
+        this.props.requestProjects();
     };
     Home.prototype.render = function () {
         return (React.createElement(React.Fragment, null,
@@ -43,22 +41,33 @@ var Home = /** @class */ (function (_super) {
                     React.createElement("div", { className: 'projectsList' }, this.renderProjectsList())),
                 React.createElement("div", { className: 'startPageActions' },
                     React.createElement("h4", null, " \u041D\u0430\u0447\u0430\u043B\u043E \u0440\u0430\u0431\u043E\u0442\u044B "),
-                    this.renderButtons()))));
+                    this.props.selectedProjectID != -1 && this.renderButtons()))));
+    };
+    Home.prototype.callbackCreator = function (id) {
+        var _this = this;
+        return function () {
+            _this.props.selectProject(id);
+        };
     };
     Home.prototype.renderButtons = function () {
+        console.log(this.props.selectedProjectID);
+        var buttons = this.props.selectedProjectID ?
+            React.createElement("div", null,
+                React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { }, img: StartPageAssets.OpenProject }),
+                React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () { }, img: StartPageAssets.DeleteProject })) : React.createElement("p", null, " \u041D\u0435\u0442 ");
         return (React.createElement("div", null,
             React.createElement(StartPagesAction, { text: '\u0421\u043E\u0437\u0434\u0430\u0442\u044C', action: function () { }, img: StartPageAssets.CreateProject }),
-            React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { }, img: StartPageAssets.OpenProject }),
-            React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () { }, img: StartPageAssets.DeleteProject })));
+            buttons));
     };
     Home.prototype.renderProjectsList = function () {
-        return (React.createElement("div", null, this.props.projects.map(function (projects) { return React.createElement(ProjectPreview, { projectName: projects.projectName }); })));
+        var _this = this;
+        return (React.createElement("div", null, this.props.projects.map(function (project) { return React.createElement(ProjectPreview, { projectName: project.projectName, action: _this.callbackCreator(project.projectID) }); })));
     };
     return Home;
 }(React.PureComponent));
 var ProjectPreview = function (props) {
     return (React.createElement("div", { className: 'projectPreview' },
-        React.createElement("p", null, props.projectName)));
+        React.createElement("button", { onClick: props.action }, props.projectName)));
 };
 var StartPagesAction = function (props) {
     return (React.createElement("div", null,
@@ -67,7 +76,5 @@ var StartPagesAction = function (props) {
                 React.createElement(props.img, null)),
             React.createElement("p", null, props.text))));
 };
-exports.default = react_redux_1.connect(function (state) { return state.projects; }, // Selects which state properties are merged into the component's props
-ProjectsStore.actionCreators // Selects which action creators are merged into the component's props
-)(Home);
+exports.default = react_redux_1.connect(function (state) { return state.startPage; }, ProjectsStore.actionCreators)(Home);
 //# sourceMappingURL=Home.js.map

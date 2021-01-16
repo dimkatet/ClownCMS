@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as ProjectsStore from '../store/Projects';
+import * as ProjectsStore from '../store/StartStageStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
 import './Home.css';
 
 
 type ProjectsProps =
-    ProjectsStore.ProjectsState // ... state we've requested from the Redux store
-    & typeof ProjectsStore.actionCreators // ... plus action creators we've requested
-    & RouteComponentProps<{ startDateIndex: string }>;
+    ProjectsStore.StartPageState
+    & typeof ProjectsStore.actionCreators;
 
 class Home extends React.PureComponent<ProjectsProps>
 {
@@ -20,14 +19,12 @@ class Home extends React.PureComponent<ProjectsProps>
         this.ensureDataFetched();
     }
 
-    // This method is called when the route parameters change
     public componentDidUpdate() {
         this.ensureDataFetched();
     }
 
     private ensureDataFetched() {
-        const startDateIndex = parseInt(this.props.match.params.startDateIndex, 10) || 0;
-        this.props.requestProjects(startDateIndex);
+        this.props.requestProjects();
     }
 
     public render() {
@@ -50,12 +47,23 @@ class Home extends React.PureComponent<ProjectsProps>
         )
     }
 
+    public callbackCreator(id: number) {
+        return () => {
+            this.props.selectProject(id);
+        }
+    }
+
     public renderButtons() {
+        console.log(this.props.selectedProjectID);
+        const buttons = this.props.selectedProjectID ?
+            <div>
+                <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
+                <StartPagesAction text='Удалить' action={() => { }} img={StartPageAssets.DeleteProject} />
+            </div> : <p> Нет </p>;
         return (
             <div>
                 <StartPagesAction text='Создать' action={() => { }} img={StartPageAssets.CreateProject} />
-                <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
-                <StartPagesAction text='Удалить' action={() => { }} img={StartPageAssets.DeleteProject} />
+                {buttons}
             </div>
         )
     }
@@ -63,7 +71,7 @@ class Home extends React.PureComponent<ProjectsProps>
     public renderProjectsList() {
         return (
             <div>
-                {this.props.projects.map((projects: ProjectsStore.Project) => <ProjectPreview projectName={projects.projectName} />)}
+                {this.props.projects.map((project: ProjectsStore.Project) => <ProjectPreview projectName={project.projectName} action={this.callbackCreator(project.projectID)} />)}
             </div>
         )
     }
@@ -72,7 +80,9 @@ class Home extends React.PureComponent<ProjectsProps>
 const ProjectPreview = (props: any) => {
     return (
         <div className='projectPreview'>
-            <p>{props.projectName}</p>
+            <button onClick={props.action}>
+                {props.projectName}
+            </button>
         </div>
     )
 }
@@ -89,6 +99,6 @@ const StartPagesAction = (props: any) => {
 }
 
 export default connect(
-    (state: ApplicationState) => state.projects, // Selects which state properties are merged into the component's props
-    ProjectsStore.actionCreators // Selects which action creators are merged into the component's props
+    (state: ApplicationState) => state.startPage,
+    ProjectsStore.actionCreators
 )(Home as any);
