@@ -3,6 +3,6 @@
     display: grid;
     background-color: gray;
     grid-template-columns: 100%;
-    grid-template-rows: 56px 1fr 40px;
+    grid-template-rows: 200px 1fr 40px;
     min-height:100vh;
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../store';
-import {TextEditor} from '../../Elements/TextEditor';
+import NavElementEditor from '../../Elements/NavElementEditor';
 import * as TestStore from '../../../store/TestStore';
 
 
@@ -25,12 +25,10 @@ class Header extends React.PureComponent<ProjectProps>
 
 
     public render() {
-        return (
-            <React.Fragment>
-                <div>
-                    <TextEditor text={this.props.text} saveText={this.props.setValue} />
-                </div>
-            </React.Fragment>
+        return (            
+            <div>
+                <NavElementEditor text={this.props.text} type={this.props.navType} save={this.props.Save} del={() => { }} />
+            </div>
         )
     }
 

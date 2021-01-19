@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_redux_1 = require("react-redux");
-var TextEditor_1 = require("../../Elements/TextEditor");
+var NavElementEditor_1 = require("../../Elements/NavElementEditor");
 var TestStore = require("../../../store/TestStore");
 /*similar to every page in project*/
 var Header = /** @class */ (function (_super) {
@@ -30,9 +30,8 @@ var Header = /** @class */ (function (_super) {
         //
     };
     Header.prototype.render = function () {
-        return (React.createElement(React.Fragment, null,
-            React.createElement("div", null,
-                React.createElement(TextEditor_1.TextEditor, { text: this.props.text, saveText: this.props.setValue }))));
+        return (React.createElement("div", null,
+            React.createElement(NavElementEditor_1.default, { text: this.props.text, type: this.props.navType, save: this.props.Save, del: function () { } })));
     };
     return Header;
 }(React.PureComponent));
