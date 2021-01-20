@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
     <None Remove="ClientApp\src\store\StartStageStore.ts" />

@@ -1,7 +1,6 @@
-import * as React from 'react';
+п»їimport * as React from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
+import PopUp from './PopUp';
 import { ApplicationState } from '../store';
 import * as ProjectsStore from '../store/StartStageStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
@@ -12,8 +11,19 @@ type ProjectsProps =
     ProjectsStore.StartPageState
     & typeof ProjectsStore.actionCreators;
 
-class Home extends React.PureComponent<ProjectsProps>
+type StartPageState = {
+    renderPopUp: boolean,
+    newProjectName: string
+};
+
+class Home extends React.PureComponent<ProjectsProps, StartPageState>
 {
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = { renderPopUp: false, newProjectName: '' };
+    }
 
     public componentDidMount() {
         this.ensureDataFetched();
@@ -27,20 +37,38 @@ class Home extends React.PureComponent<ProjectsProps>
     }
 
     public render() {
+
         return (
             <React.Fragment>
                 <div className='startPage'>
                     <h2>ClownCMS</h2>
                     <div className='projectsPreviewList'>
-                        <h4>Открыть последние: </h4>
+                        <h4>РћС‚РєСЂС‹С‚СЊ РїРѕСЃР»РµРґРЅРёРµ: </h4>
                         <div className='projectsList'>
                             {this.renderProjectsList()}
                         </div>
                     </div>
                     <div className='startPageActions'>
-                        <h4> Начало работы </h4>
+                        <h4> РќР°С‡Р°Р»Рѕ СЂР°Р±РѕС‚С‹ </h4>
                         {this.renderButtons()}
                     </div>
+                    {this.state.renderPopUp && <PopUp onClose={() => { this.setState({ renderPopUp: false, newProjectName: '' }) }}>
+                        <div className='popUpContent'>
+                            <div>Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїСЂРѕРµРєС‚Р°:</div>
+                            <div>
+                                <input className='projectNameInput'
+                                    value={this.state.newProjectName}
+                                    onChange={(e) => {
+                                        this.setState({ newProjectName: e.target.value })
+                                    }} />
+                            </div>
+                            <div>
+                                <button className='submitNameButton' onClick={() => { }}>
+                                    РЎРѕР·РґР°С‚СЊ
+                                </button>
+                            </div>
+                        </div>
+                    </PopUp>}
                 </div>
             </React.Fragment>
         )
@@ -55,12 +83,12 @@ class Home extends React.PureComponent<ProjectsProps>
     public renderButtons() {
         const buttons = this.props.selectedProjectID ?
             <div>
-                <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
-                <StartPagesAction text='Удалить' action={() => { }} img={StartPageAssets.DeleteProject} />
-            </div> : <p> Нет </p>;
+                <StartPagesAction text='РћС‚РєСЂС‹С‚СЊ' action={() => { }} img={StartPageAssets.OpenProject} />
+                <StartPagesAction text='РЈРґР°Р»РёС‚СЊ' action={() => { }} img={StartPageAssets.DeleteProject} />
+            </div> : <p> РќРµС‚ </p>;
         return (
             <div>
-                <StartPagesAction text='Создать' action={() => { }} img={StartPageAssets.CreateProject} />
+                <StartPagesAction text='РЎРѕР·РґР°С‚СЊ' action={() => { this.setState({ renderPopUp: true }) }} img={StartPageAssets.CreateProject} />
                 {buttons}
             </div>
         )
