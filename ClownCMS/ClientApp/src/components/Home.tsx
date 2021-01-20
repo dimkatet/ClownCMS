@@ -20,7 +20,6 @@ class Home extends React.PureComponent<ProjectsProps>
     }
 
     public componentDidUpdate() {
-        this.ensureDataFetched();
     }
 
     private ensureDataFetched() {
@@ -54,7 +53,6 @@ class Home extends React.PureComponent<ProjectsProps>
     }
 
     public renderButtons() {
-        console.log(this.props.selectedProjectID);
         const buttons = this.props.selectedProjectID ?
             <div>
                 <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
@@ -71,7 +69,7 @@ class Home extends React.PureComponent<ProjectsProps>
     public renderProjectsList() {
         return (
             <div>
-                {this.props.projects.map((project: ProjectsStore.Project) => <ProjectPreview projectName={project.projectName} action={this.callbackCreator(project.projectID)} />)}
+                {this.props.projects.map((project: ProjectsStore.Project, i: number) => <ProjectPreview key={i} projectName={project.projectName} action={this.callbackCreator(project.projectID)} />)}
             </div>
         )
     }

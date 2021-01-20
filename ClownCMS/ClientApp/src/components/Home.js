@@ -27,7 +27,6 @@ var Home = /** @class */ (function (_super) {
         this.ensureDataFetched();
     };
     Home.prototype.componentDidUpdate = function () {
-        this.ensureDataFetched();
     };
     Home.prototype.ensureDataFetched = function () {
         this.props.requestProjects();
@@ -41,7 +40,7 @@ var Home = /** @class */ (function (_super) {
                     React.createElement("div", { className: 'projectsList' }, this.renderProjectsList())),
                 React.createElement("div", { className: 'startPageActions' },
                     React.createElement("h4", null, " \u041D\u0430\u0447\u0430\u043B\u043E \u0440\u0430\u0431\u043E\u0442\u044B "),
-                    this.props.selectedProjectID != -1 && this.renderButtons()))));
+                    this.renderButtons()))));
     };
     Home.prototype.callbackCreator = function (id) {
         var _this = this;
@@ -50,7 +49,6 @@ var Home = /** @class */ (function (_super) {
         };
     };
     Home.prototype.renderButtons = function () {
-        console.log(this.props.selectedProjectID);
         var buttons = this.props.selectedProjectID ?
             React.createElement("div", null,
                 React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { }, img: StartPageAssets.OpenProject }),
@@ -61,7 +59,7 @@ var Home = /** @class */ (function (_super) {
     };
     Home.prototype.renderProjectsList = function () {
         var _this = this;
-        return (React.createElement("div", null, this.props.projects.map(function (project) { return React.createElement(ProjectPreview, { projectName: project.projectName, action: _this.callbackCreator(project.projectID) }); })));
+        return (React.createElement("div", null, this.props.projects.map(function (project, i) { return React.createElement(ProjectPreview, { key: i, projectName: project.projectName, action: _this.callbackCreator(project.projectID) }); })));
     };
     return Home;
 }(React.PureComponent));

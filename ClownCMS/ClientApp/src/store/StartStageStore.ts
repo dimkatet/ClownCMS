@@ -5,7 +5,7 @@ import { AppThunkAction } from './';
 export interface StartPageState {
     isLoading: boolean;
     projects: Project[];
-    selectedProjectID?: number;
+    selectedProjectID: number;
 }
 
 export interface Project {
@@ -59,15 +59,16 @@ export const reducer: Reducer<StartPageState> = (state: StartPageState | undefin
         case 'REQUEST_PROJECTS':
             return {
                 projects: state.projects,
-                isLoading: true
+                isLoading: true,
+                selectedProjectID: -1
             };
         case 'RECEIVE_PROJECTS':
             return {
                 projects: action.projects,
-                isLoading: false
+                isLoading: false,
+                selectedProjectID: -1
             };
         case 'SELECT_PROJECT':
-            console.log('REDUCER');
             return {
                 projects: state.projects,
                 isLoading: state.isLoading,
