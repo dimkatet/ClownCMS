@@ -14,5 +14,8 @@ namespace ClownCMS
 
         public int MenuItemType { get; set; }
 
+        public int ProjectId { get; set; }
+        public Project Project { get; set; }
+
     }
 }

@@ -3,6 +3,7 @@ import { AppThunkAction } from './';
 
 export interface ProjectState {
     isLoading: boolean;
+    ProjectId: number;
     navMenuItems: NavMenuItem[];
 }
 
@@ -34,7 +35,7 @@ interface AddProjectsMenuItemAction {
 const requestMenu = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.menuItems) {
-        fetch('menuItems', { method: 'GET' })
+        fetch('menuItems/' + appState.menuItems.ProjectId, { method: 'GET' })
             .then(response => response.json() as Promise<NavMenuItem[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECT_MENU', navMenuItems: data });
@@ -78,8 +79,11 @@ export const actionCreators = {
             fetch('menuItems', {
                 method: 'PUT',
                 body: JSON.stringify({
-                    menuItemName: menuItemName,
-                    menuItemType: menuItemType
+                    projectId: appState.menuItems.ProjectId,
+                    menuItem: {
+                        menuItemName: menuItemName,
+                        menuItemType: menuItemType
+                    }
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -112,7 +116,7 @@ export const actionCreators = {
     }
 };
 
-const unloadedState: ProjectState = {navMenuItems: [], isLoading: false};
+const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: 1}
 
 export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, incomingAction: Action): ProjectState => {
     if (state === undefined) {
@@ -123,12 +127,14 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
         case 'REQUEST_PROJECT_MENU':
             return {
                 navMenuItems: state.navMenuItems,
-                isLoading: true
+                isLoading: true,
+                ProjectId: state.ProjectId
             };
         case 'RECEIVE_PROJECT_MENU':
             return {
                 navMenuItems: action.navMenuItems,
-                isLoading: false
+                isLoading: false,
+                ProjectId: state.ProjectId
             };
         case 'CHANGE_PROJECT_MENU_ITEM':
             let index = state.navMenuItems.findIndex(x => x.menuItemId == action.navMenuItem.menuItemId)
@@ -137,12 +143,14 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
                 navMenuItems[index] = action.navMenuItem;
             return {
                 navMenuItems: navMenuItems,
-                isLoading: false
+                isLoading: false,
+                ProjectId: state.ProjectId
             };
         case 'ADD_PROJECT_MENU_ITEM':
             return {
                 navMenuItems: [...state.navMenuItems, action.navMenuItem],
-                isLoading: false
+                isLoading: false,
+                ProjectId: state.ProjectId
             };
         default: break;
     }
