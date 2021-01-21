@@ -1,10 +1,10 @@
 ﻿import * as Projects from './Projects';
-import * as Test from './TestStore';
+import * as MenuItems from './NavMenuStore'
 
 // The top-level state object
 export interface ApplicationState {
     projects: Projects.ProjectsState | undefined;
-    test: Test.TestState | undefined;
+    menuItems: MenuItems.ProjectState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -12,7 +12,7 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     projects: Projects.reducer,
-    test: Test.reducer
+    menuItems: MenuItems.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
