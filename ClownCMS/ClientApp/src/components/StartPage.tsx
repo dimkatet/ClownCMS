@@ -2,14 +2,14 @@
 import { connect } from 'react-redux';
 import PopUp from './PopUp';
 import { ApplicationState } from '../store';
-import * as ProjectsStore from '../store/StartStageStore';
+import * as StartPageStore from '../store/StartPageStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
 import './StartPage.css';
 
 
 type ProjectsProps =
-    ProjectsStore.StartPageState
-    & typeof ProjectsStore.actionCreators;
+    StartPageStore.StartPageState
+    & typeof StartPageStore.actionCreators;
 
 type StartPageState = {
     selectedProjectID: number,
@@ -59,6 +59,12 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                             <div>
                                 <input className='projectNameInput'
                                     value={this.state.newProjectName}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            this.props.createProject(this.state.newProjectName, this.props.requestProjects);
+                                            this.setState({ renderPopUp: false, newProjectName: '' });
+                                        }
+                                    }}
                                     onChange={(e) => {
                                         this.setState({ newProjectName: e.target.value })
                                     }} />
@@ -77,12 +83,6 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                 </div>
             </React.Fragment>
         )
-    }
-
-    public callbackCreator(id: number) {
-        return () => {
-            this.setState({ selectedProjectID: id });
-        }
     }
 
     public renderButtons() {
@@ -109,9 +109,11 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
     public renderProjectsList() {
         return (
             <div>
-                {this.props.projects.map((project: ProjectsStore.Project, i: number) => <ProjectPreview key={i}
+                {this.props.projects.map((project: StartPageStore.Project, i: number) => <ProjectPreview key={i}
                     projectName={project.projectName}
-                    action={() => { this.setState({ selectedProjectID: project.projectID }); }} />)}
+                    action={() => {
+                        this.setState({ selectedProjectID: project.projectID });
+                    }} />)}
             </div>
         )
     }
@@ -120,7 +122,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 const ProjectPreview = (props: any) => {
     return (
         <div className='projectPreview'>
-            <button onClick={props.action}>
+            <button onFocus={props.action}>
                 {props.projectName}
             </button>
         </div>
@@ -140,5 +142,5 @@ const StartPagesAction = (props: any) => {
 
 export default connect(
     (state: ApplicationState) => state.startPage,
-    ProjectsStore.actionCreators
+    StartPageStore.actionCreators
 )(StartPage as any);

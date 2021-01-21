@@ -1,4 +1,4 @@
-﻿import * as StartPageStore from './StartStageStore';
+﻿import * as StartPageStore from './StartPageStore';
 
 // The top-level state object
 export interface ApplicationState {

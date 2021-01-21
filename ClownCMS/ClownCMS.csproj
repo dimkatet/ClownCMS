@@ -30,7 +30,7 @@
     <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
-    <None Remove="ClientApp\src\store\StartStageStore.ts" />
+    <None Remove="ClientApp\src\store\StartPageStore.ts" />
   </ItemGroup>
 
   <ItemGroup>
