@@ -34,8 +34,8 @@ interface AddProjectsMenuItemAction {
 
 const requestMenu = (dispatch: any, getState: any) => {
     const appState = getState();
-    if (appState && appState.menuItems) {
-        fetch('menuItems/' + appState.menuItems.ProjectId, { method: 'GET' })
+    if (appState && appState.project) {
+        fetch('menuItems/' + appState.project.ProjectId, { method: 'GET' })
             .then(response => response.json() as Promise<NavMenuItem[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECT_MENU', navMenuItems: data });
@@ -50,7 +50,7 @@ export const actionCreators = {
     requestMenu: (): AppThunkAction<KnownAction> => requestMenu,
     setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.menuItems) {
+        if (appState && appState.project) {
             fetch('menuItems', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -75,11 +75,11 @@ export const actionCreators = {
     },
     addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.menuItems) {
+        if (appState && appState.project) {
             fetch('menuItems', {
                 method: 'PUT',
                 body: JSON.stringify({
-                    projectId: appState.menuItems.ProjectId,
+                    projectId: appState.project.ProjectId,
                     menuItem: {
                         menuItemName: menuItemName,
                         menuItemType: menuItemType
@@ -102,7 +102,7 @@ export const actionCreators = {
     },
     deleteMenuItem: ( menuItemId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.menuItems) {
+        if (appState && appState.project) {
             fetch('menuItems', {
                 method: 'DELETE',
                 body: JSON.stringify({
