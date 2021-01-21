@@ -5,10 +5,10 @@ type Props =
     {
         text: string,
         type: NavType,
-        save: (text: string, type: NavType) => void,
+        save: (text: string, type: number) => void,
         del: () => void,
         //signal about close edit mode
-        closeEvent?: () => void
+        close?: () => void
     };
 
 export enum NavType {
@@ -25,22 +25,18 @@ const maxLengthCreator = (maxLength: number) => (value: string) => {
 
 let NavElementEditor: React.FC<Props> = (props) => {
     let Save = () => {
-        //don't save value with empty name
-        if (inerValueText.length > 0) {
+        if (inerValueText.length > 0 && (props.text != inerValueText || props.type != inerValueType)) {
             props.save(inerValueText, inerValueType)
-            setEditMode(false)
-        } else {
-            Close()
         }
-        
+        Close()
     }
 
     let Close = () => {
         setInerValueText(props.text)
         setInerValueType(props.type)
         setEditMode(false)  
-        if (props.closeEvent) {
-            props.closeEvent();
+        if (props.close) {
+            props.close();
         }  
     }
 
@@ -56,7 +52,7 @@ let NavElementEditor: React.FC<Props> = (props) => {
     React.useEffect(() => setInerValueType(props.type), [props.type]);
 
     return (
-        <div>
+        <div >
             {isEditMode && <div>
                 <div>
                     <input type='button' value='1' onClick={() => setInerValueType(NavType.GroupedDirectories)} />

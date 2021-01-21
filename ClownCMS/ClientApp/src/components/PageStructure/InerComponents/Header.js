@@ -14,9 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
-var react_redux_1 = require("react-redux");
-var NavElementEditor_1 = require("../../Elements/NavElementEditor");
-var TestStore = require("../../../store/TestStore");
+var NavMenuEditor_1 = require("../../Elements/NavMenuEditor");
 /*similar to every page in project*/
 var Header = /** @class */ (function (_super) {
     __extends(Header, _super);
@@ -31,11 +29,9 @@ var Header = /** @class */ (function (_super) {
     };
     Header.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement(NavElementEditor_1.default, { text: this.props.text, type: this.props.navType, save: this.props.Save, del: function () { } })));
+            React.createElement(NavMenuEditor_1.default, null)));
     };
     return Header;
 }(React.PureComponent));
-exports.default = react_redux_1.connect(function (state) { return state.test; }, // Selects which state properties are merged into the component's props
-TestStore.actionCreators // Selects which action creators are merged into the component's props
-)(Header);
+exports.default = Header;
 //# sourceMappingURL=Header.js.map

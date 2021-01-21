@@ -9,9 +9,11 @@ namespace ClownCMS
     public class ApplicationContext : DbContext
     {
         public DbSet<Project> Projects { get; set; }
+        public DbSet<MenuItem> MenuItems { get; set; }
 
         public ApplicationContext()
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
