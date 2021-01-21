@@ -4,7 +4,7 @@ import PopUp from './PopUp';
 import { ApplicationState } from '../store';
 import * as ProjectsStore from '../store/StartStageStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
-import './Home.css';
+import './StartPage.css';
 
 
 type ProjectsProps =
@@ -17,7 +17,7 @@ type StartPageState = {
     newProjectName: string
 };
 
-class Home extends React.PureComponent<ProjectsProps, StartPageState>
+class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 {
 
     constructor(props: any) {
@@ -141,4 +141,4 @@ const StartPagesAction = (props: any) => {
 export default connect(
     (state: ApplicationState) => state.startPage,
     ProjectsStore.actionCreators
-)(Home as any);
+)(StartPage as any);
