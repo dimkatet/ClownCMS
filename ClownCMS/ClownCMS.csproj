@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\components\Elements\NavElementEditor.tsx" />
     <None Remove="ClientApp\src\components\Elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
@@ -42,6 +43,7 @@
 
     <None Remove="ClientApp\src\store\NavMenuStore.ts" />
     <None Remove="ClientApp\src\store\StartPageStore.ts" />
+    <None Remove="ClientApp\src\store\ProjectStore.ts" />
   </ItemGroup>
 
   <ItemGroup>

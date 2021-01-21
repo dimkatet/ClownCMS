@@ -1,9 +1,9 @@
-﻿import * as Projects from './Projects';
+﻿import * as StartPageStore from './StartPageStore';
 import * as ProjectStore from './ProjectStore'
 
 // The top-level state object
 export interface ApplicationState {
-    projects: Projects.ProjectsState | undefined;
+    startPage: StartPageStore.StartPageState | undefined;
     project: ProjectStore.ProjectState | undefined;
 }
 
