@@ -10,5 +10,7 @@ namespace ClownCMS
         public int ProjectID { get; set; }
 
         public string ProjectName { get; set; }
+
+        public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 }
