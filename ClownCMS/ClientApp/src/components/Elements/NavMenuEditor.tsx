@@ -1,10 +1,10 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import * as NavMenuStore from '../../store/NavMenuStore'
+import * as ProjectStore from '../../store/ProjectStore'
 import { ApplicationState } from '../../store'
 import NavElementEditor from './NavElementEditor'
 
-type Props = NavMenuStore.ProjectState & typeof NavMenuStore.actionCreators;
+type Props = ProjectStore.ProjectState & typeof ProjectStore.actionCreators;
 
 class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addingText: string, addingType: number }> {
     constructor(props: Props) {
@@ -24,6 +24,7 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     private Close = () => this.setState({ isAdding: false, addingText: "", addingType: 3 })
 
     public render() {
+        //console.log(this.props);
         return (<div>
             {this.props.navMenuItems.map(item => < NavElementEditor text={item.menuItemName} type={item.menuItemType} save={this.getSave(item.menuItemId)} del={this.getDelete(item.menuItemId)} />)}
             {this.state.isAdding && < NavElementEditor text={this.state.addingText} type={this.state.addingType} save={this.AddNew} del={this.Close} close={this.Close} />}
@@ -34,6 +35,6 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
 }
 
 export default connect(
-    (state: ApplicationState) => state.menuItems, 
-    NavMenuStore.actionCreators 
+    (state: ApplicationState) => state.project, 
+    ProjectStore.actionCreators 
 )(NavMenuEditor as any);
