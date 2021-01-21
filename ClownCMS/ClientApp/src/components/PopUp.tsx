@@ -5,7 +5,7 @@ type PopUpProps = { onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEv
 
 class PopUp extends React.Component<PopUpProps>
 {
-    constructor(props) {
+    constructor(props: PopUpProps) {
         super(props);
         console.log(props);
     }

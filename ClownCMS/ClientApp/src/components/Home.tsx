@@ -12,6 +12,7 @@ type ProjectsProps =
     & typeof ProjectsStore.actionCreators;
 
 type StartPageState = {
+    selectedProjectID: number,
     renderPopUp: boolean,
     newProjectName: string
 };
@@ -22,7 +23,7 @@ class Home extends React.PureComponent<ProjectsProps, StartPageState>
     constructor(props: any) {
         super(props);
 
-        this.state = { renderPopUp: false, newProjectName: '' };
+        this.state = { selectedProjectID: -1, renderPopUp: false, newProjectName: '' };
     }
 
     public componentDidMount() {
@@ -63,7 +64,11 @@ class Home extends React.PureComponent<ProjectsProps, StartPageState>
                                     }} />
                             </div>
                             <div>
-                                <button className='submitNameButton' onClick={() => { }}>
+                                <button className='submitNameButton'
+                                    onClick={() => {
+                                        this.props.createProject(this.state.newProjectName, this.props.requestProjects);
+                                        this.setState({ renderPopUp: false, newProjectName: '' });
+                                }}>
                                     Создать
                                 </button>
                             </div>
@@ -76,16 +81,23 @@ class Home extends React.PureComponent<ProjectsProps, StartPageState>
 
     public callbackCreator(id: number) {
         return () => {
-            this.props.selectProject(id);
+            this.setState({ selectedProjectID: id });
         }
     }
 
     public renderButtons() {
-        const buttons = this.props.selectedProjectID ?
+        const buttons = this.state.selectedProjectID !== -1 ?
             <div>
-                <StartPagesAction text='Открыть' action={() => { }} img={StartPageAssets.OpenProject} />
-                <StartPagesAction text='Удалить' action={() => { }} img={StartPageAssets.DeleteProject} />
-            </div> : <p> Нет </p>;
+                <StartPagesAction text='Открыть'
+                    action={() => {}}
+                    img={StartPageAssets.OpenProject} />
+                <StartPagesAction text='Удалить'
+                    action={() => {
+                        this.props.deleteProject(this.state.selectedProjectID, this.props.requestProjects);
+                        this.setState({ selectedProjectID: -1 });
+                    }}
+                    img={StartPageAssets.DeleteProject} />
+            </div> : null;
         return (
             <div>
                 <StartPagesAction text='Создать' action={() => { this.setState({ renderPopUp: true }) }} img={StartPageAssets.CreateProject} />
@@ -97,7 +109,9 @@ class Home extends React.PureComponent<ProjectsProps, StartPageState>
     public renderProjectsList() {
         return (
             <div>
-                {this.props.projects.map((project: ProjectsStore.Project, i: number) => <ProjectPreview key={i} projectName={project.projectName} action={this.callbackCreator(project.projectID)} />)}
+                {this.props.projects.map((project: ProjectsStore.Project, i: number) => <ProjectPreview key={i}
+                    projectName={project.projectName}
+                    action={() => { this.setState({ selectedProjectID: project.projectID }); }} />)}
             </div>
         )
     }

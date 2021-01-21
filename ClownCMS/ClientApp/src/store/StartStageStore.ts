@@ -5,7 +5,6 @@ import { AppThunkAction } from './';
 export interface StartPageState {
     isLoading: boolean;
     projects: Project[];
-    selectedProjectID: number;
 }
 
 export interface Project {
@@ -22,12 +21,8 @@ interface ReceiveProjectsAction {
     projects: Project[];
 }
 
-interface SelectProjectAction {
-    type: 'SELECT_PROJECT',
-    projectID: number
-}
 
-type KnownAction = RequestProjectsAction | ReceiveProjectsAction | SelectProjectAction;
+type KnownAction = RequestProjectsAction | ReceiveProjectsAction;
 
 export const actionCreators = {
     requestProjects: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
@@ -42,12 +37,40 @@ export const actionCreators = {
         }
     },
 
-    selectProject: (id: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
-        dispatch({ type: 'SELECT_PROJECT', projectID: id });
+    createProject: (projectName: string, updateList: () => void): AppThunkAction<Action> => (dispath, getState) => {
+        fetch('projects', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectName)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                updateList();
+            });
+    },
+
+    deleteProject: (projectID: number, updateList: () => void): AppThunkAction<Action> => (dispath, getState) => {
+        fetch('projects', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectID)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                updateList();
+            });
     }
 };
 
-const unloadedState: StartPageState = { projects: [], isLoading: false, selectedProjectID: -1 };
+const unloadedState: StartPageState = { projects: [], isLoading: false };
 
 export const reducer: Reducer<StartPageState> = (state: StartPageState | undefined, incomingAction: Action): StartPageState => {
     if (state === undefined) {
@@ -59,21 +82,13 @@ export const reducer: Reducer<StartPageState> = (state: StartPageState | undefin
         case 'REQUEST_PROJECTS':
             return {
                 projects: state.projects,
-                isLoading: true,
-                selectedProjectID: -1
+                isLoading: true
             };
         case 'RECEIVE_PROJECTS':
             return {
                 projects: action.projects,
-                isLoading: false,
-                selectedProjectID: -1
+                isLoading: false
             };
-        case 'SELECT_PROJECT':
-            return {
-                projects: state.projects,
-                isLoading: state.isLoading,
-                selectedProjectID: action.projectID
-            }
         default:
             break;
     }

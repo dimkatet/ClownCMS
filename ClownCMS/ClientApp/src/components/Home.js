@@ -23,7 +23,7 @@ var Home = /** @class */ (function (_super) {
     __extends(Home, _super);
     function Home(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = { renderPopUp: false, newProjectName: '' };
+        _this.state = { selectedProjectID: -1, renderPopUp: false, newProjectName: '' };
         return _this;
     }
     Home.prototype.componentDidMount = function () {
@@ -53,27 +53,33 @@ var Home = /** @class */ (function (_super) {
                                     _this.setState({ newProjectName: e.target.value });
                                 } })),
                         React.createElement("div", null,
-                            React.createElement("button", { className: 'submitNameButton', onClick: function () { } }, "\u0421\u043E\u0437\u0434\u0430\u0442\u044C")))))));
+                            React.createElement("button", { className: 'submitNameButton', onClick: function () {
+                                    _this.props.createProject(_this.state.newProjectName, _this.props.requestProjects);
+                                    _this.setState({ renderPopUp: false, newProjectName: '' });
+                                } }, "\u0421\u043E\u0437\u0434\u0430\u0442\u044C")))))));
     };
     Home.prototype.callbackCreator = function (id) {
         var _this = this;
         return function () {
-            _this.props.selectProject(id);
+            _this.setState({ selectedProjectID: id });
         };
     };
     Home.prototype.renderButtons = function () {
         var _this = this;
-        var buttons = this.props.selectedProjectID ?
+        var buttons = this.state.selectedProjectID !== -1 ?
             React.createElement("div", null,
                 React.createElement(StartPagesAction, { text: '\u041E\u0442\u043A\u0440\u044B\u0442\u044C', action: function () { }, img: StartPageAssets.OpenProject }),
-                React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () { }, img: StartPageAssets.DeleteProject })) : React.createElement("p", null, " \u041D\u0435\u0442 ");
+                React.createElement(StartPagesAction, { text: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', action: function () {
+                        _this.props.deleteProject(_this.state.selectedProjectID, _this.props.requestProjects);
+                        _this.setState({ selectedProjectID: -1 });
+                    }, img: StartPageAssets.DeleteProject })) : null;
         return (React.createElement("div", null,
             React.createElement(StartPagesAction, { text: '\u0421\u043E\u0437\u0434\u0430\u0442\u044C', action: function () { _this.setState({ renderPopUp: true }); }, img: StartPageAssets.CreateProject }),
             buttons));
     };
     Home.prototype.renderProjectsList = function () {
         var _this = this;
-        return (React.createElement("div", null, this.props.projects.map(function (project, i) { return React.createElement(ProjectPreview, { key: i, projectName: project.projectName, action: _this.callbackCreator(project.projectID) }); })));
+        return (React.createElement("div", null, this.props.projects.map(function (project, i) { return React.createElement(ProjectPreview, { key: i, projectName: project.projectName, action: function () { _this.setState({ selectedProjectID: project.projectID }); } }); })));
     };
     return Home;
 }(React.PureComponent));
