@@ -32,6 +32,11 @@ interface AddProjectsMenuItemAction {
     navMenuItem: NavMenuItem;
 }
 
+interface SelectProjectAction {
+    type: 'SELECT_PROJECT_ACTION',
+    projectID: number
+}
+
 const requestMenu = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.project) {
@@ -44,7 +49,7 @@ const requestMenu = (dispatch: any, getState: any) => {
     }
 }
 
-type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction;
+type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction;
 
 export const actionCreators = {
     requestMenu: (): AppThunkAction<KnownAction> => requestMenu,
@@ -113,6 +118,13 @@ export const actionCreators = {
                 }
             }).then(response => { if (response.status == 200) { requestMenu(dispatch, getState) } })
         }
+    },
+
+    selectProject: (projectID: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.project) {
+            dispatch({ type: 'SELECT_PROJECT_ACTION', projectID: projectID });
+        }
     }
 };
 
@@ -152,6 +164,12 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
                 isLoading: false,
                 ProjectId: state.ProjectId
             };
+        case 'SELECT_PROJECT_ACTION':
+            return {
+                navMenuItems: state.navMenuItems,
+                isLoading: state.isLoading,
+                ProjectId: action.projectID
+            }
         default: break;
     }
 

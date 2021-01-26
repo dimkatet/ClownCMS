@@ -24,20 +24,22 @@ interface ReceiveProjectsAction {
 
 type KnownAction = RequestProjectsAction | ReceiveProjectsAction;
 
-export const actionCreators = {
-    requestProjects: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
-        const appState = getState();
-        if (appState && appState.startPage) {
-            fetch('projects', { method: 'GET' })
-                .then(response => response.json() as Promise<Project[]>)
-                .then(data => {
-                    dispatch({ type: 'RECEIVE_PROJECTS', projects: data });
-                });
-            dispatch({ type: 'REQUEST_PROJECTS' });
-        }
-    },
+const requestProjects = (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.startPage) {
+        fetch('projects', { method: 'GET' })
+            .then(response => response.json() as Promise<Project[]>)
+            .then(data => {
+                dispatch({ type: 'RECEIVE_PROJECTS', projects: data });
+            });
+        dispatch({ type: 'REQUEST_PROJECTS' });
+    }
+}
 
-    createProject: (projectName: string, updateList: () => void): AppThunkAction<Action> => (dispath, getState) => {
+export const actionCreators = {
+    requestProjects: (): AppThunkAction<KnownAction> => requestProjects,
+
+    createProject: (projectName: string): AppThunkAction<Action> => (dispath, getState) => {
         fetch('projects', {
             method: 'POST',
             headers: {
@@ -49,11 +51,11 @@ export const actionCreators = {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                updateList();
+                requestProjects(dispath, getState);
             });
     },
 
-    deleteProject: (projectID: number, updateList: () => void): AppThunkAction<Action> => (dispath, getState) => {
+    deleteProject: (projectID: number): AppThunkAction<Action> => (dispath, getState) => {
         fetch('projects', {
             method: 'DELETE',
             headers: {
@@ -65,7 +67,7 @@ export const actionCreators = {
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                updateList();
+                requestProjects(dispath, getState);
             });
     }
 };

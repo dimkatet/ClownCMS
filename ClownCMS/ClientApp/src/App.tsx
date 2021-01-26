@@ -10,6 +10,5 @@ export default () => (
     <Switch>
         <Route exact path='/index' component={Base} />
         <Route exact path='/' component={StartPage} />
-
     </Switch>
 );

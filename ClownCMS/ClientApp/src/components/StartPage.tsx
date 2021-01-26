@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import PopUp from './PopUp';
 import { ApplicationState } from '../store';
 import * as StartPageStore from '../store/StartPageStore';
@@ -7,11 +8,11 @@ import * as ProjectStore from '../store/ProjectStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
 import './StartPage.css';
 
-type Id<T> = { [K in keyof T]: T[K] }
-type IdFoo = Id<typeof StartPageStore.actionCreators & typeof ProjectStore.actionCreators>;
 type ProjectsProps =
     StartPageStore.StartPageState
-    & IdFoo;
+    & RouteComponentProps
+    & typeof StartPageStore.actionCreators
+    & typeof ProjectStore.actionCreators;
 
 type StartPageState = {
     selectedProjectID: number,
@@ -24,7 +25,6 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 
     constructor(props: any) {
         super(props);
-        console.log(props)
         this.state = { selectedProjectID: -1, renderPopUp: false, newProjectName: '' };
     }
 
@@ -63,7 +63,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                                     value={this.state.newProjectName}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
-                                            this.props.createProject(this.state.newProjectName, this.props.requestProjects);
+                                            this.props.createProject(this.state.newProjectName);
                                             this.setState({ renderPopUp: false, newProjectName: '' });
                                         }
                                     }}
@@ -74,7 +74,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                             <div>
                                 <button className='submitNameButton'
                                     onClick={() => {
-                                        this.props.createProject(this.state.newProjectName, this.props.requestProjects);
+                                        this.props.createProject(this.state.newProjectName);
                                         this.setState({ renderPopUp: false, newProjectName: '' });
                                 }}>
                                     Создать
@@ -91,18 +91,28 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
         const buttons = this.state.selectedProjectID !== -1 ?
             <div>
                 <StartPagesAction text='Открыть'
-                    action={() => {}}
+                    action={() => {
+                        if (this.state.selectedProjectID !== -1) {
+                            this.props.selectProject(this.state.selectedProjectID);
+                            this.props.history.push('/index');
+                        }
+                    }}
                     img={StartPageAssets.OpenProject} />
                 <StartPagesAction text='Удалить'
                     action={() => {
-                        this.props.deleteProject(this.state.selectedProjectID, this.props.requestProjects);
+                        this.props.deleteProject(this.state.selectedProjectID);
                         this.setState({ selectedProjectID: -1 });
                     }}
                     img={StartPageAssets.DeleteProject} />
             </div> : null;
         return (
             <div>
-                <StartPagesAction text='Создать' action={() => { this.setState({ renderPopUp: true }) }} img={StartPageAssets.CreateProject} />
+                <StartPagesAction
+                    text='Создать'
+                    action={() => {
+                        this.setState({ renderPopUp: true });
+                    }}
+                    img={StartPageAssets.CreateProject} />
                 {buttons}
             </div>
         )
