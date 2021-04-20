@@ -26,33 +26,6 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("FETCH");
             using (ApplicationContext db = new ApplicationContext())
             {
-                /*if (db.Projects.Count() == 0)
-                {
-                    Project Project1 = new Project() { ProjectName = "test1" };
-                    Project Project2 = new Project() { ProjectName = "test2" };
-                    Project Project3 = new Project() { ProjectName = "test3" };
-                    db.Projects.Add(Project1);
-                    db.Projects.Add(Project2);
-                    db.Projects.Add(Project3);
-
-                    MenuItem MenuItem1 = new MenuItem() { MenuItemName = "Hi", MenuItemType = 3, Project = Project1 };
-                    MenuItem MenuItem2 = new MenuItem() { MenuItemName = "321", MenuItemType = 2, Project = Project1 };
-                    MenuItem MenuItem3 = new MenuItem() { MenuItemName = "Lol", MenuItemType = 0, Project = Project1 };
-                    MenuItem MenuItem4 = new MenuItem() { MenuItemName = "512", MenuItemType = 1, Project = Project2 };
-                    MenuItem MenuItem5 = new MenuItem() { MenuItemName = "Ltm", MenuItemType = 3, Project = Project2 };
-                    MenuItem MenuItem6 = new MenuItem() { MenuItemName = "21wql", MenuItemType = 2, Project = Project3 };
-                    MenuItem MenuItem7 = new MenuItem() { MenuItemName = "3gfh", MenuItemType = 0, Project = Project3 };
-                    db.MenuItems.Add(MenuItem1);
-                    db.MenuItems.Add(MenuItem2);
-                    db.MenuItems.Add(MenuItem3);
-                    db.MenuItems.Add(MenuItem4);
-                    db.MenuItems.Add(MenuItem5);
-                    db.MenuItems.Add(MenuItem6);
-                    db.MenuItems.Add(MenuItem7);
-
-                    db.SaveChanges();
-                }*/
-
                 return db.MenuItems.Where(p=>p.ProjectId == id).ToArray();
             }
         }
