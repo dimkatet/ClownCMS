@@ -11,6 +11,10 @@ namespace ClownCMS
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
+        public DbSet<Topic> Topics { get; set; }
+        public DbSet<Section> Sections { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Preview> Previews { get; set; }
 
         public ApplicationContext()
         {

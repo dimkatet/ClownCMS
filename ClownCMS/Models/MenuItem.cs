@@ -17,5 +17,7 @@ namespace ClownCMS
         public int ProjectId { get; set; }
         public Project Project { get; set; }
 
+        public Topic Topic { get; set; }
+
     }
 }
