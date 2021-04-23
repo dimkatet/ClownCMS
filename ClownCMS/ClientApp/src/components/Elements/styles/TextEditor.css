@@ -1,0 +1,19 @@
+﻿.textEditor {
+    background: white;
+    border: 1px solid black;
+    border-radius: 8px 8px;
+    margin-left: 15em;
+    margin-right: 15em;
+    overflow-y: hidden;
+}
+
+.DraftEditor-root {
+    background-color: cadetblue;
+    overflow-y: visible;
+    height: 100%;
+}
+
+.DraftEditor-editorContainer,
+.public-DraftEditor-content {
+    height: 100%;
+}

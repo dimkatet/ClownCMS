@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Elements\Ribbon.tsx" />
+    <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\components\Elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../../store';
+import TextEditor from '../../../Elements/TextEditor';
 //import * as ProjectStore from '../../store/ProjectConfig';
 
 
@@ -30,7 +31,7 @@ export default class Body extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>Body</div>
+                <TextEditor />
             </React.Fragment>
         )
     }

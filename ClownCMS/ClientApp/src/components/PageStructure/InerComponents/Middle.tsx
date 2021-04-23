@@ -36,15 +36,9 @@ export default class Middle extends React.PureComponent//<ProjectsProps>
         return (
             <React.Fragment>
                 <div className='wrapper_Middle'>
-                    <div>
                         <LeftMenu />
-                    </div>
-                    <div>
                         <Body />
-                    </div>
-                    <div>
                         <RightMenu />
-                    </div>
                 </div>
             </React.Fragment>
         )
