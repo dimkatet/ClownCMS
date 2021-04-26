@@ -1,10 +1,12 @@
 ﻿import * as StartPageStore from './StartPageStore';
-import * as ProjectStore from './ProjectStore'
+import * as ProjectStore from './ProjectStore';
+import * as BodyStore from './BodyStore';
 
 // The top-level state object
 export interface ApplicationState {
     startPage: StartPageStore.StartPageState | undefined;
     project: ProjectStore.ProjectState | undefined;
+    body: BodyStore.BodyState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -12,7 +14,8 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     startPage: StartPageStore.reducer,
-    project: ProjectStore.reducer
+    project: ProjectStore.reducer,
+    body: BodyStore.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

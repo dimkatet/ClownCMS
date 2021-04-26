@@ -15,10 +15,12 @@ namespace ClownCMS
         public DbSet<Section> Sections { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Preview> Previews { get; set; }
+        public DbSet<Page> Pages { get; set; }
 
         public ApplicationContext()
         {
             //Database.EnsureDeleted();
+            //Drop();
             Database.EnsureCreated();
             Fill("dbo.Projects.data.sql", Projects);
             Fill("dbo.MenuItems.data.sql", MenuItems);
@@ -32,20 +34,38 @@ namespace ClownCMS
 
         private void Fill<T>(string fileName, DbSet<T> field) where T : class
         {
-            string path = Directory.GetCurrentDirectory()+ @"\Src\DBScripts\" + fileName;
+            string path = Directory.GetCurrentDirectory() + @"\Src\DBScripts\" + fileName;
             string s;
             try
             {
                 using (StreamReader sr = File.OpenText(path))
                 {
-                    s = sr.ReadToEnd();                        
+                    s = sr.ReadToEnd();
                 }
-                if(field.Count() == 0)
+                if (field.Count() == 0)
                 {
                     this.Database.ExecuteSqlRaw(s);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
+            {
+                ;
+            }
+        }
+
+        private void Drop()
+        {
+            string path = Directory.GetCurrentDirectory() + @"\Src\DBScripts\dbo.drop.sql";
+            string s;
+            try
+            {
+                using (StreamReader sr = File.OpenText(path))
+                {
+                    s = sr.ReadToEnd();
+                }
+                this.Database.ExecuteSqlRaw(s);
+            }
+            catch (Exception e)
             {
                 ;
             }

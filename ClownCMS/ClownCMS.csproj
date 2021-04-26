@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\Elements\HTMLConverter.tsx" />
     <None Remove="ClientApp\src\components\Elements\Ribbon.tsx" />
     <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
@@ -38,6 +39,7 @@
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\Body.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\LeftMenu.tsx" />
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\RightMenu.tsx" />
+    <None Remove="ClientApp\src\store\BodyStore.ts" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
 

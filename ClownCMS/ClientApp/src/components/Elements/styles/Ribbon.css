@@ -4,7 +4,7 @@
     vertical-align: central;
 }
 
-.ribbonItems {
+.ribbon-items {
     display: flex;
     justify-content: start;
     list-style: none;
@@ -14,7 +14,7 @@
     background: rgb(200, 200, 200);
 }
 
-.ribbonItem {
+.ribbon-item {
     height: 100%;
     width: 35px;
     align-items: center;
@@ -28,6 +28,8 @@
     font-size: 1.4rem;
     border-bottom: 3px solid rgb(51, 51, 55);
     transition: all 0.15s linear;
+    cursor: pointer;
+    position: relative
 }
 
 .bold {
@@ -38,12 +40,62 @@
     font-style: italic
 }
 
-.ribbonItem:hover {
+.underline {
+    text-decoration: underline
+}
+
+.ribbon-item:hover {
     color: #c95339;
     border-color: #c95339;
 }
 
-.ribbonItem.active {
+.ribbon-item.active {
     color: #c95339;
     border-color: #c95339;
+}
+
+.font-size-button {
+    height: 100%;
+    width: 35px;
+    overflow: hidden
+}
+
+.font-size-menu {
+    display: inline-block;
+    position: absolute;
+    width: 35px;
+    top: 40px;
+    background: rgb(200, 200, 200);
+    max-height: 150px;
+    overflow-y: scroll;
+}
+
+.font-size-menu::-webkit-scrollbar {
+    width: 3px;
+    height: 40px;
+}
+
+.font-size-menu::-webkit-scrollbar-track {
+    background:  rgb(200, 200, 200);
+}
+
+.font-size-menu::-webkit-scrollbar-thumb {
+    background: rgb(63, 63, 64);
+}
+
+.font-size-menu::-webkit-scrollbar-thumb:hover {
+    background: rgb(51, 51, 55);
+}
+
+.font-size-option {
+    color: rgb(51, 51, 57);
+    font-size: 1rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.font-size-option:hover {
+    color: #c95339;
+    cursor: pointer;
 }
