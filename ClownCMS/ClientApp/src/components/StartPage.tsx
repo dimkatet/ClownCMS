@@ -59,7 +59,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                         <div className='popUpContent'>
                             <div>Введите название проекта:</div>
                             <div>
-                                <input className='projectNameInput'
+                                <input 
                                     value={this.state.newProjectName}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -72,7 +72,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                                     }} />
                             </div>
                             <div>
-                                <button className='submitNameButton'
+                                <button 
                                     onClick={() => {
                                         this.props.createProject(this.state.newProjectName);
                                         this.setState({ renderPopUp: false, newProjectName: '' });

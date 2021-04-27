@@ -1,0 +1,21 @@
+﻿.popUpMenuContent button {
+    width: 140px;
+    display: block;
+    align-items: center;
+}
+
+.wrapper_button {
+    display: grid;
+    grid-template-columns: 155px 155px;
+    grid-template-rows: 100%;
+}
+
+.popUpMenuContent div {
+    margin: 20px;
+}
+
+.wrapper_Item {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 5px;
+}

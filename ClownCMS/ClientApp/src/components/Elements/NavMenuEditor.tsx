@@ -1,16 +1,19 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import * as ProjectStore from '../../store/ProjectStore'
-import { ApplicationState } from '../../store'
+import * as ProjectStore from '../../store/ProjectStore';
+import * as NavigationStore from '../../store/NavigationStore';
+import { ApplicationState } from '../../store';
 import { Button } from 'reactstrap';
 import PopUp from '../PopUp';
+import './NavMenuEditor.css';
 
-type Props = ProjectStore.ProjectState & typeof ProjectStore.actionCreators;
+
+type Props = ProjectStore.ProjectState & typeof ProjectStore.actionCreators & typeof NavigationStore.actionCreators;
 
 class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addingText: string, addingType: number, selectedItemID: number}> {
     constructor(props: Props) {
         super(props)
-        props.requestMenu()
+        this.props.requestMenu()
         this.state = { isAdding: false, addingText: "", addingType: 0, selectedItemID: -1};
     }
     private AddNew = (menuItemName: string, menuItemType: number) => { { this.props.addMenuItem(menuItemName, menuItemType) } }
@@ -31,7 +34,7 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     private MenuItem = (props: any) => {
         return (
             <div>
-                <button onFocus={props.focus}>
+                <button onMouseOver={props.actionChange} onClick={props.execute}>
                     {props.menuItemName}
                 </button>
                 {props.children}
@@ -40,17 +43,22 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     }
 
     public render() {
+        console.log(this.props.navMenuItems)
         return (<div>
-
-            {this.props.navMenuItems.map(item =>
-                <this.MenuItem menuItemName={item.menuItemName} focus={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
-                    {this.state.selectedItemID == item.menuItemId ? <button onClick={() => { this.setState({ isAdding: true }); }} onBlur={this.Close} autoFocus> </button> : null}
-                </this.MenuItem>)
-            }
+            <div className='wrapper_Item'>
+                {this.props.navMenuItems.map(item =>
+                    <this.MenuItem menuItemName={item.menuItemName} execute={() => this.props.setMenuItem(item)} actionChange={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
+                        {this.state.selectedItemID == item.menuItemId ? <button onClick={() => { this.setState({ isAdding: true }); }}> </button> : null}
+                    </this.MenuItem>)
+                }
+                <div>
+                    <input type='button' value='add' onClick={() => this.setState({ isAdding: true, addingText: "", addingType: 3, selectedItemID: -1 })} />
+                </div>
+            </div>
 
             {this.state.isAdding &&
                 <PopUp onClose={this.Close}>
-                <div className='popUpContent'>
+                <div className='popUpMenuContent'>
                     <div>Введите тип элемента</div>
                     <div>
                         <select value={this.state.addingType} onChange={(event) => { this.setState({ addingType: Number(event.target.value) }); }}>
@@ -74,23 +82,18 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
                                 this.setState({ addingText: e.target.value })
                             }} />
                     </div>
-                    <div>
-                        <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType); this.Close(); }}>
-                            Сохранить
-                        </button>
-                    </div>
-                    <div>
+                    <div className='wrapper_button'>
                         <button onClick={() => { this.getDelete(this.state.selectedItemID)(); this.Close(); }}>
                             Удалить
                         </button>
-                    </div>
+                        <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType); this.Close(); }}>
+                            Сохранить
+                        </button>
+                    </div>  
                 </div>
 
                 </PopUp>}
 
-           
-
-            <input type='button' value='add' onClick={() => this.setState({ isAdding: true, addingText: "", addingType: 3, selectedItemID: -1})} />
         </div>
         )
     }
@@ -98,6 +101,6 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
 }
 
 export default connect(
-    (state: ApplicationState) => state.project, 
-    ProjectStore.actionCreators 
+    (state: ApplicationState) => state.project,
+    { ...ProjectStore.actionCreators, ...NavigationStore.actionCreators}
 )(NavMenuEditor as any);

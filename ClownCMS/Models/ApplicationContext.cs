@@ -11,7 +11,6 @@ namespace ClownCMS
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
-        public DbSet<Topic> Topics { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Preview> Previews { get; set; }
@@ -22,6 +21,9 @@ namespace ClownCMS
             Database.EnsureCreated();
             Fill("dbo.Projects.data.sql", Projects);
             Fill("dbo.MenuItems.data.sql", MenuItems);
+            Fill("dbo.Sections.data.sql", Sections);
+            Fill("dbo.Categories.data.sql", Categories);
+            Fill("dbo.Previews.data.sql", Previews);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

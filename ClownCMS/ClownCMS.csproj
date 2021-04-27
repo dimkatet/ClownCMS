@@ -38,6 +38,7 @@
     <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\RightMenu.tsx" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
+    <None Remove="ClientApp\src\store\NavigationStore.ts" />
 
     <None Remove="ClientApp\src\store\NavMenuStore.ts" />
     <None Remove="ClientApp\src\store\StartPageStore.ts" />
