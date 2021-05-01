@@ -1,3 +1,15 @@
 ﻿SET IDENTITY_INSERT [dbo].[Categories] ON
-INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (1, N'asd', 1)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (1, N'1qwe', 1)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (2, N'2qwe', 1)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (3, N'3qwe', 1)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (4, N'1asd', 2)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (5, N'2asd', 2)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (6, N'3asd', 2)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (7, N'1zxc', 3)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (8, N'2zxc', 3)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (9, N'3zxc', 3)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (10, N'10qwe', 4)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (11, N'20qwe', 4)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (12, N'10asd', 5)
+INSERT INTO [dbo].[Categories] ([CategoryId], [CategoryName], [SectionId]) VALUES (13, N'20asd', 5)
 SET IDENTITY_INSERT [dbo].[Categories] OFF

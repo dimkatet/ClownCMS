@@ -16,13 +16,13 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
         this.props.requestMenu()
         this.state = { isAdding: false, addingText: "", addingType: 0, selectedItemID: -1};
     }
-    private AddNew = (menuItemName: string, menuItemType: number) => { { this.props.addMenuItem(menuItemName, menuItemType) } }
 
     private getSave = (id: number) => {
         if (id == -1)
-            return this.AddNew;
-        return (menuItemName: string, menuItemType: number) => this.props.setMenuItem(id, menuItemName, menuItemType)
+            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType) }
+        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType) }
     }
+
     private getDelete = (id: number) => {
         if (id == -1)
             return this.Close;
@@ -43,11 +43,10 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     }
 
     public render() {
-        console.log(this.props.navMenuItems)
         return (<div>
             <div className='wrapper_Item'>
                 {this.props.navMenuItems.map(item =>
-                    <this.MenuItem menuItemName={item.menuItemName} execute={() => this.props.setMenuItem(item)} actionChange={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
+                    <this.MenuItem menuItemName={item.menuItemName} execute={() => this.props.setCurrentMenuItem(item)} actionChange={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
                         {this.state.selectedItemID == item.menuItemId ? <button onClick={() => { this.setState({ isAdding: true }); }}> </button> : null}
                     </this.MenuItem>)
                 }
@@ -62,10 +61,12 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
                     <div>Введите тип элемента</div>
                     <div>
                         <select value={this.state.addingType} onChange={(event) => { this.setState({ addingType: Number(event.target.value) }); }}>
+                            <option value="0">form0</option>
                             <option value="1">form1</option>
                             <option value="2">form2</option>
                             <option value="3">form3</option>
                             <option value="4">form4</option>
+                            <option value="5">form5</option>
                         </select>
                     </div>
                     <div>Введите название элемента</div>

@@ -5,6 +5,7 @@ import { NavMenuItem } from './ProjectStore';
 export interface NavigatinonState {
     isLoading: boolean;
     menuItem: NavMenuItem;
+    isActual: boolean;
     sections: Section[];
 }
 
@@ -43,7 +44,11 @@ interface SetMenuItemAction {
     menuItem: NavMenuItem;
 }
 
-type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction;
+interface NavState {
+    type: 'NAV_STATE';
+}
+
+type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState;
 
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -56,19 +61,26 @@ const requestNavigation = (dispatch: any, getState: any) => {
         dispatch({ type: 'REQUEST_NAVIGATION' });
     }
 }
+const Updated = (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.navigation && appState.navigation) {
+        dispatch({ type: 'NAV_STATE' });
+    }
+}
 
 export const actionCreators = {
     requestNavigation: (): AppThunkAction<KnownAction> => requestNavigation,
-    setMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'SET_MENU_ITEM', menuItem: MenuItem });
             requestNavigation(dispatch, getState);
         }
-    }
+    },
+    updated: (): AppThunkAction<KnownAction> => Updated
 }
 
-const unloadedState: NavigatinonState = { sections: [], isLoading: false, menuItem: {} as NavMenuItem }
+const unloadedState: NavigatinonState = { sections: [], isLoading: false, isActual: false, menuItem: {} as NavMenuItem }
 
 export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | undefined, incomingAction: Action): NavigatinonState => {
     if (state === undefined) {
@@ -80,19 +92,29 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
             return {
                 sections: state.sections,
                 isLoading: true,
+                isActual: false,
                 menuItem: state.menuItem
             };
         case 'RECEIVE_NAVIGATION':
             return {
                 sections: action.sections,
                 isLoading: false,
+                isActual: false,
                 menuItem: state.menuItem
             };
         case 'SET_MENU_ITEM':
             return {
                 sections: state.sections,
                 isLoading: false,
+                isActual: false,
                 menuItem: action.menuItem
+            };
+        case 'NAV_STATE':
+            return {
+                sections: state.sections,
+                isLoading: false,
+                isActual: true,
+                menuItem: state.menuItem
             };
         default: break;
     }

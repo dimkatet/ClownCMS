@@ -7,7 +7,6 @@ class PopUp extends React.Component<PopUpProps>
 {
     constructor(props: PopUpProps) {
         super(props);
-        console.log(props);
     }
 
     public render() {
