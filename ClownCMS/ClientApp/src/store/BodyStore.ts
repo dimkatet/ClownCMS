@@ -1,7 +1,8 @@
 ﻿import { Action, Reducer } from 'redux';
-import { EditorState, ContentState, convertFromRaw, convertToRaw } from 'draft-js'
+import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock, RawDraftContentBlock, RawDraftContentState } from 'draft-js'
 import { AppThunkAction } from './';
 import { Update } from '@material-ui/icons';
+import { render } from 'react-dom';
 
 export interface BodyState {
     isLoading: boolean,
@@ -48,12 +49,57 @@ const requestContent = (dispatch, getState) => {
     }
 };
 
+const postImage = async (url: string) => {
+    if (!url.includes('blob'))
+        return url;
+    let res: string = '';
+    await fetch(url)
+        .then(r => r.blob())
+        .then(async blob => {
+            const formData = new FormData();
+            formData.append('data', blob);
+            await fetch('image', {
+                method: 'POST',
+                body: formData
+            })
+                .then(r => r.text())
+                .then(data => {
+                    res = data
+                })
+        });
+    return res;
+}
+
+const findBlocks = async (content: RawDraftContentState) => {
+    const blocks = content['blocks'];
+    for(let block of blocks) {
+        if (block['type'] == 'IMAGE') {
+            if (!block['data'])
+                return
+            await postImage(block['data']['image']['src']).then(url => {
+                block['data']['image']['src'] = url;
+            }) 
+        }
+        if (block['type'] == 'SLIDER') {
+            if (!block['data'])
+                return
+            const slides = block['data']['slides']
+            for (let slide of slides) {
+                await postImage(slide['src']).then(url => {
+                    slide['src'] = url;
+                })
+            }
+        }
+    }
+}
+
 export const actionCreators = {
     requestContent: (): AppThunkAction<ContentAction> => requestContent,
 
     updateContent: (content: ContentState): AppThunkAction<ContentAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.body) {
+            const c = convertToRaw(content);
             dispatch({ type: 'UPDATE_CONTENT', content: content });
         }
     },
@@ -62,23 +108,25 @@ export const actionCreators = {
         const appState = getState();
         if (appState && appState.body) {
             const c = convertToRaw(content);
-            const item = {
-                pageId: 1,
-                content: JSON.stringify(c)
-            }
-
-            const response = fetch('pages', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(item)
+            findBlocks(c).then(() => {
+                const item = {
+                    pageId: 1,
+                    content: JSON.stringify(c)
+                }
+                fetch('pages', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(item)
+                })
+                    .then(response => response.ok)
+                    .then(status => dispatch({ type: 'SAVE_CONTENT', status }));
             })
-                .then(response => response.ok)
-                .then(status => dispatch({ type: 'SAVE_CONTENT', status }));
         }
     }
+
 };
 
 const unloadedState: BodyState = { isLoading: false, content: EditorState.createEmpty().getCurrentContent() };

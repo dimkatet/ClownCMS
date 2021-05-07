@@ -1,0 +1,6 @@
+﻿.image-block {
+    position: relative;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 5px 10px 5px 10px;
+}

@@ -16,20 +16,18 @@
 
 .ribbon-item {
     height: 100%;
-    width: 35px;
+    min-width: 35px;
+    max-width: 80px;
     align-items: center;
     display: flex;
     justify-content: center;
-    height: 100%;
-    width: 35px;
-    max-width: 35px;
     color: rgb(51, 51, 55);
     font-family: Georgia serif;
     font-size: 1.4rem;
     border-bottom: 3px solid rgb(51, 51, 55);
     transition: all 0.15s linear;
     cursor: pointer;
-    position: relative
+    position: relative;
 }
 
 .bold {
@@ -54,48 +52,82 @@
     border-color: #c95339;
 }
 
-.font-size-button {
-    height: 100%;
-    width: 35px;
-    overflow: hidden
+.selector {
+    display: flex;
+    justify-content: start;
+    max-width: 100%;
 }
 
-.font-size-menu {
+.font-size-button {
+    font-size: 1.1rem;
+}
+
+.font-family-button {
+    width: 75px;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.selector-menu {
     display: inline-block;
     position: absolute;
-    width: 35px;
+    min-width: 35px;
     top: 40px;
     background: rgb(200, 200, 200);
     max-height: 150px;
     overflow-y: scroll;
 }
 
-.font-size-menu::-webkit-scrollbar {
+.selector-menu::-webkit-scrollbar {
     width: 3px;
     height: 40px;
 }
 
-.font-size-menu::-webkit-scrollbar-track {
-    background:  rgb(200, 200, 200);
+.selector-menu::-webkit-scrollbar-track {
+    background: rgb(200, 200, 200);
 }
 
-.font-size-menu::-webkit-scrollbar-thumb {
+.selector-menu::-webkit-scrollbar-thumb {
     background: rgb(63, 63, 64);
 }
 
-.font-size-menu::-webkit-scrollbar-thumb:hover {
+.selector-menu::-webkit-scrollbar-thumb:hover {
     background: rgb(51, 51, 55);
 }
 
 .font-size-option {
     color: rgb(51, 51, 57);
     font-size: 1rem;
-    align-items: center;
     display: flex;
     justify-content: center;
+    overflow-y: hidden;
+    overflow-x: visible;
+    white-space: nowrap;
 }
 
-.font-size-option:hover {
+.font-family-option {
+    color: rgb(51, 51, 57);
+    font-size: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    overflow-y: hidden;
+    overflow-x: visible;
+    white-space: nowrap;
+}
+
+.selector-option:hover {
     color: #c95339;
     cursor: pointer;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.ribbon-item label{
+    margin: 0;
 }

@@ -1,11 +1,23 @@
 ﻿import * as React from 'react';
 import { convertToHTML } from 'draft-convert';
+import { fontFamilies, fontSizes } from './EditorStyles';
+import SliderBlock from '../SliderBlock';
+import '../styles/ImageBlock.css';
+import { ContentBlock } from 'draft-js';
 
 const styleToHTML = (style: string) => {
     if (style.includes('FONT_SIZE_')) {
         var r = /\d+/;
         var fSize = style.match(r);
         return <span style={{ fontSize: fSize + 'pt' }} />;
+    }
+    if (style.includes('FONT_FAMILY_')) {
+        var fFamily = 'Arial';
+        fontFamilies.forEach(font => {
+            if (style.includes(font.toUpperCase().replace(/\s/g, '_')))
+                fFamily = font;
+        })
+        return <span style={{ fontFamily: fFamily }} />;
     }
     switch (style) {
         case 'ITALIC':
@@ -21,6 +33,15 @@ const styleToHTML = (style: string) => {
 
 const blockToHTML = (block) => {
     switch (block.type) {
+        case 'IMAGE':
+            const src = block.data.image.src;
+            return <img className='image-block' src={src} />
+        case 'SLIDER':
+            const slides = block.data.slides;
+            return {
+                start: `<div class="slider js-slider" data-slides="${JSON.stringify(slides).replace(/"/g, "'")}"><div>`,
+                end: `</div></div>`
+            }
         default:
             return null;
     }

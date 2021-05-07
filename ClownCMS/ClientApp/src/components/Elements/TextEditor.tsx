@@ -1,7 +1,27 @@
 ﻿import * as React from 'react';
-import { Editor, EditorState, ContentState, RichUtils, CompositeDecorator, convertToRaw, convertFromRaw } from 'draft-js';
+import {
+    Editor,
+    EditorState,
+    ContentState,
+    RichUtils,
+    CompositeDecorator,
+    convertToRaw,
+    convertFromRaw,
+    Modifier, Entity,
+    AtomicBlockUtils,
+    ContentBlock,
+    DefaultDraftBlockRenderMap
+} from 'draft-js';
 import Ribbon from './Ribbon';
+import ImageBlock from './ImageBlock';
+import SliderBlock from './SliderBlock';
+import customStyleMap from './utils/EditorStyles';
+import { addNewBlockAt } from './utils/EditorUtils';
+import { getCrossingStyles, isCrossingStyle } from './utils/EditorStyles';
+import { Map } from 'immutable';
 import './styles/TextEditor.css';
+
+const urlCreator = window.URL || window.webkitURL;
 
 interface TextEditorProbs {
     contentState: ContentState,
@@ -14,6 +34,7 @@ interface TextEditorState {
 
 class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
 
+
     constructor(probs: TextEditorProbs) {
         super(probs);
         this.state = { editorState: EditorState.createWithContent(this.props.contentState, decorator) };
@@ -22,15 +43,16 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
         this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.setLink = this.setLink.bind(this);
         this.getEditorState = this.getEditorState.bind(this);
-        this.changeFontSize = this.changeFontSize.bind(this);
+        this.setEditorState = this.setEditorState.bind(this);
+        this.toggleCustomStyle = this.toggleCustomStyle.bind(this);
+        this.toggleList = this.toggleList.bind(this);
+        this.handleInputFiles = this.handleInputFiles.bind(this);
 
-    }
-
-    componentDidMount() {
+        this.blockRendererFn = customBlockRenderer(this.setEditorState, this.getEditorState);
     }
 
     onChange(editorState: EditorState) {
-        this.setState({ editorState });
+        this.setState({ editorState: editorState });
         this.props.updateContent(editorState.getCurrentContent());
     }
 
@@ -38,21 +60,24 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
         return this.state.editorState;
     }
 
-    handleKeyCommand(command: any) {
-        const { editorState } = this.state;
+    setEditorState(editorState: EditorState) {
+        this.setState({ editorState });
+    }
+
+    blockRendererFn(block: ContentBlock): Object | null {
+        return null;
+    }
+
+    handleKeyCommand(command: string, editorState: EditorState, event: number) {
+
         const newState = RichUtils.handleKeyCommand(editorState, command);
 
         if (newState) {
             this.onChange(newState);
-            return true;
+            return 'handled';
         }
-
-        return false;
+        return 'not-handled';
     }
-
-    changeFontSize(fontSize: number) {
-    }
-
     setLink() {
         const urlValue = prompt('Введите ссылку', '');
         const { editorState } = this.state;
@@ -76,14 +101,105 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
     }
 
     toggleInlineStyle(inlineStyle: string) {
-        this.onChange(
-            RichUtils.toggleInlineStyle(
-                this.state.editorState,
-                inlineStyle
-            )
+        if (isCrossingStyle(inlineStyle)) {
+            this.toggleCustomStyle(inlineStyle, getCrossingStyles(inlineStyle, this.getEditorState().getCurrentInlineStyle()));
+        }
+        else {
+            this.onChange(
+                RichUtils.toggleInlineStyle(
+                    this.state.editorState,
+                    inlineStyle
+                )
+            );
+        }
+    }
+
+    toggleCustomStyle(inlineStyle: string, crossingStyles: string[]) {
+        const selection = this.state.editorState.getSelection();
+        if (selection.isCollapsed()) {
+            this.onChange(
+                RichUtils.toggleInlineStyle(
+                    this.state.editorState,
+                    inlineStyle
+                )
+            );
+            return;
+        }
+        const contentState = this.state.editorState.getCurrentContent();
+        const contentWithoutStyles = crossingStyles.reduce(
+            (newContentState, crossingStyle) => {
+                if (crossingStyle === inlineStyle)
+                    return Modifier.applyInlineStyle(
+                        newContentState,
+                        selection,
+                        inlineStyle
+                    )
+                return Modifier.removeInlineStyle(
+                    newContentState,
+                    selection,
+                    crossingStyle
+                )
+            },
+            contentState
         );
-        const content = convertToRaw(this.state.editorState.getCurrentContent());
-        console.log(content);
+
+        const newEditorState = EditorState.push(
+            this.state.editorState,
+            contentWithoutStyles,
+            'change-inline-style'
+        );
+
+        this.onChange(newEditorState);
+    }
+
+    toggleList(listType: string) {
+        this.onChange(RichUtils.toggleBlockType(
+            this.state.editorState,
+            listType
+        ));
+    }
+
+    handleInputFiles(e: React.ChangeEvent<HTMLInputElement>) {
+        const files = e.target.files;
+        if (files === null)
+            return;
+
+        const filteredFiles: Array<File> = [];
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].type.indexOf('image/') === 0)
+                filteredFiles.push(files[i]);
+        }
+        if (filteredFiles.length === 0)
+            return;
+
+        const selection = this.state.editorState.getSelection();
+        if (filteredFiles.length === 1) {
+            this.onChange(addNewBlockAt(
+                this.getEditorState(),
+                selection.getAnchorKey(),
+                'IMAGE',
+                Map({
+                    'image': {
+                        src: urlCreator.createObjectURL(filteredFiles[0])
+                    }
+                })
+            ));
+            return;
+        }
+
+        let res = [];
+        filteredFiles.forEach(f => {
+            res.push({ src: urlCreator.createObjectURL(f) });
+        });
+        this.onChange(addNewBlockAt(
+            this.getEditorState(),
+            selection.getAnchorKey(),
+            'SLIDER',
+            Map({
+                'slides': res
+            })
+        ));
+        
     }
 
     render() {
@@ -93,12 +209,16 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
                     editorState={this.state.editorState}
                     onToggle={this.toggleInlineStyle}
                     setLink={this.setLink}
+                    setList={this.toggleList}
+                    setImages={this.handleInputFiles}
                 />
                 <Editor
                     editorState={this.state.editorState}
                     onChange={this.onChange}
                     handleKeyCommand={this.handleKeyCommand}
                     customStyleMap={customStyleMap}
+                    blockRendererFn={this.blockRendererFn}
+                    blockRenderMap={RenderMap}
                     ref='editor'
                 />
             </div>
@@ -136,44 +256,30 @@ const decorator: CompositeDecorator = new CompositeDecorator([
     }
 ]);
 
-const customStyleMap = {
-    FONT_SIZE_8: {
-        fontSize: '8pt'
-    },
-    FONT_SIZE_10: {
-        fontSize: '10pt'
-    },
-    FONT_SIZE_12: {
-        fontSize: '12pt'
-    },
-    FONT_SIZE_14: {
-        fontSize: '14pt'
-    },
-    FONT_SIZE_16: {
-        fontSize: '16pt'
-    },
-    FONT_SIZE_18: {
-        fontSize: '18pt'
-    },
-    FONT_SIZE_20: {
-        fontSize: '20pt'
-    },
-    FONT_SIZE_24: {
-        fontSize: '24pt'
-    },
-    FONT_SIZE_28: {
-        fontSize: '28pt'
-    },
-    FONT_SIZE_32: {
-        fontSize: '32pt'
-    },
-    FONT_SIZE_48: {
-        fontSize: '48pt'
-    },
-    FONT_SIZE_72: {
-        fontSize: '72pt'
+const customBlockRenderer = (setEditorState: Function, getEditorState: Function) => (contentBlock: ContentBlock) => {
+    const type = contentBlock.getType();
+    switch (type) {
+        case 'IMAGE':
+            return {
+                component: ImageBlock,
+                editable: false
+            };
+        case 'SLIDER':
+            return {
+                component: SliderBlock,
+                editable: false
+            }
+        default: return null;
     }
+};
 
-}
+const RenderMap = Map<string, { element: string }>({
+    'IMAGE': {
+        element: 'div'
+    },
+    'SLIDER': {
+        element: 'div'
+    }
+}).merge(DefaultDraftBlockRenderMap);
 
 export default TextEditor

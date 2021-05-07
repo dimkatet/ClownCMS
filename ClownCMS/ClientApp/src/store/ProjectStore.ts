@@ -116,7 +116,7 @@ export const actionCreators = {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(response => { if (response.status == 200) { requestMenu(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestMenu(dispatch, getState) } })
         }
     },
 
@@ -149,9 +149,9 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
                 ProjectId: state.ProjectId
             };
         case 'CHANGE_PROJECT_MENU_ITEM':
-            let index = state.navMenuItems.findIndex(x => x.menuItemId == action.navMenuItem.menuItemId)
+            let index = state.navMenuItems.findIndex(x => x.menuItemId === action.navMenuItem.menuItemId)
             let navMenuItems = state.navMenuItems;
-            if (index != -1)
+            if (index !== -1)
                 navMenuItems[index] = action.navMenuItem;
             return {
                 navMenuItems: navMenuItems,

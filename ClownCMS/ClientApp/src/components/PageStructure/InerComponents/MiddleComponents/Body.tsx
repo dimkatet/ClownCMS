@@ -5,11 +5,15 @@ import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../../store';
 import * as BodyStore from '../../../../store/BodyStore';
 import TextEditor from '../../../Elements/TextEditor';
-import { EditorState, ContentState, convertFromRaw } from 'draft-js';
-import convertToHTML from '../../../Elements/HTMLConverter';
+import SliderBlock from '../../../Elements/SliderBlock';
+import ImageBlock from '../../../Elements/ImageBlock';
+import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock } from 'draft-js';
+import convertToHTML from '../../../Elements/utils/HTMLConverter';
 import IconSave from '@material-ui/icons/Save';
 import IconEdit from '@material-ui/icons/Edit';
 import './styles/Body.css';
+import '../../../Elements/styles/SliderBlock.css';
+import ReactDOM from 'react-dom';
 
 type BodyProps = BodyStore.BodyState & typeof BodyStore.actionCreators;
 
@@ -24,6 +28,7 @@ class Body extends React.PureComponent<BodyProps, BodyState>
         super(props);
         this.state = { contentState: EditorState.createEmpty().getCurrentContent(), isEditing: false};
         this.updateContent = this.updateContent.bind(this);
+        this.insertContent = this.insertContent.bind(this);
     }
 
     public componentDidMount() {
@@ -31,12 +36,32 @@ class Body extends React.PureComponent<BodyProps, BodyState>
     }
 
     public componentDidUpdate() {
-        //
+        if (!this.state.isEditing)
+            this.insertContent();
     }
 
     updateContent(content: ContentState) {
         this.props.updateContent(content);
     }
+
+    insertContent() {
+        const content = document.getElementById('body-content-id');
+        if (!content)
+            return;
+
+        content.innerHTML = convertToHTML(this.props.content);
+        const sliders = content.querySelectorAll('.js-slider');
+        sliders.forEach((slider, index) => {
+            const data = slider.getAttribute('data-slides');
+            if (data === null)
+                return;
+            ReactDOM.render<{}>(
+                <SliderBlock
+                    slides={JSON.parse(data.replace(/'/g, '"'))}
+                />, slider);
+        });
+    }
+
 
 
     public render() {
@@ -45,22 +70,26 @@ class Body extends React.PureComponent<BodyProps, BodyState>
                 <div
                     className='edit-button'
                     onMouseDown={(e) => {
-                        if (this.state.isEditing)
+                        if (this.state.isEditing) {
                             this.props.saveContent(this.props.content);
+                            //this.insertContent();
+                        } else {
+                            const content = document.getElementById('body-content-id');
+                            console.log(convertToRaw(this.props.content));
+                            if (content)
+                                content.innerHTML = '';
+                        }
                         this.setState({ isEditing: !this.state.isEditing })
                     }}
                 > {this.state.isEditing ? <IconSave /> : <IconEdit />}</div>
-                {this.state.isEditing ?
-                    <div className='body-content'>
+                <div className='body-content'>
+                    {this.state.isEditing ?
                         <TextEditor
                             contentState={this.props.content}
                             updateContent={this.updateContent}
-                        />
-                    </div> :
-                    < div
-                        className='body-content'
-                        dangerouslySetInnerHTML={{ __html: convertToHTML(this.props.content) }}
-                    />}
+                        /> : null}
+                    <div className='body-content' id='body-content-id' />
+                </div>
             </div>
         )
     }

@@ -13,7 +13,7 @@ namespace ClownCMS
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        public Page Page { get; set; }
+        //public Page Page { get; set; }
 
         /// page
 

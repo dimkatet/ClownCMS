@@ -28,8 +28,12 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\components\Elements\HTMLConverter.tsx" />
+    <None Remove="ClientApp\src\components\Elements\ImageBlock.tsx" />
     <None Remove="ClientApp\src\components\Elements\Ribbon.tsx" />
+    <None Remove="ClientApp\src\components\Elements\SliderBlock.tsx" />
     <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
+    <None Remove="ClientApp\src\components\Elements\utils\EditorStyles.ts" />
+    <None Remove="ClientApp\src\components\Elements\utils\EditorUtils.ts" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\components\Elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />

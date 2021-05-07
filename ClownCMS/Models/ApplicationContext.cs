@@ -16,6 +16,7 @@ namespace ClownCMS
         public DbSet<Category> Categories { get; set; }
         public DbSet<Preview> Previews { get; set; }
         public DbSet<Page> Pages { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         public ApplicationContext()
         {
@@ -24,6 +25,7 @@ namespace ClownCMS
             Database.EnsureCreated();
             Fill("dbo.Projects.data.sql", Projects);
             Fill("dbo.MenuItems.data.sql", MenuItems);
+            //Fill("dbo.Images.data.sql", Image);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

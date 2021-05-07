@@ -1,4 +1,5 @@
-﻿drop table [dbo].[Pages];
+﻿drop table [dbo].[Images];
+drop table [dbo].[Pages];
 drop table [dbo].[Previews];
 drop table [dbo].[Categories];
 drop table [dbo].[Sections];
