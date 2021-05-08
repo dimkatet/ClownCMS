@@ -16,8 +16,8 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     startPage: StartPageStore.reducer,
-    project: ProjectStore.reducer
-    body: BodyStore.reducer
+    project: ProjectStore.reducer,
+    body: BodyStore.reducer,
     navigation: NavigationStore.reducer
 };
 
