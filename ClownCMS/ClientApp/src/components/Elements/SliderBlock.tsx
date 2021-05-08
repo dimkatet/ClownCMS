@@ -58,7 +58,7 @@ export default class SliderBlock extends React.Component<SliderBlockProps, Slide
                             style={{ left: `-${currentSlideIndex * 100}%` }}
                         >
                             {
-                                slides.map((slide, index) => (
+                                slides.map((slide: { src: string }, index: number) => (
                                     <div
                                         key={index}
                                         className="slide"

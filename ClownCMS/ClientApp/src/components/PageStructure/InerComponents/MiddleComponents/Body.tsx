@@ -13,7 +13,7 @@ import IconSave from '@material-ui/icons/Save';
 import IconEdit from '@material-ui/icons/Edit';
 import './styles/Body.css';
 import '../../../Elements/styles/SliderBlock.css';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom';
 
 type BodyProps = BodyStore.BodyState & typeof BodyStore.actionCreators;
 

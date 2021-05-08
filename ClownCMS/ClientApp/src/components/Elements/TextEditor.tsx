@@ -187,7 +187,7 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
             return;
         }
 
-        let res = [];
+        const res: Array<{ src: string }> = [];
         filteredFiles.forEach(f => {
             res.push({ src: urlCreator.createObjectURL(f) });
         });

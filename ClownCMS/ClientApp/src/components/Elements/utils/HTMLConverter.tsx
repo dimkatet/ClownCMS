@@ -3,7 +3,7 @@ import { convertToHTML } from 'draft-convert';
 import { fontFamilies, fontSizes } from './EditorStyles';
 import SliderBlock from '../SliderBlock';
 import '../styles/ImageBlock.css';
-import { ContentBlock } from 'draft-js';
+import { ContentBlock, ContentState } from 'draft-js';
 
 const styleToHTML = (style: string) => {
     if (style.includes('FONT_SIZE_')) {
@@ -31,7 +31,7 @@ const styleToHTML = (style: string) => {
     }
 }
 
-const blockToHTML = (block) => {
+const blockToHTML = (block: any) => {
     switch (block.type) {
         case 'IMAGE':
             const src = block.data.image.src;
@@ -46,7 +46,7 @@ const blockToHTML = (block) => {
             return null;
     }
 }
-const entityToHTML = (entity, originalText) => {
+const entityToHTML = (entity: any, originalText: string) => {
     if (entity.type === 'LINK') {
         return <a
             href={entity.data.url}
@@ -66,5 +66,5 @@ export const options = {
 
 const converterFunction = convertToHTML(options);
 
-export default contentState => converterFunction(contentState);
+export default (contentState: ContentState) => converterFunction(contentState);
 

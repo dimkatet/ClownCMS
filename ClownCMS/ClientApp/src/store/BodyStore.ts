@@ -30,7 +30,7 @@ interface SaveContentAction {
 
 type ContentAction = RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction;
 
-const requestContent = (dispatch, getState) => {
+const requestContent = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.body) {
         fetch('pages/1', { method: 'GET' })
@@ -77,7 +77,8 @@ const findBlocks = async (content: RawDraftContentState) => {
             if (!block['data'])
                 return
             await postImage(block['data']['image']['src']).then(url => {
-                block['data']['image']['src'] = url;
+                if(block['data'])
+                    block['data']['image']['src'] = url;
             }) 
         }
         if (block['type'] == 'SLIDER') {
@@ -154,7 +155,6 @@ export const reducer: Reducer<BodyState> = (state: BodyState | undefined, incomi
                 content: action.content
             }
         case 'SAVE_CONTENT':
-            console.log(action.status);
             return state;
         default:
             break;
