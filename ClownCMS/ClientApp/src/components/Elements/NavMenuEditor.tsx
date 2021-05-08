@@ -19,14 +19,14 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
 
     private getSave = (id: number) => {
         if (id == -1)
-            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType) }
-        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType) }
+            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType); this.Close(); this.props.NavigatinonClear(); }
+        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType); this.Close(); this.props.NavigatinonClear(); }
     }
 
     private getDelete = (id: number) => {
         if (id == -1)
             return this.Close;
-        return () => this.props.deleteMenuItem(id)
+        return () => { this.props.deleteMenuItem(id); this.Close(); this.props.NavigatinonClear(); }
     }
 
     private Close = () => this.setState({ isAdding: false, addingText: "", addingType: 3, selectedItemID: -1 })
@@ -34,7 +34,7 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     private MenuItem = (props: any) => {
         return (
             <div>
-                <button onMouseOver={props.actionChange} onClick={props.execute}>
+                <button onMouseOver={props.actionChange}  onClick={props.execute}>
                     {props.menuItemName}
                 </button>
                 {props.children}
@@ -43,10 +43,10 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
     }
 
     public render() {
-        return (<div>
+        return (<div onMouseLeave={() => this.setState({ addingText: "", addingType: 3, selectedItemID: -1 })}>
             <div className='wrapper_Item'>
                 {this.props.navMenuItems.map(item =>
-                    <this.MenuItem menuItemName={item.menuItemName} execute={() => this.props.setCurrentMenuItem(item)} actionChange={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
+                    <this.MenuItem menuItemName={item.menuItemName} execute={() => this.props.setCurrentMenuItem(item)} actionClear={() => { this.setState({ selectedItemID: -1, addingType: 3, addingText: "" }); }}  actionChange={() => { this.setState({ selectedItemID: item.menuItemId, addingType: item.menuItemType, addingText: item.menuItemName }); }}>
                         {this.state.selectedItemID == item.menuItemId ? <button onClick={() => { this.setState({ isAdding: true }); }}> </button> : null}
                     </this.MenuItem>)
                 }
@@ -76,7 +76,6 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType);
-                                    this.Close();
                                 }
                             }}
                             onChange={(e) => {
@@ -84,10 +83,10 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
                             }} />
                     </div>
                     <div className='wrapper_button'>
-                        <button onClick={() => { this.getDelete(this.state.selectedItemID)(); this.Close(); }}>
+                        <button onClick={() => { this.getDelete(this.state.selectedItemID)(); }}>
                             Удалить
                         </button>
-                        <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType); this.Close(); }}>
+                        <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType);}}>
                             Сохранить
                         </button>
                     </div>  
