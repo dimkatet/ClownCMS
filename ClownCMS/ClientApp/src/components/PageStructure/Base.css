@@ -1,8 +1,8 @@
 ﻿
 .wrapper_Base {
     display: grid;
-    background-color: gray;
+    background-color: rgb(37, 37, 37);
     grid-template-columns: 100%;
-    grid-template-rows: 400px 1fr 40px;
-    min-height:100vh;
+    grid-template-rows: 150px 1fr 40px;
+    min-height: 100vh;
 }

@@ -1,11 +1,13 @@
 ﻿import * as StartPageStore from './StartPageStore';
-import * as ProjectStore from './ProjectStore';
+import * as ProjectStore from './ProjectStore'
+import * as NavigationStore from './NavigationStore';
 import * as BodyStore from './BodyStore';
 
 // The top-level state object
 export interface ApplicationState {
     startPage: StartPageStore.StartPageState | undefined;
     project: ProjectStore.ProjectState | undefined;
+    navigation: NavigationStore.NavigatinonState | undefined;
     body: BodyStore.BodyState | undefined;
 }
 
@@ -14,8 +16,9 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     startPage: StartPageStore.reducer,
-    project: ProjectStore.reducer,
+    project: ProjectStore.reducer
     body: BodyStore.reducer
+    navigation: NavigationStore.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
