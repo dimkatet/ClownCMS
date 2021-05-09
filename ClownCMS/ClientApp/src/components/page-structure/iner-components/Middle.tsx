@@ -41,7 +41,6 @@ class Middle extends React.PureComponent<Props, State>
         //
     }
 
-    //addItem need fix
     private renderLeftMenu = () => {
             switch (this.props.menuItem.menuItemType) {
                 case 4:
@@ -58,7 +57,7 @@ class Middle extends React.PureComponent<Props, State>
                                                 <NavItem
                                                     delete={() => { this.props.deletePreview(prev.previewId) }}
                                                     save={(text: string) => { this.props.setPreview(prev.previewId, text) }}
-                                                    execute={() => { }}
+                                                    execute={() => { this.props.requestContent(prev.previewId); this.props.openPage(); }}
                                                     Name={prev.previewName} />)
                                         }{this.state.SelectedID == item.categoryId && <AddItem save={(text: string) => { this.props.addPreview(text, item.categoryId) }} />}</div>}
                                     </NavItem>)}
@@ -77,7 +76,7 @@ class Middle extends React.PureComponent<Props, State>
                                         <NavItem
                                             delete={() => { this.props.deleteCategory(categor.categoryId) }}
                                             save={(text: string) => { this.props.setCategory(categor.categoryId, text) }}
-                                            execute={() => { this.setState({ CurrentCategory: categor }); this.props.navigatinonUpdated() }}
+                                            execute={() => { this.setState({ CurrentCategory: categor }); this.props.navigatinonUpdated(); this.props.closePage();}}
                                             Name={categor.categoryName} />)
                             }{this.state.SelectedID == item.sectionId && <AddItem save={(text: string) => { this.props.addCategory(text, item.sectionId) }} />}</div>}
                         </NavItem>)}
@@ -87,9 +86,6 @@ class Middle extends React.PureComponent<Props, State>
             }
         return null;
     }
-    //{this.state.SelectedID == item.categoryId && <AddItem save={() => { }} />}
-    //{this.state.SelectedID == item.sectionId && <AddItem save={() => { }} />}
-    //<AddItem save={() => { }} />
     private renderRightMenu = () => {
         if (this.props.sections.length > 0)
             switch (this.props.menuItem.menuItemType) {
@@ -100,7 +96,7 @@ class Middle extends React.PureComponent<Props, State>
                                 <NavItem
                                     delete={() => { this.props.deletePreview(item.previewId) }}
                                     save={(text: string) => { this.props.setPreview(item.previewId, text) }}
-                                    execute={() => { }}
+                                    execute={() => { { this.props.requestContent(item.previewId); this.props.openPage(); }}}
                                     Name={item.previewName} />)}
                            <AddItem save={(text: string) => { this.props.addPreview(text, this.props.sections[0].categories[0].categoryId) }} />
                         </div>;
@@ -110,7 +106,7 @@ class Middle extends React.PureComponent<Props, State>
                         <NavItem
                             delete={() => { this.props.deleteCategory(item.categoryId) }}
                             save={(text: string) => { this.props.setCategory(item.categoryId, text) }}
-                            execute={() => { this.setState({ CurrentCategory: item }); this.props.navigatinonUpdated(); }}
+                            execute={() => { this.setState({ CurrentCategory: item }); this.props.navigatinonUpdated(); this.props.closePage(); }}
                             Name={item.categoryName} />)}
                     <AddItem save={(text: string) => { this.props.addCategory(text, this.props.sections[0].sectionId) }} />
                 </div>;
@@ -118,12 +114,13 @@ class Middle extends React.PureComponent<Props, State>
             }
         return null;
     }
-    //{this.state.CurrentCategory.previews.map(item => < this.BodyPreview execute={() => { }} Name={item.previewName} />)}
-    //!!!need editor
     private renderBodyPreview = () => {
         if (this.props.menuItem.menuItemType == 1 || this.props.menuItem.menuItemType == 3 || this.props.menuItem.menuItemType == 5) {
             return <div>
-                {this.state.CurrentCategory.previews.map(item => <BodyPreview execute={() => { this.props.requestContent(item.previewId) }} name={item.previewName} />)}
+                {this.state.CurrentCategory.previews.map(item => <BodyPreview execute={() => { this.props.requestContent(item.previewId); this.props.openPage(); }} name={item.previewName} />)}
+                {
+                    //change AddItem to new editor
+                }
                 <AddItem save={(text: string) => { this.props.addPreview(text, this.state.CurrentCategory.categoryId) }} />
             </div>;
         }
@@ -131,8 +128,8 @@ class Middle extends React.PureComponent<Props, State>
     }
     private prepare = () => {
         switch (this.props.menuItem.menuItemType) {
-            case 1: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) { this.setState({ CurrentCategory: this.props.sections[0].categories[0] }); this.props.navigatinonUpdated(); } break;
-            case 0: return null;
+            case 1: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) { this.setState({ CurrentCategory: this.props.sections[0].categories[0] }); this.props.navigatinonUpdated(); console.log("1"); } break;
+            case 0: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId); this.props.openPage(); } break;
             default: return null;
         }
     }
@@ -145,8 +142,8 @@ class Middle extends React.PureComponent<Props, State>
                         <this.renderLeftMenu />
                     </div>
                     <div>
-                        <Body />
-                        {this.props.isActual && <this.renderBodyPreview />}
+                        {this.props.isShowContent && <Body />}
+                        {this.props.isActual && !this.props.isShowContent && <this.renderBodyPreview />}
                     </div>
                     <div>
                         <this.renderRightMenu />
@@ -211,7 +208,7 @@ function AddItem(props: any) {
 
 function BodyPreview(props: any){
     return (
-        <div onClick={props.execute}>
+        <div className='preview' onClick={props.execute}>
             <h3>
                 {props.name}
             </h3>

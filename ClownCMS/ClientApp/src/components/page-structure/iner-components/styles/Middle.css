@@ -10,3 +10,11 @@
 .left_iner {
     margin-left: 10px;
 }
+
+.preview {
+    background: rgb(133, 133, 133);
+}
+
+.preview:hover {
+    background: rgb(95, 95, 95);
+}

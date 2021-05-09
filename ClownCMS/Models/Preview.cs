@@ -14,6 +14,7 @@ namespace ClownCMS
         public int CategoryId { get; set; }
         [JsonIgnore]
         public Category Category { get; set; }
+        [JsonIgnore]
         public Page Page { get; set; }
 
         /// page

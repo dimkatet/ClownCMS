@@ -19,14 +19,14 @@ class NavMenuEditor extends React.PureComponent<Props, { isAdding: boolean, addi
 
     private getSave = (id: number) => {
         if (id == -1)
-            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType); this.Close(); this.props.NavigatinonClear(); }
-        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType); this.Close(); this.props.NavigatinonClear(); }
+            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
+        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
     }
 
     private getDelete = (id: number) => {
         if (id == -1)
             return this.Close;
-        return () => { this.props.deleteMenuItem(id); this.Close(); this.props.NavigatinonClear(); }
+        return () => { this.props.deleteMenuItem(id); this.Close(); this.props.navigatinonClear(); }
     }
 
     private Close = () => this.setState({ isAdding: false, addingText: "", addingType: 3, selectedItemID: -1 })

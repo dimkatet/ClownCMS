@@ -7,6 +7,7 @@ export interface NavigatinonState {
     isLoading: boolean;
     menuItem: NavMenuItem;
     isActual: boolean;
+    isShowContent: boolean;
     sections: Section[];
 }
 
@@ -53,7 +54,12 @@ interface EmptyState {
     type: 'EMPTY_STATE';
 }
 
-type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState;
+interface PageState {
+    type: 'PAGE_STATE';
+    state: boolean;
+}
+
+type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState;
 
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -80,6 +86,8 @@ const Clear = (dispatch: any, getState: any) => {
     }
 }
 
+
+
 export const actionCreators = {
     requestNavigation: (): AppThunkAction<KnownAction> => requestNavigation,
     setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
@@ -90,7 +98,19 @@ export const actionCreators = {
         }
     },
     navigatinonUpdated: (): AppThunkAction<KnownAction> => Updated,
-    NavigatinonClear: (): AppThunkAction<KnownAction> => Clear,
+    navigatinonClear: (): AppThunkAction<KnownAction> => Clear,
+    openPage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.navigation) {
+            dispatch({ type: 'PAGE_STATE', state: true });
+        }
+    },
+    closePage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.navigation) {
+            dispatch({ type: 'PAGE_STATE', state: false });
+        }
+    },
     setSection: (sectionId: number, sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -231,76 +251,7 @@ export const actionCreators = {
     }
 }
 
-
-
-/*setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
-    const appState = getState();
-    if (appState && appState.project) {
-        fetch('menuItems', {
-            method: 'POST',
-            body: JSON.stringify({
-                menuItemId: menuItemId,
-                menuItemName: menuItemName,
-                menuItemType: menuItemType
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(data => {
-            dispatch({
-                type: 'CHANGE_PROJECT_MENU_ITEM', navMenuItem: {
-                    menuItemId: menuItemId,
-                    menuItemName: menuItemName,
-                    menuItemType: menuItemType
-                }
-            })
-        });
-        dispatch({ type: 'REQUEST_PROJECT_MENU' });
-    }
-},
-    addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
-        const appState = getState();
-        if (appState && appState.project) {
-            fetch('menuItems', {
-                method: 'PUT',
-                body: JSON.stringify({
-                    projectId: appState.project.ProjectId,
-                    menuItem: {
-                        menuItemName: menuItemName,
-                        menuItemType: menuItemType
-                    }
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => response.json() as Promise<NavMenuItem>).then(data => {
-                dispatch({
-                    type: 'ADD_PROJECT_MENU_ITEM', navMenuItem: {
-                        menuItemId: data.menuItemId,
-                        menuItemName: data.menuItemName,
-                        menuItemType: data.menuItemType
-                    }
-                })
-            });
-            dispatch({ type: 'REQUEST_PROJECT_MENU' });
-        }
-    },
-        deleteMenuItem: (menuItemId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
-            const appState = getState();
-            if (appState && appState.project) {
-                fetch('menuItems', {
-                    method: 'DELETE',
-                    body: JSON.stringify({
-                        menuItemId: menuItemId
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(response => { if (response.status == 200) { requestMenu(dispatch, getState) } })
-            }
-        }*/
-
-const unloadedState: NavigatinonState = { sections: [], isLoading: false, isActual: false, menuItem: {} as NavMenuItem }
+const unloadedState: NavigatinonState = { sections: [], isLoading: false, isActual: false, isShowContent: false, menuItem: {} as NavMenuItem }
 
 export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | undefined, incomingAction: Action): NavigatinonState => {
     if (state === undefined) {
@@ -313,6 +264,7 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 sections: state.sections,
                 isLoading: true,
                 isActual: false,
+                isShowContent: false,
                 menuItem: state.menuItem
             };
         case 'RECEIVE_NAVIGATION':
@@ -320,6 +272,7 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 sections: action.sections,
                 isLoading: false,
                 isActual: false,
+                isShowContent: false,
                 menuItem: state.menuItem
             };
         case 'SET_MENU_ITEM':
@@ -327,6 +280,7 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 sections: state.sections,
                 isLoading: false,
                 isActual: false,
+                isShowContent: false,
                 menuItem: action.menuItem
             };
         case 'NAV_STATE':
@@ -334,10 +288,13 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 sections: state.sections,
                 isLoading: false,
                 isActual: true,
+                isShowContent: state.isShowContent,
                 menuItem: state.menuItem
             };
         case 'EMPTY_STATE':
             return unloadedState;
+        case 'PAGE_STATE':
+            return { ...state, isShowContent: action.state };
         default: break;
     }
 
