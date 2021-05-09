@@ -4,17 +4,16 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../store';
 import * as NavigationStore from '../../../store/NavigationStore';
-import Body from './MiddleComponents/Body';
-import LeftMenu from './MiddleComponents/LeftMenu';
-import RightMenu from './MiddleComponents/RightMenu';
-import './Middle.css';
+import * as BodyStore from '../../../store/BodyStore';
+import Body from './middle-components/Body';
+import './styles/Middle.css';
 import { type } from 'os';
 import { Button } from 'reactstrap';
 
 
 type Props =
-    NavigationStore.NavigatinonState 
-    & typeof NavigationStore.actionCreators;
+    NavigationStore.NavigatinonState
+    & typeof NavigationStore.actionCreators & typeof BodyStore.actionCreators;
 
 
 type State = {
@@ -42,18 +41,6 @@ class Middle extends React.PureComponent<Props, State>
         //
     }
 
-    
-
-    private BodyPreview = (props: any) => {
-        return (
-            <div onClick={props.execute}>
-                <h3>
-                    {props.Name}
-                </h3>
-                <p>Coctent</p>
-            </div>
-        )
-    }
     //addItem need fix
     private renderLeftMenu = () => {
             switch (this.props.menuItem.menuItemType) {
@@ -136,7 +123,7 @@ class Middle extends React.PureComponent<Props, State>
     private renderBodyPreview = () => {
         if (this.props.menuItem.menuItemType == 1 || this.props.menuItem.menuItemType == 3 || this.props.menuItem.menuItemType == 5) {
             return <div>
-                {this.state.CurrentCategory.previews.map(item => <BodyPreview execute={() => { }} name={item.previewName} />)}
+                {this.state.CurrentCategory.previews.map(item => <BodyPreview execute={() => { this.props.requestContent(item.previewId) }} name={item.previewName} />)}
                 <AddItem save={(text: string) => { this.props.addPreview(text, this.state.CurrentCategory.categoryId) }} />
             </div>;
         }
@@ -235,5 +222,5 @@ function BodyPreview(props: any){
 
 export default connect(
     (state: ApplicationState) => state.navigation, // Selects which state properties are merged into the component's props
-    NavigationStore.actionCreators // Selects which action creators are merged into the component's props
+    { ...NavigationStore.actionCreators, ...BodyStore.actionCreators } // Selects which action creators are merged into the component's props
 )(Middle as any);

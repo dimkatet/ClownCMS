@@ -27,6 +27,7 @@ namespace ClownCMS
             Fill("dbo.Sections.data.sql", Sections);
             Fill("dbo.Categories.data.sql", Categories);
             Fill("dbo.Previews.data.sql", Previews);
+            Fill("dbo.Pages.data.sql", Pages);
             //Fill("dbo.Images.data.sql", Image);
         }
 

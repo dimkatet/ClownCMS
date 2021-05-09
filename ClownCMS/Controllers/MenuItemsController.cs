@@ -18,7 +18,10 @@ namespace ClownCMS.Controllers
         {
             Section section = new Section();
             Category category = new Category();
-            Preview preview = new Preview();
+            Preview preview = new Preview() { Page = new Page()
+            {
+                Content = "{\"blocks\":[{\"key\":\"eihf9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}"
+            }};
             switch(menuType)
             {
                 case 0: category.Previews.Add(preview); section.Categories.Add(category); return new List<Section> { section };

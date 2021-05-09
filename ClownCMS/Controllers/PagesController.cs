@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClownCMS.Controllers
 {
@@ -26,7 +27,7 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("GET");
             using (ApplicationContext db = new ApplicationContext())
             {
-                Page p = db.Pages.Find(id);
+                Page p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First().Page;
                 if (p == null)
                 {
                     return BadRequest();
@@ -42,7 +43,7 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("POST");
             using (ApplicationContext db = new ApplicationContext())
             {
-                Page page = db.Pages.Find(_page.pageId);
+                Page page = db.Previews.Include(p => p.Page).Where(p => p.PreviewId == _page.previewId).First().Page;
                 if (page == null)
                 {
                     db.Add(new Page
@@ -60,7 +61,7 @@ namespace ClownCMS.Controllers
 
         public class PageContent
         {
-            public int pageId { get; set; }
+            public int previewId { get; set; }
             public string content { get; set; }
 
         }

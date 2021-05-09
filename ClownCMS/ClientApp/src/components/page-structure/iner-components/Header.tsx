@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../store';
-import NavMenuEditor from '../../Elements/NavMenuEditor';
+import NavMenuEditor from '../../elements/NavMenuEditor';
 
 
 /*similar to every page in project*/

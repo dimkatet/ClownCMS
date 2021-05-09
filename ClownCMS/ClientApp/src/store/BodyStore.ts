@@ -3,9 +3,11 @@ import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock, R
 import { AppThunkAction } from './';
 import { Update } from '@material-ui/icons';
 import { render } from 'react-dom';
+import { stat } from 'fs';
 
 export interface BodyState {
     isLoading: boolean,
+    previewId: number,
     content: ContentState
 };
 
@@ -27,27 +29,13 @@ interface SaveContentAction {
     type: 'SAVE_CONTENT',
     status: boolean
 };
-
-type ContentAction = RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction;
-
-const requestContent = (dispatch: any, getState: any) => {
-    const appState = getState();
-    if (appState && appState.body) {
-        fetch('pages/1', { method: 'GET' })
-            .then(response => {
-                if (response.ok)
-                    return response.json();
-                return null;
-            })
-            .then(data => {
-                if (data !== null) {
-                    const content = convertFromRaw(JSON.parse(data));
-                    dispatch({ type: 'RECEIVE_CONTENT', content: content });;
-                }
-            });
-        dispatch({ type: 'REQUEST_CONTENT' });
-    }
+interface SavePreviewIdAction {
+    type: 'SAVE_PREVIEWID',
+    previewId: number
 };
+
+type ContentAction = RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction | SavePreviewIdAction;
+
 
 const postImage = async (url: string) => {
     if (!url.includes('blob'))
@@ -95,7 +83,26 @@ const findBlocks = async (content: RawDraftContentState) => {
 }
 
 export const actionCreators = {
-    requestContent: (): AppThunkAction<ContentAction> => requestContent,
+    requestContent: (previewId: number): AppThunkAction<ContentAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.body) {
+            fetch('pages/' + previewId, { method: 'GET' })
+                .then(response => {
+                    if (response.ok) {
+                        dispatch({ type: 'SAVE_PREVIEWID', previewId: previewId});
+                        return response.json();
+                    }
+                    return null;
+                })
+                .then(data => {
+                    if (data !== null) {
+                        const content = convertFromRaw(JSON.parse(data));
+                        dispatch({ type: 'RECEIVE_CONTENT', content: content });
+                    }
+                });
+            dispatch({ type: 'REQUEST_CONTENT' });
+        }
+    },
 
     updateContent: (content: ContentState): AppThunkAction<ContentAction> => (dispatch, getState) => {
         const appState = getState();
@@ -110,52 +117,63 @@ export const actionCreators = {
         if (appState && appState.body) {
             const c = convertToRaw(content);
             findBlocks(c).then(() => {
-                const item = {
-                    pageId: 1,
-                    content: JSON.stringify(c)
+                if (appState.body) {
+                    const item = {
+                        previewId: appState.body.previewId,
+                        content: JSON.stringify(c)
+                    }
+                    fetch('pages', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(item)
+                    })
+                        .then(response => response.ok)
+                        .then(status => dispatch({ type: 'SAVE_CONTENT', status }));
                 }
-                fetch('pages', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(item)
-                })
-                    .then(response => response.ok)
-                    .then(status => dispatch({ type: 'SAVE_CONTENT', status }));
             })
         }
     }
 
 };
 
-const unloadedState: BodyState = { isLoading: false, content: EditorState.createEmpty().getCurrentContent() };
+const unloadedState: BodyState = { isLoading: false, content: EditorState.createEmpty().getCurrentContent(), previewId: -1};
 
 export const reducer: Reducer<BodyState> = (state: BodyState | undefined, incomingAction: Action): BodyState => {
     if (state === undefined) {
         return unloadedState;
     }
-
+    console.log(state.previewId);
     const action = incomingAction as ContentAction;
     switch (action.type) {
         case 'RECEIVE_CONTENT':
             return {
                 isLoading: false,
-                content: action.content
+                content: action.content,
+                previewId: state.previewId
             }
         case 'REQUEST_CONTENT':
             return {
                 isLoading: true,
-                content: state.content
+                content: state.content,
+                previewId: state.previewId
             }
         case 'UPDATE_CONTENT':
             return {
                 isLoading: false,
-                content: action.content
+                content: action.content,
+                previewId: state.previewId
             }
         case 'SAVE_CONTENT':
             return state;
+        case 'SAVE_PREVIEWID':
+            return {
+                isLoading: state.isLoading,
+                content: state.content,
+                previewId: action.previewId
+            }
         default:
             break;
     }

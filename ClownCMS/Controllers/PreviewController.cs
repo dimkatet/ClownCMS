@@ -48,7 +48,8 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("PUT");
             using (ApplicationContext db = new ApplicationContext())
             {
-                Preview previewValue = new Preview() { PreviewName = putAtribut.Preview.PreviewName, Category = db.Categories.Find(putAtribut.CategoryId) };
+                Preview previewValue = new Preview() { PreviewName = putAtribut.Preview.PreviewName, Category = db.Categories.Find(putAtribut.CategoryId), Page = new Page() {
+                    Content= "{\"blocks\":[{\"key\":\"eihf9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}" } };
                 db.Previews.Add(previewValue);
                 db.SaveChanges();
                 return Ok();

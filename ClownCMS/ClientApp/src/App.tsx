@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import Layout from './components/Layout';
 import StartPage from './components/StartPage';
-import Base from './components/PageStructure/Base';
+import Base from './components/page-structure/Base';
 
 import './custom.css'
 

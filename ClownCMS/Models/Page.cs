@@ -11,9 +11,10 @@ namespace ClownCMS
     public class Page
     {
         public int PageId { get; set; }
-        //public int PreviewId { get; set; }
+        public int PreviewId { get; set; }
 
         public string Content { get; set; }
-        //public Preview Preview { get; set; }
+        [JsonIgnore]
+        public Preview Preview { get; set; }
     }
 }

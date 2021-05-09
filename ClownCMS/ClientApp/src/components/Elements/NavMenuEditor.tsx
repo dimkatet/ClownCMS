@@ -5,7 +5,7 @@ import * as NavigationStore from '../../store/NavigationStore';
 import { ApplicationState } from '../../store';
 import { Button } from 'reactstrap';
 import PopUp from '../PopUp';
-import './NavMenuEditor.css';
+import './styles/NavMenuEditor.css';
 
 
 type Props = ProjectStore.ProjectState & typeof ProjectStore.actionCreators & typeof NavigationStore.actionCreators;

@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import './PopUp.css'    
+import './styles/PopUp.css'    
 
 type PopUpProps = { onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void };
 

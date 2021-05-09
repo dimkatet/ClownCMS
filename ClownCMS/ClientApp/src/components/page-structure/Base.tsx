@@ -2,7 +2,11 @@
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { ApplicationState } from '../../../../store';
+import { ApplicationState } from '../../store';
+import Header from './iner-components/Header'
+import Footer from './iner-components/Footer'
+import Middle from './iner-components/Middle'
+import './styles/Base.css'
 //import * as ProjectStore from '../../store/ProjectConfig';
 
 
@@ -12,9 +16,10 @@ import { ApplicationState } from '../../../../store';
     & RouteComponentProps<{ startDateIndex: string }>;*/
 
 /*
- * Navigation | None
+ * Main root for project & pages
+ * Here defined sizes that inner components can use
  */
-export default class LeftMenu extends React.PureComponent//<ProjectsProps>
+export default class Base extends React.PureComponent//<ProjectsProps>
 {
 
     public componentDidMount() {
@@ -29,7 +34,17 @@ export default class LeftMenu extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>LeftMenu</div>
+                <div className='wrapper_Base' >
+                    <div >
+                        <Header />
+                    </div>
+                    <div >
+                        <Middle />
+                    </div>
+                    <div >
+                        <Footer />
+                    </div>
+                </div>
             </React.Fragment>
         )
     }

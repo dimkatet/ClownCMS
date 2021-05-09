@@ -27,22 +27,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\Elements\HTMLConverter.tsx" />
-    <None Remove="ClientApp\src\components\Elements\ImageBlock.tsx" />
-    <None Remove="ClientApp\src\components\Elements\Ribbon.tsx" />
-    <None Remove="ClientApp\src\components\Elements\SliderBlock.tsx" />
-    <None Remove="ClientApp\src\components\Elements\TextEditor.tsx" />
-    <None Remove="ClientApp\src\components\Elements\utils\EditorStyles.ts" />
-    <None Remove="ClientApp\src\components\Elements\utils\EditorUtils.ts" />
+    <None Remove="ClientApp\src\components\elements\HTMLConverter.tsx" />
+    <None Remove="ClientApp\src\components\elements\ImageBlock.tsx" />
+    <None Remove="ClientApp\src\components\elements\Ribbon.tsx" />
+    <None Remove="ClientApp\src\components\elements\SliderBlock.tsx" />
+    <None Remove="ClientApp\src\components\elements\TextEditor.tsx" />
+    <None Remove="ClientApp\src\components\elements\utils\EditorStyles.ts" />
+    <None Remove="ClientApp\src\components\elements\utils\EditorUtils.ts" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
-    <None Remove="ClientApp\src\components\Elements\NavMenuEditor.tsx" />
+    <None Remove="ClientApp\src\components\elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Footer.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Header.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\Middle.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\Body.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\LeftMenu.tsx" />
-    <None Remove="ClientApp\src\components\PageStructure\InerComponents\MiddleComponents\RightMenu.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\iner-components\Footer.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\iner-components\Header.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\iner-components\Middle.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\iner-components\middle-components\Body.tsx" />
     <None Remove="ClientApp\src\store\BodyStore.ts" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />

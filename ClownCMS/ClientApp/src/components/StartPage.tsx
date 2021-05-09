@@ -6,7 +6,7 @@ import { ApplicationState } from '../store';
 import * as StartPageStore from '../store/StartPageStore';
 import * as ProjectStore from '../store/ProjectStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
-import './StartPage.css';
+import './styles/StartPage.css';
 
 type ProjectsProps =
     StartPageStore.StartPageState

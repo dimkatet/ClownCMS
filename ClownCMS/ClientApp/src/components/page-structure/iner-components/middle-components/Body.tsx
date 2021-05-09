@@ -4,15 +4,15 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../../store';
 import * as BodyStore from '../../../../store/BodyStore';
-import TextEditor from '../../../Elements/TextEditor';
-import SliderBlock from '../../../Elements/SliderBlock';
-import ImageBlock from '../../../Elements/ImageBlock';
+import TextEditor from '../../../elements/TextEditor';
+import SliderBlock from '../../../elements/SliderBlock';
+import ImageBlock from '../../../elements/ImageBlock';
 import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock } from 'draft-js';
-import convertToHTML from '../../../Elements/utils/HTMLConverter';
+import convertToHTML from '../../../elements/utils/HTMLConverter';
 import IconSave from '@material-ui/icons/Save';
 import IconEdit from '@material-ui/icons/Edit';
 import './styles/Body.css';
-import '../../../Elements/styles/SliderBlock.css';
+import '../../../elements/styles/SliderBlock.css';
 import * as ReactDOM from 'react-dom';
 
 type BodyProps = BodyStore.BodyState & typeof BodyStore.actionCreators;
@@ -32,7 +32,6 @@ class Body extends React.PureComponent<BodyProps, BodyState>
     }
 
     public componentDidMount() {
-        this.props.requestContent();
     }
 
     public componentDidUpdate() {
