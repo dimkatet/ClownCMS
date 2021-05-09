@@ -1,9 +1,6 @@
 ﻿import { Action, Reducer } from 'redux';
 import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock, RawDraftContentBlock, RawDraftContentState } from 'draft-js'
 import { AppThunkAction } from './';
-import { Update } from '@material-ui/icons';
-import { render } from 'react-dom';
-import { stat } from 'fs';
 
 export interface BodyState {
     isLoading: boolean,
@@ -61,21 +58,20 @@ const postImage = async (url: string) => {
 const findBlocks = async (content: RawDraftContentState) => {
     const blocks = content['blocks'];
     for(let block of blocks) {
-        if (block['type'] == 'IMAGE') {
-            if (!block['data'])
-                return
-            await postImage(block['data']['image']['src']).then(url => {
-                if(block['data'])
-                    block['data']['image']['src'] = url;
+        if (block['type'] === 'IMAGE') {
+            if (block['data'] === null)
+                continue;
+            await postImage(block['data']['image']['src']).then(urn => {
+                block['data']['image']['src'] = urn;
             }) 
         }
-        if (block['type'] == 'SLIDER') {
-            if (!block['data'])
-                return
+        if (block['type'] === 'SLIDER') {
+            if (block['data'] === null)
+                continue;
             const slides = block['data']['slides']
             for (let slide of slides) {
-                await postImage(slide['src']).then(url => {
-                    slide['src'] = url;
+                await postImage(slide['src']).then(urn => {
+                    slide['src'] = urn;
                 })
             }
         }
@@ -145,7 +141,6 @@ export const reducer: Reducer<BodyState> = (state: BodyState | undefined, incomi
     if (state === undefined) {
         return unloadedState;
     }
-    console.log(state.previewId);
     const action = incomingAction as ContentAction;
     switch (action.type) {
         case 'RECEIVE_CONTENT':

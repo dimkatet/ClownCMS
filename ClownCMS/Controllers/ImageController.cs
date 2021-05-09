@@ -27,13 +27,13 @@ namespace ClownCMS.Controllers
         [HttpGet("{url}")]
         public IActionResult Get(string URL)
         {
-            _logger.LogInformation("FETCH");
+            _logger.LogInformation("GET");
             using (ApplicationContext db = new ApplicationContext())
             {
                 var image = db.Images.Where(image => image.URL == URL).FirstOrDefault();
                 if (image == null)
                     return BadRequest();
-                return File(image.ImageData, "image/png");
+                return File(image.ImageData, image.FileType);
             }
         }
 
@@ -55,10 +55,11 @@ namespace ClownCMS.Controllers
                 db.Add(new Image
                 {
                     ImageData = buffer.ToArray(),
-                    URL = URL
+                    URL = URL,
+                    FileType = data.ContentType
                 });
                 db.SaveChanges();
-                return "https://localhost:5001/image/" + URL;
+                return "/image/" + URL;
             }
         }
 

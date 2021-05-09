@@ -12,5 +12,7 @@ namespace ClownCMS
         public byte[] ImageData { get; set; }
 
         public string URL { get; set; }
+
+        public string FileType { get; set; }
     }
 }
