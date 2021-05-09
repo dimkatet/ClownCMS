@@ -37,10 +37,10 @@
     <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\components\elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
-    <None Remove="ClientApp\src\components\page-structure\iner-components\Footer.tsx" />
-    <None Remove="ClientApp\src\components\page-structure\iner-components\Header.tsx" />
-    <None Remove="ClientApp\src\components\page-structure\iner-components\Middle.tsx" />
-    <None Remove="ClientApp\src\components\page-structure\iner-components\middle-components\Body.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\Footer.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\Header.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\Middle.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\middle-components\Body.tsx" />
     <None Remove="ClientApp\src\store\BodyStore.ts" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\index.ts" />

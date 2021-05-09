@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../store';
-import Header from './iner-components/Header'
-import Footer from './iner-components/Footer'
-import Middle from './iner-components/Middle'
+import Header from './inner-components/Header'
+import Footer from './inner-components/Footer'
+import Middle from './inner-components/Middle'
 import './styles/Base.css'
 //import * as ProjectStore from '../../store/ProjectConfig';
 
