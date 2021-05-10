@@ -10,7 +10,8 @@ namespace ClownCMS
     {
         public int PreviewId { get; set; }
         public string PreviewName { get; set; }
-
+        public string PreviewDescription { get; set; }
+        public string ImageURL { get; set; }
         public int CategoryId { get; set; }
         [JsonIgnore]
         public Category Category { get; set; }

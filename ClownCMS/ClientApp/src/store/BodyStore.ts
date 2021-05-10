@@ -59,14 +59,14 @@ const findBlocks = async (content: RawDraftContentState) => {
     const blocks = content['blocks'];
     for(let block of blocks) {
         if (block['type'] === 'IMAGE') {
-            if (block['data'] === null)
+            if (block['data'] === undefined)
                 continue;
             await postImage(block['data']['image']['src']).then(urn => {
                 block['data']['image']['src'] = urn;
             }) 
         }
         if (block['type'] === 'SLIDER') {
-            if (block['data'] === null)
+            if (block['data'] === undefined)
                 continue;
             const slides = block['data']['slides']
             for (let slide of slides) {

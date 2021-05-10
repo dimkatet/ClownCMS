@@ -1,5 +1,5 @@
 SET IDENTITY_INSERT [dbo].[Previews] ON
-INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (1, N'1qwe1', 1)
+INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [PreviewDescription], [ImageURL], [CategoryId]) VALUES (1, N'1qwe1', N'Description', N'/image/image3', 1)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (2, N'1qwe2', 1)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (3, N'1qwe3', 1)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (4, N'2qwe1', 2)
@@ -26,9 +26,8 @@ INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (25, N'3zxc1', 9)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (26, N'3zxc2', 9)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (27, N'3zxc3', 9)
-INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (28, N'314324233', 14)
-INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (33, NULL, 19)
-INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (34, N'3211234', 14)
+INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [PreviewDescription], [ImageURL], [CategoryId]) VALUES (28, N'314324233', N'Description', N'/image/image1', 14)
+INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [PreviewDescription], [ImageURL], [CategoryId]) VALUES (34, N'3211234', N'Description', N'/image/image2', 14)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (35, NULL, 20)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (36, N'preview1', 21)
 INSERT INTO [dbo].[Previews] ([PreviewId], [PreviewName], [CategoryId]) VALUES (37, N'preview2', 21)

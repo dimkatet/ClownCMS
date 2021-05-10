@@ -15,6 +15,12 @@
     background: rgb(133, 133, 133);
 }
 
+.preview img{
+    display: flex;
+    justify-content: center;
+    max-width: 70%;
+}
+
 .preview:hover {
     background: rgb(95, 95, 95);
 }

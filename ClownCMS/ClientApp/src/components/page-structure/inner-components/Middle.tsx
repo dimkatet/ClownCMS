@@ -6,9 +6,8 @@ import { ApplicationState } from '../../../store';
 import * as NavigationStore from '../../../store/NavigationStore';
 import * as BodyStore from '../../../store/BodyStore';
 import Body from './middle-components/Body';
+import PopUp from '../../PopUp';
 import './styles/Middle.css';
-import { type } from 'os';
-import { Button } from 'reactstrap';
 
 
 type Props =
@@ -17,8 +16,12 @@ type Props =
 
 
 type State = {
-    CurrentCategory: NavigationStore.Category;
-    SelectedID: number;
+    CurrentCategory: NavigationStore.Category,
+    SelectedID: number,
+    isAddingPreview: boolean,
+    newPreviewName: string,
+    newPreviewDescription: string,
+    newImage?: File
 }
 
 /*
@@ -30,7 +33,7 @@ class Middle extends React.PureComponent<Props, State>
 
     constructor(props: any) {
         super(props);
-        this.state = { CurrentCategory: {} as NavigationStore.Category, SelectedID: -1}
+        this.state = { CurrentCategory: {} as NavigationStore.Category, SelectedID: -1, isAddingPreview: false, newPreviewName: '', newPreviewDescription: '', newImage: undefined }
     }
 
     public componentDidMount() {
@@ -59,7 +62,7 @@ class Middle extends React.PureComponent<Props, State>
                                                     save={(text: string) => { this.props.setPreview(prev.previewId, text) }}
                                                     execute={() => { this.props.requestContent(prev.previewId); this.props.openPage(); }}
                                                     Name={prev.previewName} />)
-                                        }{this.state.SelectedID == item.categoryId && <AddItem save={(text: string) => { this.props.addPreview(text, item.categoryId) }} />}</div>}
+                                        }{this.state.SelectedID == item.categoryId && <AddItem save={(text: string) => {/* this.props.addPreview(text, item.categoryId)*/}} />}</div>}
                                     </NavItem>)}
                                 <AddItem save={(text: string) => { this.props.addCategory(text, this.props.sections[0].sectionId) }} />
                             </div>;
@@ -98,7 +101,7 @@ class Middle extends React.PureComponent<Props, State>
                                     save={(text: string) => { this.props.setPreview(item.previewId, text) }}
                                     execute={() => { { this.props.requestContent(item.previewId); this.props.openPage(); }}}
                                     Name={item.previewName} />)}
-                           <AddItem save={(text: string) => { this.props.addPreview(text, this.props.sections[0].categories[0].categoryId) }} />
+                           {/*<AddItem save={(text: string) => { this.props.addPreview(text, this.props.sections[0].categories[0].categoryId) }} />*/}
                         </div>;
                     return null;
                 case 3: return <div>
@@ -117,11 +120,25 @@ class Middle extends React.PureComponent<Props, State>
     private renderBodyPreview = () => {
         if (this.props.menuItem.menuItemType == 1 || this.props.menuItem.menuItemType == 3 || this.props.menuItem.menuItemType == 5) {
             return <div>
-                {this.state.CurrentCategory.previews.map(item => <BodyPreview execute={() => { this.props.requestContent(item.previewId); this.props.openPage(); }} name={item.previewName} />)}
+                {this.state.CurrentCategory.previews.map(item => <BodyPreview
+                    execute={
+                        () => {
+                            this.props.requestContent(item.previewId);
+                            this.props.openPage();
+                        }}
+                    imageURL={item.imageURL}
+                    previewDescription={item.previewDescription}
+                    previewName={item.previewName} />
+                )}
                 {
                     //change AddItem to new editor
                 }
-                <AddItem save={(text: string) => { this.props.addPreview(text, this.state.CurrentCategory.categoryId) }} />
+                {/* <AddItem save={(text: string) => { this.props.addPreview(text, this.state.CurrentCategory.categoryId) }} /> */}
+                <button
+                    onMouseDown={e => {
+                        this.setState({ isAddingPreview: true });
+                    }}
+                >Add</button>
             </div>;
         }
         return null;
@@ -144,6 +161,56 @@ class Middle extends React.PureComponent<Props, State>
                     <div>
                         {this.props.isShowContent && <Body />}
                         {this.props.isActual && !this.props.isShowContent && <this.renderBodyPreview />}
+                        {this.state.isAddingPreview ?
+                            <PopUp onClose={() => this.setState({ isAddingPreview: false, newPreviewName: '', newPreviewDescription: '' })}>
+                                <div className='popUpContent'>
+                                    <div>Название темы:</div>
+                                    <div><input
+                                        value={this.state.newPreviewName}
+                                        onChange={(e) => {
+                                            this.setState({ newPreviewName: e.target.value })
+                                        }} />
+                                    </div>
+
+                                    <div>Описание:</div>
+                                    <div><input
+                                        value={this.state.newPreviewDescription}
+                                        onChange={(e) => {
+                                            this.setState({ newPreviewDescription: e.target.value })
+                                        }}
+                                    />
+                                    </div>
+
+                                    <div>Выберите фото: </div>
+                                    <div>
+                                        <input
+                                            type='file'
+                                            id='middle-file-id'
+                                            onChange={e => {
+                                                const files = e.target.files;
+                                                if (files === null)
+                                                    return;
+                                                if (!files[0].type.includes('image/'))
+                                                    return;
+                                                const image = files[0];
+                                                this.setState({ newImage: image });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            onClick={() => {
+                                                this.props.addPreview(this.state.CurrentCategory.categoryId, this.state.newPreviewName, this.state.newPreviewDescription, this.state.newImage);
+                                                this.setState({ isAddingPreview: false, newPreviewName: '', newPreviewDescription: '', newImage: undefined });
+                                            }}>
+                                            Создать
+                                        </button>
+                                    </div>
+                                </div>
+                            </PopUp>
+                            : null
+                        }
                     </div>
                     <div>
                         <this.renderRightMenu />
@@ -206,13 +273,20 @@ function AddItem(props: any) {
     )
 }
 
-function BodyPreview(props: any){
+function BodyPreview(props: {
+    previewName: string,
+    previewDescription: string,
+    imageURL?: string,
+    execute: () => void
+}) {
     return (
         <div className='preview' onClick={props.execute}>
             <h3>
-                {props.name}
+                {props.previewName}
             </h3>
-            <p>Coctent</p>
+            <p>{props.previewDescription}</p>
+            {props.imageURL ? <img src={props.imageURL} /> : null}
+
         </div>
     )
 }

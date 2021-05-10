@@ -124,7 +124,7 @@
     cursor: pointer;
 }
 
-input[type="file"] {
+.ribbon-item input[type="file"] {
     display: none;
 }
 

@@ -14,6 +14,8 @@ export interface NavigatinonState {
 export interface Preview {
     previewId: number;
     previewName: string;
+    previewDescription: string;
+    imageURL?: string;
     categoryId: number;
 }
 
@@ -84,6 +86,24 @@ const Clear = (dispatch: any, getState: any) => {
     if (appState && appState.navigation) {
         dispatch({ type: 'EMPTY_STATE' });
     }
+}
+
+const postImage = async (image?: File) => {
+    if (image === undefined)
+        return '';
+    const formData = new FormData();
+    let urn = '';
+    formData.append('data', image)
+    await fetch('image', {
+        method: 'POST',
+        body: formData
+    })
+        .then(r => r.text())
+        .then(data => {
+            urn = data
+        })
+    return urn;
+
 }
 
 
@@ -232,21 +252,25 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
-    addPreview: (previewName: string, categoryId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    addPreview: (categoryId: number, previewName: string, previewDescription: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
-            fetch('preview', {
-                method: 'PUT',
-                body: JSON.stringify({
-                    categoryId: categoryId,
-                    preview: {
-                        previewName: previewName
+        if (appState && appState.navigation && previewName) {
+            postImage(image).then(urn => {
+                fetch('preview', {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        categoryId: categoryId,
+                        preview: {
+                            previewName: previewName,
+                            previewDescription: previewDescription,
+                            imageURL: urn
+                        }
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+                }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            })
         }
     }
 }
