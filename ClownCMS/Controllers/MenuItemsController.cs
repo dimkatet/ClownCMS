@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System;
 
 namespace ClownCMS.Controllers
 {
@@ -40,17 +41,18 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("CREATE");
         }
 
+        private int UserId => Int32.Parse(User.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
         [HttpGet("{id}")]
         public IEnumerable<MenuItem> Get(int id)
         {
-
             _logger.LogInformation("FETCH");
             using (ApplicationContext db = new ApplicationContext())
             {
                 return db.MenuItems.Where(p=>p.ProjectId == id).ToArray();
             }
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] MenuItem menuItem)
         {
@@ -79,7 +81,7 @@ namespace ClownCMS.Controllers
             public MenuItem MenuItem { get; set; }
             public int ProjectId { get; set; }
         }
-
+        [Authorize]
         [HttpPut]
         public MenuItem Put([FromBody] PutMenuItemsAtribut putAtribut)
         {
@@ -92,7 +94,7 @@ namespace ClownCMS.Controllers
                 return menuItemValue;
             }
         }
-        
+        [Authorize]
         [HttpDelete]
         public IActionResult Delete([FromBody] MenuItem menuItem)
         {

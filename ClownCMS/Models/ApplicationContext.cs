@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
-
 namespace ClownCMS
 {
     public class ApplicationContext : DbContext
@@ -28,7 +27,7 @@ namespace ClownCMS
             Fill("dbo.Categories.data.sql", Categories);
             Fill("dbo.Previews.data.sql", Previews);
             Fill("dbo.Pages.data.sql", Pages);
-            //Fill("dbo.Images.data.sql", Image);
+            Fill("dbo.Images.data.sql", Images);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

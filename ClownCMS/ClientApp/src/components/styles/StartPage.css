@@ -3,7 +3,7 @@
     margin-left: 100px;
     margin-right: 100px;
     margin-top: 30px;*/
-    grid-template-areas: "h h" "l a";
+    grid-template-areas: "h s" "l a";
     grid-template-rows: 60px 1fr;
     grid-template-columns: 7fr 5fr;
     background-color: rgb(37, 37, 37);
@@ -18,6 +18,13 @@
 
 .startPage h2 {
     grid-area: h;
+    color: white;
+    margin-left: 40px;
+    margin-top: 15px;
+}
+
+.header {
+    grid-area: s;
     color: white;
     margin-left: 40px;
     margin-top: 15px;

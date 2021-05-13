@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClownCMS.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class SectionController : ControllerBase
@@ -19,7 +19,7 @@ namespace ClownCMS.Controllers
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
-
+        
         [HttpPost]
         public IActionResult Post([FromBody] Section section)
         {
@@ -41,7 +41,6 @@ namespace ClownCMS.Controllers
             public Section Section { get; set; }
             public int MenuItemId { get; set; }
         }
-
 
         [HttpPut]
         public IActionResult Put([FromBody] PutSectionAtribut putAtribut)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClownCMS.Controllers
 {
@@ -30,13 +31,13 @@ namespace ClownCMS.Controllers
                 Page p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First().Page;
                 if (p == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new { massage = "Page dont exists" });
                 }
                 return Json(p.Content);
                 
             }
         }
-
+        //[Authorize]
         [HttpPost]
         public IActionResult Post([FromBody]PageContent _page)
         {

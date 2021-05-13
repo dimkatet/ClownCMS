@@ -87,7 +87,6 @@ class Middle extends React.PureComponent<Props, State>
                     </div>;
                 default: return null;
             }
-        return null;
     }
     private renderRightMenu = () => {
         if (this.props.sections.length > 0)
@@ -145,7 +144,7 @@ class Middle extends React.PureComponent<Props, State>
     }
     private prepare = () => {
         switch (this.props.menuItem.menuItemType) {
-            case 1: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) { this.setState({ CurrentCategory: this.props.sections[0].categories[0] }); this.props.navigatinonUpdated(); console.log("1"); } break;
+            case 1: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) { this.setState({ CurrentCategory: this.props.sections[0].categories[0] }); this.props.navigatinonUpdated(); } break;
             case 0: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId); this.props.openPage(); } break;
             default: return null;
         }

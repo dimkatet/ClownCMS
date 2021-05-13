@@ -62,7 +62,8 @@ const findBlocks = async (content: RawDraftContentState) => {
             if (block['data'] === undefined)
                 continue;
             await postImage(block['data']['image']['src']).then(urn => {
-                block['data']['image']['src'] = urn;
+                if (block['data'])
+                    block['data']['image']['src'] = urn;
             }) 
         }
         if (block['type'] === 'SLIDER') {

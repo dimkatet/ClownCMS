@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ClownCMS.Controllers
@@ -14,7 +16,7 @@ namespace ClownCMS.Controllers
     {
 
         private readonly ILogger<ProjectsController> _logger;
-
+        private int UserId => Int32.Parse(User.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
         public ProjectsController(ILogger<ProjectsController> logger)
         {
             _logger = logger;
@@ -30,7 +32,7 @@ namespace ClownCMS.Controllers
                 return db.Projects.ToArray();
             }
         }
-
+        [Authorize]
         [HttpPost]
         public int Post([FromBody] string projectName)
         {
@@ -45,7 +47,7 @@ namespace ClownCMS.Controllers
             }
             return 1;
         }
-
+        [Authorize]
         [HttpDelete]
         public int Delete([FromBody] int projectID)
         {

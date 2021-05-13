@@ -30,6 +30,7 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("GET");
             using (ApplicationContext db = new ApplicationContext())
             {
+                //"/image/" + 
                 var image = db.Images.Where(image => image.URL == URL).FirstOrDefault();
                 if (image == null)
                     return BadRequest();

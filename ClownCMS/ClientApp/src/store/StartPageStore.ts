@@ -40,11 +40,14 @@ export const actionCreators = {
     requestProjects: (): AppThunkAction<KnownAction> => requestProjects,
 
     createProject: (projectName: string): AppThunkAction<Action> => (dispath, getState) => {
+        var appState = getState();
+        if (appState.auth)
         fetch('projects', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + appState.auth.access_token
             },
             body: JSON.stringify(projectName)
         })
@@ -56,11 +59,14 @@ export const actionCreators = {
     },
 
     deleteProject: (projectID: number): AppThunkAction<Action> => (dispath, getState) => {
+        var appState = getState();
+        if (appState.auth)
         fetch('projects', {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + appState.auth.access_token
             },
             body: JSON.stringify(projectID)
         })

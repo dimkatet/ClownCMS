@@ -55,7 +55,7 @@ export const actionCreators = {
     requestMenu: (): AppThunkAction<KnownAction> => requestMenu,
     setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.project) {
+        if (appState && appState.project && appState.auth) {
             fetch('menuItems', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -64,9 +64,11 @@ export const actionCreators = {
                     menuItemType: menuItemType
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(data => {
+                if (data.status == 200)
                     dispatch({
                         type: 'CHANGE_PROJECT_MENU_ITEM', navMenuItem: {
                             menuItemId: menuItemId,
@@ -79,8 +81,9 @@ export const actionCreators = {
         }
     },
     addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        //if (response.status != 200) return;
         const appState = getState();
-        if (appState && appState.project) {
+        if (appState && appState.project && appState.auth) {
             fetch('menuItems', {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -91,9 +94,10 @@ export const actionCreators = {
                     }
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
-            }).then(response => response.json() as Promise<NavMenuItem>).then(data => {
+            }).then(response => { return response.json() as Promise<NavMenuItem> }).then(data => {
                 dispatch({
                     type: 'ADD_PROJECT_MENU_ITEM', navMenuItem: {
                         menuItemId: data.menuItemId,
@@ -107,14 +111,15 @@ export const actionCreators = {
     },
     deleteMenuItem: ( menuItemId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.project) {
+        if (appState && appState.project && appState.auth) {
             fetch('menuItems', {
                 method: 'DELETE',
                 body: JSON.stringify({
                     menuItemId: menuItemId
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status === 200) { requestMenu(dispatch, getState) } })
         }

@@ -133,7 +133,7 @@ export const actionCreators = {
     },
     setSection: (sectionId: number, sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('section', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -141,28 +141,30 @@ export const actionCreators = {
                     sectionName: sectionName
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     deleteSection: (sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('section', {
                 method: 'DELETE',
                 body: JSON.stringify({
                     sectionId: sectionId
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     addSection: (sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('section', {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -172,14 +174,15 @@ export const actionCreators = {
                     }
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     setCategory: (categoryId: number, categoryName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('category', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -187,28 +190,30 @@ export const actionCreators = {
                     categoryName: categoryName
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     deleteCategory: (categoryId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('category', {
                 method: 'DELETE',
                 body: JSON.stringify({
                     categoryId: categoryId
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     addCategory: (categoryName: string, sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('category', {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -218,14 +223,15 @@ export const actionCreators = {
                     }
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     setPreview: (previewId: number, previewName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('preview', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -233,21 +239,23 @@ export const actionCreators = {
                     previewName: previewName
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
     deletePreview: (previewId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
-        if (appState && appState.navigation) {
+        if (appState && appState.navigation && appState.auth) {
             fetch('preview', {
                 method: 'DELETE',
                 body: JSON.stringify({
                     previewId: previewId
                 }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + appState.auth.access_token
                 }
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
@@ -256,6 +264,7 @@ export const actionCreators = {
         const appState = getState();
         if (appState && appState.navigation && previewName) {
             postImage(image).then(urn => {
+                if (appState.auth)
                 fetch('preview', {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -267,7 +276,8 @@ export const actionCreators = {
                         }
                     }),
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + appState.auth.access_token
                     }
                 }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
             })

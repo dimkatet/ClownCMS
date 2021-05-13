@@ -1,6 +1,9 @@
+using Authentication.Common;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +25,38 @@ namespace ClownCMS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
             // In production, the React files will be served from this directory
+            var authOprions = Configuration.GetSection("Auth").Get<AuthOptions>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = authOprions.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = authOprions.Audience,
+
+                    ValidateLifetime = true,
+
+                    IssuerSigningKey = authOprions.GetSymmetricSecurityKey(),
+                    ValidateIssuerSigningKey = true
+                };
+
+
+            });
+
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
+            });
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
@@ -49,6 +82,10 @@ namespace ClownCMS
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+            app.UseCors();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -5,14 +5,17 @@ import PopUp from './PopUp';
 import { ApplicationState } from '../store';
 import * as StartPageStore from '../store/StartPageStore';
 import * as ProjectStore from '../store/ProjectStore';
+import * as AuthStore from '../store/AuthStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
+import Auth from './elements/Auth';
 import './styles/StartPage.css';
 
 type ProjectsProps =
     StartPageStore.StartPageState
     & RouteComponentProps
     & typeof StartPageStore.actionCreators
-    & typeof ProjectStore.actionCreators;
+    & typeof ProjectStore.actionCreators
+    & typeof AuthStore.actionCreators;
 
 type StartPageState = {
     selectedProjectID: number,
@@ -37,14 +40,17 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 
     private ensureDataFetched() {
         this.props.requestProjects();
+
     }
 
     public render() {
-
         return (
             <React.Fragment>
                 <div className='startPage'>
                     <h2>ClownCMS</h2>
+                    <div className='header'>
+                        <Auth />
+                    </div>
                     <div className='projectsPreviewList'>
                         <h4>Открыть последние: </h4>
                         <div className='projectsList'>
@@ -154,5 +160,5 @@ const StartPagesAction = (props: any) => {
 
 export default connect(
     (state: ApplicationState) => state.startPage,
-    { ...StartPageStore.actionCreators, ...ProjectStore.actionCreators }
+    { ...StartPageStore.actionCreators, ...ProjectStore.actionCreators, ...AuthStore.actionCreators }
 )(StartPage as any);

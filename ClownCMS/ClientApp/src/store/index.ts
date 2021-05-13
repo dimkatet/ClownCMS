@@ -2,6 +2,7 @@
 import * as ProjectStore from './ProjectStore'
 import * as NavigationStore from './NavigationStore';
 import * as BodyStore from './BodyStore';
+import * as AuthStore from './AuthStore';
 
 // The top-level state object
 export interface ApplicationState {
@@ -9,6 +10,7 @@ export interface ApplicationState {
     project: ProjectStore.ProjectState | undefined;
     navigation: NavigationStore.NavigatinonState | undefined;
     body: BodyStore.BodyState | undefined;
+    auth: AuthStore.AuthenticationState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -18,7 +20,8 @@ export const reducers = {
     startPage: StartPageStore.reducer,
     project: ProjectStore.reducer,
     body: BodyStore.reducer,
-    navigation: NavigationStore.reducer
+    navigation: NavigationStore.reducer,
+    auth: AuthStore.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

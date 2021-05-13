@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClownCMS.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
