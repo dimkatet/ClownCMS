@@ -31,6 +31,8 @@ namespace ClownCMS.Controllers
                 if (PreviewChange == null)
                     return BadRequest();
                 PreviewChange.PreviewName = preview.PreviewName;
+                PreviewChange.PreviewDescription = preview.PreviewDescription;
+                PreviewChange.ImageURL = preview.ImageURL;
                 db.SaveChanges();
             }
             return Ok();

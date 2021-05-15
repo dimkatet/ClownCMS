@@ -1,4 +1,5 @@
-﻿.popUpBG {
+﻿.pop-up-bg {
+    z-index: 9999;
     background-color: rgba(0, 0, 0, 0.8);
     position: fixed;
     top: 0;
@@ -10,10 +11,11 @@
     justify-content: center;
 }
 
-.popUpContainer {
+.pop-up-container {
     color: white;
     width: 400px;
     min-height: 300px;
+    max-height: 80%;
     background-color: rgb(37, 37, 37);
     position: fixed;
     display: flex;
@@ -21,7 +23,7 @@
     align-items: center;
 }
 
-.popUpContainer button {
+.pop-up-container button {
     width: 300px;
     height: 40px;
     color: white;
@@ -29,25 +31,25 @@
     border: none;
 }
 
-.popUpContainer button:hover {
+.pop-up-container button:hover {
     background-color: rgb(63, 63, 64);
 }
 
-.popUpContainer button:focus {
+.pop-up-container button:focus {
     outline: none;
 }
 
-.popUpContainer input {
+.pop-up-container input {
     width: 300px;
     height: 40px;
 }
 
-.popUpContainer input:focus {
+.pop-up-container input:focus {
     outline: 2px solid rgb(63, 63, 64);
 }
 
 
-.popUpContainer button.closeBtn {
+.pop-up-container button.close-btn {
     position: absolute;
     width: 40px;
     height: 40px;
@@ -59,15 +61,15 @@
     font-size: 20px;
 }
 
-.popUpContainer button.closeBtn:hover {
+.pop-up-container button.close-btn:hover {
     background-color: rgb(51, 51, 55);
 }
 
-.popUpContainer button.closeBtn:focus {
+.pop-up-container button.close-btn:focus {
     outline: none;
 }
 
-.popUpContainer select {
+.pop-up-container select {
     width: 300px;
     height: 40px;
     font: 400 12px/1.3 sans-serif;
@@ -85,11 +87,11 @@
     background-position: right 20px center, right bottom, right bottom, right bottom;
 }
 
-.popUpContainer select:hover {
+.pop-up-container select:hover {
     background-image: linear-gradient(rgb(63, 63, 64), rgb(63, 63, 64)), linear-gradient(-135deg, transparent 40%, rgb(63, 63, 64) 40%), linear-gradient(-225deg, transparent 40%, rgb(63, 63, 64) 40%), linear-gradient(rgb(63, 63, 64) 42%, rgb(51, 51, 55) 42%);
 }
 
-.popUpContainer select:active {
+.pop-up-container select:active {
     background-image: linear-gradient(rgb(63, 63, 64), rgb(63, 63, 64)), linear-gradient(-135deg, transparent 40%, rgb(63, 63, 64) 40%), linear-gradient(-225deg, transparent 40%, rgb(63, 63, 64) 40%), linear-gradient(rgb(63, 63, 64) 42%, rgb(51, 51, 55) 42%);
     color: rgb(51, 51, 55);
     border-color: rgb(63, 63, 64);

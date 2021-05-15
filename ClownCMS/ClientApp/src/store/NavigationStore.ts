@@ -117,20 +117,25 @@ export const actionCreators = {
             requestNavigation(dispatch, getState);
         }
     },
+
     navigatinonUpdated: (): AppThunkAction<KnownAction> => Updated,
+
     navigatinonClear: (): AppThunkAction<KnownAction> => Clear,
+
     openPage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'PAGE_STATE', state: true });
         }
     },
+
     closePage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'PAGE_STATE', state: false });
         }
     },
+
     setSection: (sectionId: number, sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -160,6 +165,7 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
+
     addSection: (sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -177,6 +183,7 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
+
     setCategory: (categoryId: number, categoryName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -192,6 +199,7 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
+
     deleteCategory: (categoryId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -206,6 +214,7 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
+
     addCategory: (categoryName: string, sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -223,21 +232,27 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
-    setPreview: (previewId: number, previewName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+
+    setPreview: (previewId: number, previewName: string, previewDescription: string, imageURL: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
-            fetch('preview', {
-                method: 'POST',
-                body: JSON.stringify({
-                    previewId: previewId,
-                    previewName: previewName
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            postImage(image).then(urn => {
+                fetch('preview', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        previewId: previewId,
+                        previewName: previewName,
+                        previewDescription: previewDescription,
+                        imageURL: image ? urn : imageURL
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            });
         }
     },
+
     deletePreview: (previewId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -252,6 +267,7 @@ export const actionCreators = {
             }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
         }
     },
+
     addPreview: (categoryId: number, previewName: string, previewDescription: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation && previewName) {

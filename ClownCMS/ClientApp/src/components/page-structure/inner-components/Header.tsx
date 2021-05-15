@@ -20,11 +20,7 @@ export default class Header extends React.PureComponent
 
 
     public render() {
-        return (            
-            <div>
-                <NavMenuEditor />
-            </div>
-        )
+        return <NavMenuEditor />
     }
 
 }

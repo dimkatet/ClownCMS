@@ -1,12 +1,15 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../../store';
 import * as NavigationStore from '../../../store/NavigationStore';
 import * as BodyStore from '../../../store/BodyStore';
 import Body from './middle-components/Body';
 import PopUp from '../../PopUp';
+import SettingsIcon from '@material-ui/icons/Settings';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
+import SaveIcon from '@material-ui/icons/Save';
+import AddIcon from '@material-ui/icons/Add';
 import './styles/Middle.css';
 
 
@@ -18,10 +21,7 @@ type Props =
 type State = {
     CurrentCategory: NavigationStore.Category,
     SelectedID: number,
-    isAddingPreview: boolean,
-    newPreviewName: string,
-    newPreviewDescription: string,
-    newImage?: File
+    isAddingPreview: boolean
 }
 
 /*
@@ -33,7 +33,7 @@ class Middle extends React.PureComponent<Props, State>
 
     constructor(props: any) {
         super(props);
-        this.state = { CurrentCategory: {} as NavigationStore.Category, SelectedID: -1, isAddingPreview: false, newPreviewName: '', newPreviewDescription: '', newImage: undefined }
+        this.state = { CurrentCategory: {} as NavigationStore.Category, SelectedID: -1, isAddingPreview: false }
     }
 
     public componentDidMount() {
@@ -53,16 +53,20 @@ class Middle extends React.PureComponent<Props, State>
                                     <NavItem
                                         delete={() => { this.props.deleteCategory(item.categoryId) }}
                                         save={(text: string) => { this.props.setCategory(item.categoryId, text) }}
-                                        execute={() => { this.setState({ CurrentCategory: item, SelectedID: item.categoryId }); this.props.navigatinonUpdated(); }}
+                                        execute={() => {
+                                            this.setState({ CurrentCategory: item, SelectedID: item.categoryId });
+                                            this.props.navigatinonUpdated();
+                                        }}
                                         Name={item.categoryName}>
-                                        {<div className='left_iner'>{
-                                            (this.state.SelectedID == item.categoryId) && (item.previews.length > 0) && item.previews.map(prev =>
+                                        {<div className='left-menu-previews'>
+                                            {(this.state.SelectedID == item.categoryId) && (item.previews.length > 0) && item.previews.map(prev =>
                                                 <NavItem
                                                     delete={() => { this.props.deletePreview(prev.previewId) }}
-                                                    save={(text: string) => { this.props.setPreview(prev.previewId, text) }}
+                                                    save={(text: string) => { this.props.setPreview(prev.previewId, text, '', '') }}
                                                     execute={() => { this.props.requestContent(prev.previewId); this.props.openPage(); }}
-                                                    Name={prev.previewName} />)
-                                        }{this.state.SelectedID == item.categoryId && <AddItem save={(text: string) => {/* this.props.addPreview(text, item.categoryId)*/}} />}</div>}
+                                                    Name={prev.previewName}
+                                                />)}
+                                            {this.state.SelectedID == item.categoryId && <AddItem save={(text: string) => { this.props.addPreview(item.categoryId, text, '') }} />}</div>}
                                     </NavItem>)}
                                 <AddItem save={(text: string) => { this.props.addCategory(text, this.props.sections[0].sectionId) }} />
                             </div>;
@@ -72,22 +76,32 @@ class Middle extends React.PureComponent<Props, State>
                         <NavItem
                             delete={() => { this.props.deleteSection(item.sectionId) }}
                             save={(text: string) => { this.props.setSection(item.sectionId, text) }}
-                            execute={() => this.setState({ SelectedID: item.sectionId })}
+                            execute={() => {
+                                if (this.state.SelectedID === item.sectionId)
+                                    this.setState({ SelectedID: -1 })
+                                else this.setState({ SelectedID: item.sectionId })
+                            }}
                             Name={item.sectionName}>
-                                {<div className='left_iner'>{
-                                    (this.state.SelectedID == item.sectionId) && (item.categories.length > 0) && item.categories.map(categor =>
-                                        <NavItem
-                                            delete={() => { this.props.deleteCategory(categor.categoryId) }}
-                                            save={(text: string) => { this.props.setCategory(categor.categoryId, text) }}
-                                            execute={() => { this.setState({ CurrentCategory: categor }); this.props.navigatinonUpdated(); this.props.closePage();}}
-                                            Name={categor.categoryName} />)
-                            }{this.state.SelectedID == item.sectionId && <AddItem save={(text: string) => { this.props.addCategory(text, item.sectionId) }} />}</div>}
+                            {<div className='left-menu-previews'>
+                                {(this.state.SelectedID == item.sectionId) && (item.categories.length > 0) && item.categories.map(category =>
+                                    <NavItem
+                                        delete={() => { this.props.deleteCategory(category.categoryId) }}
+                                        save={(text: string) => { this.props.setCategory(category.categoryId, text) }}
+                                        execute={() => {
+                                            this.setState({ CurrentCategory: category });
+                                            this.props.navigatinonUpdated();
+                                            this.props.closePage();
+                                        }}
+                                        Name={category.categoryName}
+                                    />
+                                )}
+                                {this.state.SelectedID == item.sectionId && <AddItem save={(text: string) => { this.props.addCategory(text, item.sectionId) }} />}
+                            </div>}
                         </NavItem>)}
-                    <AddItem save={(text: string) => { console.log(text); this.props.addSection(text)}} />
+                    <AddItem save={(text: string) => { this.props.addSection(text)}} />
                     </div>;
                 default: return null;
             }
-        return null;
     }
     private renderRightMenu = () => {
         if (this.props.sections.length > 0)
@@ -98,10 +112,10 @@ class Middle extends React.PureComponent<Props, State>
                             {this.props.sections[0].categories[0].previews.map(item =>
                                 <NavItem
                                     delete={() => { this.props.deletePreview(item.previewId) }}
-                                    save={(text: string) => { this.props.setPreview(item.previewId, text) }}
+                                    save={(text: string) => { this.props.setPreview(item.previewId, text, '', '') }}
                                     execute={() => { { this.props.requestContent(item.previewId); this.props.openPage(); }}}
                                     Name={item.previewName} />)}
-                           {/*<AddItem save={(text: string) => { this.props.addPreview(text, this.props.sections[0].categories[0].categoryId) }} />*/}
+                           {<AddItem save={(text: string) => { this.props.addPreview(this.props.sections[0].categories[0].categoryId, text, '') }} />}
                         </div>;
                     return null;
                 case 3: return <div>
@@ -119,34 +133,57 @@ class Middle extends React.PureComponent<Props, State>
     }
     private renderBodyPreview = () => {
         if (this.props.menuItem.menuItemType == 1 || this.props.menuItem.menuItemType == 3 || this.props.menuItem.menuItemType == 5) {
-            return <div>
-                {this.state.CurrentCategory.previews.map(item => <BodyPreview
-                    execute={
-                        () => {
-                            this.props.requestContent(item.previewId);
-                            this.props.openPage();
-                        }}
-                    imageURL={item.imageURL}
-                    previewDescription={item.previewDescription}
-                    previewName={item.previewName} />
-                )}
-                {
-                    //change AddItem to new editor
-                }
-                {/* <AddItem save={(text: string) => { this.props.addPreview(text, this.state.CurrentCategory.categoryId) }} /> */}
-                <button
+           
+            return <React.Fragment>
+                <div className='body-previews'>
+                    {this.state.CurrentCategory.previews.map(item => {
+                        const edit = (setState: Function) => (name: string, description: string, image?: File, imageURL?: string) => {
+                            this.props.setPreview(item.previewId, name, description, imageURL ? imageURL : '', image);
+                            setState(false);
+                        }
+
+                        return <BodyPreview
+                            execute={() => {
+                                this.props.requestContent(item.previewId);
+                                this.props.openPage();
+                            }}
+                            edit={edit}
+                            delete={() => {
+                                this.props.deletePreview(item.previewId);
+                            }}
+                            imageURL={item.imageURL}
+                            previewDescription={item.previewDescription}
+                            previewName={item.previewName} />
+                    })}
+                </div>
+                <div
+                    className='body-preview-add'
                     onMouseDown={e => {
                         this.setState({ isAddingPreview: true });
                     }}
-                >Add</button>
-            </div>;
+                >
+                    <AddIcon />
+                </div>
+            </React.Fragment>
         }
         return null;
     }
     private prepare = () => {
         switch (this.props.menuItem.menuItemType) {
-            case 1: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) { this.setState({ CurrentCategory: this.props.sections[0].categories[0] }); this.props.navigatinonUpdated(); console.log("1"); } break;
-            case 0: if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId); this.props.openPage(); } break;
+            case 1:
+                if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) {
+                    this.setState({
+                        CurrentCategory: this.props.sections[0].categories[0]
+                    });
+                    this.props.navigatinonUpdated();
+                }
+                break;
+            case 0:
+                if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {
+                    this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId);
+                    this.props.openPage();
+                }
+                break;
             default: return null;
         }
     }
@@ -155,64 +192,29 @@ class Middle extends React.PureComponent<Props, State>
         return (
             <React.Fragment>
                 <div className='wrapper_Middle'>
-                    <div onMouseLeave={() => { this.setState({ SelectedID: -1 }) }}>
+                    <div
+                        className='left-menu'
+                        onMouseLeave={() => {
+                    }}>
                         <this.renderLeftMenu />
                     </div>
-                    <div>
+                    <div className='body'>
                         {this.props.isShowContent && <Body />}
                         {this.props.isActual && !this.props.isShowContent && <this.renderBodyPreview />}
                         {this.state.isAddingPreview ?
-                            <PopUp onClose={() => this.setState({ isAddingPreview: false, newPreviewName: '', newPreviewDescription: '' })}>
-                                <div className='popUpContent'>
-                                    <div>Название темы:</div>
-                                    <div><input
-                                        value={this.state.newPreviewName}
-                                        onChange={(e) => {
-                                            this.setState({ newPreviewName: e.target.value })
-                                        }} />
-                                    </div>
-
-                                    <div>Описание:</div>
-                                    <div><input
-                                        value={this.state.newPreviewDescription}
-                                        onChange={(e) => {
-                                            this.setState({ newPreviewDescription: e.target.value })
-                                        }}
-                                    />
-                                    </div>
-
-                                    <div>Выберите фото: </div>
-                                    <div>
-                                        <input
-                                            type='file'
-                                            id='middle-file-id'
-                                            onChange={e => {
-                                                const files = e.target.files;
-                                                if (files === null)
-                                                    return;
-                                                if (!files[0].type.includes('image/'))
-                                                    return;
-                                                const image = files[0];
-                                                this.setState({ newImage: image });
-                                            }}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <button
-                                            onClick={() => {
-                                                this.props.addPreview(this.state.CurrentCategory.categoryId, this.state.newPreviewName, this.state.newPreviewDescription, this.state.newImage);
-                                                this.setState({ isAddingPreview: false, newPreviewName: '', newPreviewDescription: '', newImage: undefined });
-                                            }}>
-                                            Создать
-                                        </button>
-                                    </div>
-                                </div>
-                            </PopUp>
+                            <PreviewEditor
+                                onClose={() => this.setState({
+                                    isAddingPreview: false
+                                })}
+                                onSubmit={(name: string, description: string, image?: File, imageURL?: string) => {
+                                    this.props.addPreview(this.state.CurrentCategory.categoryId, name, description, image);
+                                    this.setState({ isAddingPreview: false });
+                                }}
+                            />
                             : null
                         }
                     </div>
-                    <div>
+                    <div className='right-menu'>
                         <this.renderRightMenu />
                     </div>
                 </div>
@@ -228,23 +230,59 @@ function NavItem(props: any){
     const [isOver, setOver] = React.useState(false);
     React.useEffect(() => { setText(props.Name) }, [props.Name]);
     return (
-        <div onMouseOver={() => setOver(true)} onMouseLeave={() => setOver(false)}>
+        <div onMouseOver={() =>
+                setOver(true)
+            }
+            onMouseLeave={() =>
+                setOver(false)
+            }
+        >
             {!isEdit && <div>
-                <button onClick={props.execute}>
-                    {text}
-                </button>
-                {isOver && <button onClick={() => { setEdit(true); setOver(false);}} />}
+                <div className='left-menu-section'
+                    onClick={props.execute}
+                >
+                    <div className='left-menu-section-content'>
+                        {text}
+                    </div>
+                    {isOver && <SettingsIcon
+                        className='left-menu-section-change'
+                        onClick={() => {
+                            setEdit(true);
+                            setOver(false);
+                        }} />}
+                </div>
             </div>}
-            {isEdit &&
-                <div>
+            {isEdit && <div className='nav-item-edit'>
                 <input
+                    className='nav-item-edit-input'
                     value={text}
                     onChange={(e) => {
                         setText(e.target.value)
-                    }} />
-                <button onClick={() => { setEdit(false); if (text != props.Name) props.save(text); setText(props.Name); }}>ok</button>
-                <button onClick={() => { setEdit(false); props.delete(); }}>del</button>
-                </div>}
+                    }}
+                />
+                <div className='nav-item-edit-buttons'>
+                    <div
+                        className='nav-item-edit-button'
+                        onClick={() => {
+                            setEdit(false);
+                            if (text != props.Name)
+                                props.save(text);
+                            setText(props.Name);
+                        }}
+                    >
+                        <SaveIcon />
+                    </div>
+                    <div
+                        className='nav-item-edit-button'
+                        onClick={() => {
+                            setEdit(false);
+                            props.delete();
+                        }}
+                    >
+                        <DeleteIcon />
+                    </div>
+                </div>
+            </div>}
             {props.children}
         </div>
     )
@@ -255,20 +293,38 @@ function AddItem(props: any) {
     const [isEdit, setEdit] = React.useState(false);
     return (
         <div>
-            {!isEdit &&
-                <button onClick={()=>setEdit(true)}>
-                    add
-                </button>}
-            {isEdit &&
-                <div>
-                    <input
-                        value={text}
-                        onChange={(e) => {
-                            setText(e.target.value)
+            {!isEdit && <div className='left-menu-add' onClick={() => setEdit(true)}>
+                <AddIcon />
+            </div>}
+            {isEdit && <div className='nav-item-edit'>
+                <input 
+                    className='nav-item-edit-input'
+                    value={text}
+                    onChange={(e) => {
+                        setText(e.target.value)
                     }} />
-                <button onClick={() => { setEdit(false); props.save(text); setText(''); }}>ok</button>
-                    <button onClick={() => { setEdit(false); setText('');}}>close</button>
-                </div>}
+                <div className='nav-item-edit-buttons'>
+                    <div
+                        className='nav-item-edit-button'
+                        onClick={() => {
+                            setEdit(false);
+                            props.save(text);
+                            setText('');
+                        }}
+                    >
+                        <AddIcon />
+                    </div>
+                    <div
+                        className='nav-item-edit-button'
+                        onClick={() => {
+                        setEdit(false);
+                        setText('');
+                    }}
+                    >
+                        <CloseIcon />
+                    </div>
+                </div>
+            </div>}
         </div>
     )
 }
@@ -277,18 +333,128 @@ function BodyPreview(props: {
     previewName: string,
     previewDescription: string,
     imageURL?: string,
-    execute: () => void
+    execute: () => void,
+    edit: (setState: Function) => (name: string, description: string, image?: File, imageURL?: string) => void,
+    delete: () => void
 }) {
+    const [onOver, setOver] = React.useState(false);
+    const [isEdit, setIsEdit] = React.useState(false)
     return (
-        <div className='preview' onClick={props.execute}>
-            <h3>
-                {props.previewName}
-            </h3>
-            <p>{props.previewDescription}</p>
-            {props.imageURL ? <img src={props.imageURL} /> : null}
-
+        <div
+            className='preview'
+            onMouseOver={() =>
+                setOver(true)
+            }
+            onMouseLeave={() =>
+                setOver(false)
+            }
+        >
+            <div
+                className='preview-container'
+                onClick={props.execute}
+            >
+                <div className='preview-header'>
+                    <h3>
+                        {props.previewName}
+                    </h3>
+                </div>
+                <div className='preview-description'>
+                    <div>{props.previewDescription}</div>
+                </div>
+                {props.imageURL ?
+                    <div className='preview-image-container'>
+                        <img className='preview-image' src={props.imageURL} />
+                    </div>
+                    : null
+                }
+            </div>
+            {onOver && <div className='preview-buttons'>
+                <div
+                    className='preview-settings'
+                    onClick={(e) => {
+                        setIsEdit(true);
+                    }}
+                >
+                    <SettingsIcon fontSize='inherit'/>
+                </div>
+                <div
+                    className='preview-delete'
+                    onClick={props.delete}
+                >
+                    <DeleteIcon fontSize='inherit'/>
+                </div>
+            </div>}
+            {isEdit && <PreviewEditor
+                onClose={() => setIsEdit(false)}
+                onSubmit={props.edit(setIsEdit)}
+                name={props.previewName}
+                description={props.previewDescription}
+                imageURL={props.imageURL}
+            />}
         </div>
     )
+}
+
+function PreviewEditor(props: {
+    onClose: () => void,
+    onSubmit: (name: string, description: string, image?: File, imageURL?: string) => void,
+    name?: string,
+    description?: string,
+    imageURL?: string
+}) {
+    const [name, setName] = React.useState(props.name ? props.name : '');
+    const [description, setDescription] = React.useState(props.description ? props.description : '');
+    const [imageURL, setImageURL] = React.useState(props.imageURL ? props.imageURL : '');
+    const [image, setImage] = React.useState<File | undefined>();
+    const urlCreator = window.URL || window.webkitURL;
+    return <PopUp onClose={props.onClose}>
+        <div className='pop-up-content'>
+            <div>Название темы:</div>
+            <div><input
+                value={name}
+                onChange={(e) => {
+                    setName(e.target.value);
+                }} />
+            </div>
+
+            <div>Описание:</div>
+            <div><input
+                value={description}
+                onChange={(e) => {
+                    setDescription(e.target.value);
+                }}
+            />
+            </div>
+
+            <div>Выберите фото: </div>
+            <div>
+                <input
+                    type='file'
+                    id='middle-file-id'
+                    onChange={e => {
+                        const files = e.target.files;
+                        if (files === null)
+                            return;
+                        if (!files[0].type.includes('image/'))
+                            return;
+                        setImage(files[0]);
+                        setImageURL(urlCreator.createObjectURL(files[0]));
+                    }}
+                />
+                {imageURL && <img className='pop-up-image-preview' src={imageURL} />}
+            </div>
+
+            <div>
+                <button
+                    onClick={() => {
+                        props.onSubmit(name, description, image, imageURL)
+                    }}
+                >
+                    {props.name ? 'Изменить' : 'Создать'}
+                </button>
+            </div>
+        </div>
+    </PopUp>
 }
 
 export default connect(
