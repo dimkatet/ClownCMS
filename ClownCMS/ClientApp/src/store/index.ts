@@ -10,7 +10,6 @@ export interface ApplicationState {
     project: ProjectStore.ProjectState | undefined;
     navigation: NavigationStore.NavigatinonState | undefined;
     body: BodyStore.BodyState | undefined;
-    auth: AuthStore.AuthenticationState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -19,9 +18,8 @@ export interface ApplicationState {
 export const reducers = {
     startPage: StartPageStore.reducer,
     project: ProjectStore.reducer,
-    body: BodyStore.reducer,
     navigation: NavigationStore.reducer,
-    auth: AuthStore.reducer
+    body: BodyStore.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

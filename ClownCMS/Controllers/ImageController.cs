@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -37,7 +38,7 @@ namespace ClownCMS.Controllers
                 return File(image.ImageData, image.FileType);
             }
         }
-
+        //[Authorize]
         [HttpPost]
         public string Post(IFormFile data)
         {

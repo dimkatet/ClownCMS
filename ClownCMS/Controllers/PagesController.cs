@@ -37,7 +37,7 @@ namespace ClownCMS.Controllers
                 
             }
         }
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody]PageContent _page)
         {

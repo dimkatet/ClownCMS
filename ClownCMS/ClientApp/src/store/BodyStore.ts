@@ -114,7 +114,7 @@ export const actionCreators = {
         if (appState && appState.body) {
             const c = convertToRaw(content);
             findBlocks(c).then(() => {
-                if (appState.body) {
+                if (appState.body ) {
                     const item = {
                         previewId: appState.body.previewId,
                         content: JSON.stringify(c)
@@ -123,7 +123,8 @@ export const actionCreators = {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                         },
                         body: JSON.stringify(item)
                     })
