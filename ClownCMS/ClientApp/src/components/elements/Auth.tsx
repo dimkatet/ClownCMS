@@ -1,7 +1,12 @@
 ﻿import * as React from 'react';
+import { render } from 'react-dom';
 import * as AuthStore from '../../store/AuthStore';
 import PopUp from '../PopUp';
 
+function useForceUpdate() {
+    const [value, setValue] = React.useState(0); // integer state
+    return () => setValue(value + 1); // update the state to force render
+}
 
 export default function Auth () {
     const [isAdding, setAdding] = React.useState(false);
@@ -15,14 +20,17 @@ export default function Auth () {
     const [TextEmail, addingTextEmail] = React.useState("");
     const [TextPass, addingTextPass] = React.useState("");
 
+    const forceUpdate1 = useForceUpdate();
+    const forceUpdate2 = useForceUpdate();
+    const forceUpdate3 = useForceUpdate();
+
     var actions = AuthStore.actionCreators;
-    
     return (<div >
         {!isAuth &&
             <div ><p onClick={() => { setAdding(true); setRegistered(true); }}>sign in</p> <p onClick={() => { setAdding(true); setRegistered(false); }}>sign up</p></div >}
 
         {isAuth &&
-            <div><p>{userName}</p> <button onClick={() => { actions.authClear(); }}>exit</button></div>}
+            <div><p>{userName}</p> <button onClick={() => { actions.authClear(); forceUpdate1(); }}>exit</button></div>}
 
         {!isAuth && isAdding && isRegistered &&
             <PopUp onClose={() => {
@@ -47,12 +55,13 @@ export default function Auth () {
                 addingTextName("");
                 addingTextEmail("");
                 addingTextPass("");}}>зарегестрироваться</p>
-            <button onClick={() => {
-                actions.requestAuth(TextEmail, TextPass);
+            <button onClick={async() => {
+                await actions.requestAuth(TextEmail, TextPass);
                 setAdding(false);
                 addingTextName("");
                 addingTextEmail("");
-                addingTextPass("");}}> войти </button>
+                addingTextPass("");
+                forceUpdate2();}}> войти </button>
             </PopUp>}
 
         {!isAuth && isAdding && !isRegistered &&
@@ -84,12 +93,13 @@ export default function Auth () {
                 addingTextName("");
                 addingTextEmail("");
                 addingTextPass(""); }}>уже зарегестрированн</p>
-            <button onClick={() => {
-                actions.reqistrationAuth(TextName, TextEmail, TextPass);
+            <button onClick={async() => {
+                await actions.reqistrationAuth(TextName, TextEmail, TextPass);
                 setAdding(false);
                 addingTextName("");
                 addingTextEmail("");
-                addingTextPass(""); }}> зарегестрироваться </button>
+                addingTextPass("");
+                forceUpdate3();}}> зарегестрироваться </button>
             </PopUp>}
 
     </div>)

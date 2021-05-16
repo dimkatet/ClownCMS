@@ -83,6 +83,14 @@ class Middle extends React.PureComponent<Props, State>
                             }}
                             Name={item.sectionName}>
                             {<div className='left-menu-previews'>
+                                {(item.categories.length > 0) && item.categories.map(category => {
+                                    if (!this.props.isActual && this.state.CurrentCategory &&
+                                        this.state.CurrentCategory.categoryId && this.state.CurrentCategory.categoryId == category.categoryId) {
+                                        this.setState({ CurrentCategory: category });
+                                        this.props.navigatinonUpdated();
+                                    }
+                                    return null;
+                                })}
                                 {(this.state.SelectedID == item.sectionId) && (item.categories.length > 0) && item.categories.map(category =>
                                     <NavItem
                                         delete={() => { this.props.deleteCategory(category.categoryId) }}
@@ -119,12 +127,18 @@ class Middle extends React.PureComponent<Props, State>
                         </div>;
                     return null;
                 case 3: return <div>
-                    {this.props.sections[0].categories.map(item =>
-                        <NavItem
+                    {this.props.sections[0].categories.map(item => {
+                        if (!this.props.isActual && this.state.CurrentCategory &&
+                            this.state.CurrentCategory.categoryId && this.state.CurrentCategory.categoryId == item.categoryId) {
+                            this.setState({ CurrentCategory: item });
+                            this.props.navigatinonUpdated();
+                        }
+                        return <NavItem
                             delete={() => { this.props.deleteCategory(item.categoryId) }}
                             save={(text: string) => { this.props.setCategory(item.categoryId, text) }}
                             execute={() => { this.setState({ CurrentCategory: item }); this.props.navigatinonUpdated(); this.props.closePage(); }}
-                            Name={item.categoryName} />)}
+                            Name={item.categoryName} />
+                    })}
                     <AddItem save={(text: string) => { this.props.addCategory(text, this.props.sections[0].sectionId) }} />
                 </div>;
                 default: return null;

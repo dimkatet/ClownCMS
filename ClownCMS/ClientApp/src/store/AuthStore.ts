@@ -4,9 +4,9 @@ import { AppThunkAction } from './';
 import { NavMenuItem } from './ProjectStore';
 
 export const actionCreators = {
-    requestAuth: (Email: string, Password: string) => {
+    requestAuth: async (Email: string, Password: string) => {
 
-        var date = fetch('http://localhost:5000/auth/login', {
+        await fetch('http://localhost:5000/auth/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: Email,
@@ -21,9 +21,9 @@ export const actionCreators = {
 
         }).catch((error) => { console.log(error); });
     },
-    reqistrationAuth: (Name: string, Email: string, Password: string) => {
+    reqistrationAuth: async (Name: string, Email: string, Password: string) => {
 
-        var date = fetch('http://localhost:5000/auth/registration', {
+        await fetch('http://localhost:5000/auth/registration', {
             method: 'POST',
             body: JSON.stringify({
                 email: Email,
