@@ -253,9 +253,8 @@ function NavItem(props: any){
         >
             {!isEdit && <div>
                 <div className='left-menu-section'
-                    onClick={props.execute}
                 >
-                    <div className='left-menu-section-content'>
+                    <div className='left-menu-section-content' onClick={props.execute}>
                         {text}
                     </div>
                     {isOver && <SettingsIcon
