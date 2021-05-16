@@ -35,15 +35,9 @@ export default class Base extends React.PureComponent//<ProjectsProps>
         return (
             <React.Fragment>
                 <div className='wrapper_Base' >
-                    <div >
-                        <Header />
-                    </div>
-                    <div >
-                        <Middle />
-                    </div>
-                    <div >
-                        <Footer />
-                    </div>
+                    <Header />
+                    <Middle />
+                    <Footer />
                 </div>
             </React.Fragment>
         )

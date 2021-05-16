@@ -1,4 +1,4 @@
-﻿.popUpMenuContent button {
+﻿.pop-up-content button {
     width: 140px;
     display: block;
     align-items: center;
@@ -10,12 +10,63 @@
     grid-template-rows: 100%;
 }
 
-.popUpMenuContent div {
+.pop-up-content div {
     margin: 20px;
 }
 
-.wrapper_Item {
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: 5px;
+.wrapper_Header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(127, 127, 127);
+}
+
+.header-item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(127, 127, 127);
+    width: 8rem;
+    height: 3rem;
+    margin: 3px;
+    border-radius: 5px 5px;
+}
+
+.header-item-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.header-item:hover {
+    background: rgb(180, 180, 180);
+}
+
+.header-item-change {
+    position: absolute;
+    color: rgb(37, 37, 37);
+    top: 0.1vh;
+    right: 0.1vh;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+}
+
+.header-item-change:hover{
+    color: rgb(0, 0, 0);
+}
+
+.header-item-add {
+    position: absolute;
+    right: 0;
+    color: rgb(127, 127, 127);
+    margin: 5px;
+}
+
+.header-item-add:hover {
+    color: rgb(180, 180, 180);
 }

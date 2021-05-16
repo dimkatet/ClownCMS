@@ -12,9 +12,9 @@ class PopUp extends React.Component<PopUpProps>
     public render() {
         return (
             <React.Fragment>
-                <div className='popUpBG' >
-                    <div className='popUpContainer'>
-                        <button className='closeBtn' onClick={this.props.onClose}>X</button>
+                <div className='pop-up-bg' >
+                    <div className='pop-up-container'>
+                        <button className='close-btn' onClick={this.props.onClose}>X</button>
                         {this.props.children}
                     </div>
                 </div>
