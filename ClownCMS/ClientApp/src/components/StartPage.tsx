@@ -62,7 +62,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                         {this.renderButtons()}
                     </div>
                     {this.state.renderPopUp && <PopUp onClose={() => { this.setState({ renderPopUp: false, newProjectName: '' }) }}>
-                        <div className='popUpContent'>
+                        <div className='pop-up-content'>
                             <div>Введите название проекта:</div>
                             <div>
                                 <input 

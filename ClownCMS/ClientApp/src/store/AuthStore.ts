@@ -6,7 +6,7 @@ import { NavMenuItem } from './ProjectStore';
 export const actionCreators = {
     requestAuth: async (Email: string, Password: string) => {
 
-        await fetch('http://localhost:5000/auth/login', {
+        await fetch('http://localhost:59831/auth/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: Email,
@@ -23,7 +23,7 @@ export const actionCreators = {
     },
     reqistrationAuth: async (Name: string, Email: string, Password: string) => {
 
-        await fetch('http://localhost:5000/auth/registration', {
+        await fetch('http://localhost:59831/auth/registration', {
             method: 'POST',
             body: JSON.stringify({
                 email: Email,

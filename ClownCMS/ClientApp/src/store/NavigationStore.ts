@@ -242,17 +242,21 @@ export const actionCreators = {
     setPreview: (previewId: number, previewName: string, previewDescription: string, imageURL: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
-            fetch('preview', {
-                method: 'POST',
-                body: JSON.stringify({
-                    previewId: previewId,
-                    previewName: previewName
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-                }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            postImage(image).then(urn => {
+                fetch('preview', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        previewId: previewId,
+                        previewName: previewName,
+                        previewDescription: previewDescription,
+                        imageURL: image ? urn : imageURL
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                    }
+                }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            });
         }
     },
 
