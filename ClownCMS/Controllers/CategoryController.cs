@@ -13,9 +13,10 @@ namespace ClownCMS.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ILogger<CategoryController> _logger;
-
-        public CategoryController(ILogger<CategoryController> logger)
+        private ApplicationContext db;
+        public CategoryController(ILogger<CategoryController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -24,15 +25,11 @@ namespace ClownCMS.Controllers
         public IActionResult Post([FromBody] Category category)
         {
             _logger.LogInformation("POST");
-
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                Category categoryChange = db.Categories.Find(category.CategoryId);
-                if (categoryChange == null)
-                    return BadRequest();
-                categoryChange.CategoryName = category.CategoryName;
-                db.SaveChanges();
-            }
+            Category categoryChange = db.Categories.Find(category.CategoryId);
+            if (categoryChange == null)
+                return BadRequest();
+            categoryChange.CategoryName = category.CategoryName;
+            db.SaveChanges();
             return Ok();
         }
 
@@ -46,23 +43,18 @@ namespace ClownCMS.Controllers
         public IActionResult Put([FromBody] PutSectionAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                Category categoryValue = new Category() { CategoryName = putAtribut.Category.CategoryName, Section = db.Sections.Find(putAtribut.SectionId) };
-                db.Categories.Add(categoryValue);
-                db.SaveChanges();
-                return Ok();
-            }
+            Category categoryValue = new Category() { CategoryName = putAtribut.Category.CategoryName, Section = db.Sections.Find(putAtribut.SectionId) };
+            db.Categories.Add(categoryValue);
+            db.SaveChanges();
+            return Ok();
+
         }
         [HttpDelete]
         public IActionResult Delete([FromBody] Category category)
         {
             _logger.LogInformation("Delete");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                db.Categories.Remove(category);
-                db.SaveChanges();
-            }
+            db.Categories.Remove(category);
+            db.SaveChanges();
             return Ok();
         }
 

@@ -14,8 +14,10 @@ namespace ClownCMS.Controllers
     {
         private readonly ILogger<SectionController> _logger;
 
-        public SectionController(ILogger<SectionController> logger)
+        private ApplicationContext db;
+        public SectionController(ILogger<SectionController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -25,14 +27,11 @@ namespace ClownCMS.Controllers
         {
             _logger.LogInformation("POST");
 
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                Section sectionChange = db.Sections.Find(section.SectionId);
-                if (sectionChange == null)
-                    return BadRequest();
-                sectionChange.SectionName = section.SectionName;
-                db.SaveChanges();
-            }
+            Section sectionChange = db.Sections.Find(section.SectionId);
+            if (sectionChange == null)
+                return BadRequest();
+            sectionChange.SectionName = section.SectionName;
+            db.SaveChanges();
             return Ok();
         }
 
@@ -46,23 +45,17 @@ namespace ClownCMS.Controllers
         public IActionResult Put([FromBody] PutSectionAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                Section sectionValue = new Section() { SectionName = putAtribut.Section.SectionName, MenuItem = db.MenuItems.Find(putAtribut.MenuItemId) };
-                db.Sections.Add(sectionValue);
-                db.SaveChanges();
-                return Ok();
-            }
+            Section sectionValue = new Section() { SectionName = putAtribut.Section.SectionName, MenuItem = db.MenuItems.Find(putAtribut.MenuItemId) };
+            db.Sections.Add(sectionValue);
+            db.SaveChanges();
+            return Ok();
         }
         [HttpDelete]
         public IActionResult Delete([FromBody] Section section)
         {
             _logger.LogInformation("Delete");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                db.Sections.Remove(section);
-                db.SaveChanges();
-            }
+            db.Sections.Remove(section);
+            db.SaveChanges();
             return Ok();
         }
 

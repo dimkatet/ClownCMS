@@ -15,8 +15,10 @@ namespace ClownCMS.Controllers
     {
         private readonly ILogger<NavigationController> _logger;
 
-        public NavigationController(ILogger<NavigationController> logger)
+        private ApplicationContext db;
+        public NavigationController(ILogger<NavigationController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -25,10 +27,7 @@ namespace ClownCMS.Controllers
         public IEnumerable<Section> Get(int id)
         {
             _logger.LogInformation("FETCH");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                return db.Sections.Include(s => s.Categories).ThenInclude(c => c.Previews).Where(s=>s.MenuItemId == id).ToArray();
-            }
+            return db.Sections.Include(s => s.Categories).ThenInclude(c => c.Previews).Where(s=>s.MenuItemId == id).ToArray();
         }
     }
 }

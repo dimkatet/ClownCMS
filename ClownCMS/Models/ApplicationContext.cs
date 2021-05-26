@@ -16,24 +16,25 @@ namespace ClownCMS
         public DbSet<Page> Pages { get; set; }
         public DbSet<Image> Images { get; set; }
 
-        public ApplicationContext()
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+            : base(options)
         {
             //Database.EnsureDeleted();
             //Drop();
             Database.EnsureCreated();
-            Fill("dbo.Projects.data.sql", Projects);
+            /*Fill("dbo.Projects.data.sql", Projects);
             Fill("dbo.MenuItems.data.sql", MenuItems);
             Fill("dbo.Sections.data.sql", Sections);
             Fill("dbo.Categories.data.sql", Categories);
             Fill("dbo.Previews.data.sql", Previews);
             Fill("dbo.Pages.data.sql", Pages);
-            Fill("dbo.Images.data.sql", Images);
+            Fill("dbo.Images.data.sql", Images);*/
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=clowncmsdb;Trusted_Connection=True;");
-        }
+        }*/
 
 
         private void Fill<T>(string fileName, DbSet<T> field) where T : class

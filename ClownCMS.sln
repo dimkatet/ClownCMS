@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClownCMS", "ClownCMS\ClownCMS.csproj", "{EE4C1BAC-AC5B-43BD-9E05-62E89B84D222}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Common", "Authentication.Common\Authentication.Common.csproj", "{52BEAF94-A7AC-4D60-B82E-907A8C490BC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Common", "Authentication.Common\Authentication.Common.csproj", "{52BEAF94-A7AC-4D60-B82E-907A8C490BC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Auth.API", "Authentication.Auth.API\Authentication.Auth.API.csproj", "{CAE6B26A-C6A3-494C-9F54-7BB56B256A47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Auth.API", "Authentication.Auth.API\Authentication.Auth.API.csproj", "{CAE6B26A-C6A3-494C-9F54-7BB56B256A47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

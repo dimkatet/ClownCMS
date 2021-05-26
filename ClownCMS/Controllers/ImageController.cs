@@ -18,9 +18,11 @@ namespace ClownCMS.Controllers
         private readonly ILogger<ImageController> _logger;
         private static Random random = new Random();
 
+        private ApplicationContext db;
 
-        public ImageController(ILogger<ImageController> logger)
+        public ImageController(ILogger<ImageController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -29,40 +31,33 @@ namespace ClownCMS.Controllers
         public IActionResult Get(string URL)
         {
             _logger.LogInformation("GET");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                //"/image/" + 
-                var image = db.Images.Where(image => image.URL == URL).FirstOrDefault();
-                if (image == null)
-                    return BadRequest();
-                return File(image.ImageData, image.FileType);
-            }
+            var image = db.Images.Where(image => image.URL == URL).FirstOrDefault();
+            if (image == null)
+                return BadRequest();
+            return File(image.ImageData, image.FileType);
         }
         //[Authorize]
         [HttpPost]
         public string Post(IFormFile data)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            _logger.LogInformation("POST");
+            if (data == null)
+                return "Bad";
+            Span<byte> buffer = new Span<byte>(new byte[data.Length]);
+            data.OpenReadStream().Read(buffer);
+
+            var URL = RandomString(10);
+            while(db.Images.Where(image => image.URL == URL).Count() != 0)
+                URL = RandomString(10);
+
+            db.Add(new Image
             {
-                _logger.LogInformation("POST");
-                if (data == null)
-                    return "Bad";
-                Span<byte> buffer = new Span<byte>(new byte[data.Length]);
-                data.OpenReadStream().Read(buffer);
-
-                var URL = RandomString(10);
-                while(db.Images.Where(image => image.URL == URL).Count() != 0)
-                    URL = RandomString(10);
-
-                db.Add(new Image
-                {
-                    ImageData = buffer.ToArray(),
-                    URL = URL,
-                    FileType = data.ContentType
-                });
-                db.SaveChanges();
-                return "/image/" + URL;
-            }
+                ImageData = buffer.ToArray(),
+                URL = URL,
+                FileType = data.ContentType
+            });
+            db.SaveChanges();
+            return "/image/" + URL;
         }
 
         public static string RandomString(int length)

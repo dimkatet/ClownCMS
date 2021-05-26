@@ -1,0 +1,30 @@
+﻿@page
+@model Authentication.Auth.API.IndexModel
+@{
+}
+@if (Model.Name == null || Model.Name == "")
+{
+    <a href="/Authorization">sign in</a>
+    <a href="/Registration">sign up</a>
+}
+else
+{
+    <h1>Hi @Model.Name</h1>
+    <form method="POST">
+        <input type="submit" asp-page-handler="Exit" value="Exit" />
+        @Html.AntiForgeryToken()
+    </form>
+    @using (Html.BeginForm("DownloadBots", "Download", FormMethod.Post))
+    {
+        <div>Database</div>
+        <input type="text" name="DatabaseName" />
+        <div>Url</div>
+        <input type="text" name="BackUrl"/>
+        //<p>Database</p>
+        //@Html.TextBox("DatabaseName")
+        //<p>Url</p>
+        //@Html.TextBox("BackUrl")
+        <input type="submit" />
+    }
+}
+

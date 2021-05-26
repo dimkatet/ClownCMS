@@ -1,0 +1,18 @@
+﻿@page
+@model Authentication.Auth.API.Pages.RegistrationModel;
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+
+<h3>@Model.Message</h3>
+<form method="post">
+    Name
+    <input type="text" name="Name" />
+    Email
+    <input type="text" name="Email" />
+    Password
+    <input type="text" name="Password" />
+    <input type="submit" value="Send" />
+    @Html.AntiForgeryToken()
+</form>

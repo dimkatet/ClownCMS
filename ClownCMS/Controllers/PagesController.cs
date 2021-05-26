@@ -16,8 +16,10 @@ namespace ClownCMS.Controllers
     {
         private readonly ILogger<ProjectsController> _logger;
 
-        public PagesController(ILogger<ProjectsController> logger)
+        private ApplicationContext db;
+        public PagesController(ILogger<ProjectsController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -26,37 +28,31 @@ namespace ClownCMS.Controllers
         public IActionResult Get(int id)
         {
             _logger.LogInformation("GET");
-            using (ApplicationContext db = new ApplicationContext())
+            Page p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First().Page;
+            if (p == null)
             {
-                Page p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First().Page;
-                if (p == null)
-                {
-                    return BadRequest(new { massage = "Page dont exists" });
-                }
-                return Json(p.Content);
-                
+                return BadRequest(new { massage = "Page dont exists" });
             }
+            return Json(p.Content);
+                
         }
         [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody]PageContent _page)
         {
             _logger.LogInformation("POST");
-            using (ApplicationContext db = new ApplicationContext())
+            Page page = db.Previews.Include(p => p.Page).Where(p => p.PreviewId == _page.previewId).First().Page;
+            if (page == null)
             {
-                Page page = db.Previews.Include(p => p.Page).Where(p => p.PreviewId == _page.previewId).First().Page;
-                if (page == null)
+                db.Add(new Page
                 {
-                    db.Add(new Page
-                    {
-                        Content = _page.content
-                    });
-                    db.SaveChanges();
-                    return Ok();
-                }
-                page.Content = _page.content;
+                    Content = _page.content
+                });
                 db.SaveChanges();
+                return Ok();
             }
+            page.Content = _page.content;
+            db.SaveChanges();
             return Ok();
         }
 

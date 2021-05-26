@@ -15,6 +15,7 @@ namespace ClownCMS.Controllers
     {
         private readonly ILogger<MenuItemsController> _logger;
 
+        private ApplicationContext db;
         private List<Section> baseNavigation(int menuType)
         {
             Section section = new Section();
@@ -35,8 +36,9 @@ namespace ClownCMS.Controllers
             }
             return new List<Section>();
         }
-        public MenuItemsController(ILogger<MenuItemsController> logger)
+        public MenuItemsController(ILogger<MenuItemsController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -47,10 +49,7 @@ namespace ClownCMS.Controllers
         public IEnumerable<MenuItem> Get(int id)
         {
             _logger.LogInformation("FETCH");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                return db.MenuItems.Where(p=>p.ProjectId == id).ToArray();
-            }
+            return db.MenuItems.Where(p=>p.ProjectId == id).ToArray();
         }
         [Authorize]
         [HttpPost]
@@ -58,21 +57,19 @@ namespace ClownCMS.Controllers
         {
             _logger.LogInformation("POST");
 
-            using (ApplicationContext db = new ApplicationContext())
+            MenuItem menuItemChange = db.MenuItems.Find(menuItem.MenuItemId);
+            if (menuItemChange == null)
+                return BadRequest();
+            menuItemChange.MenuItemName = menuItem.MenuItemName;
+            //menuItemChange.MenuItemType = menuItem.MenuItemType;
+            if (menuItemChange.MenuItemType != menuItem.MenuItemType)
             {
-                MenuItem menuItemChange = db.MenuItems.Find(menuItem.MenuItemId);
-                if (menuItemChange == null)
-                    return BadRequest();
-                menuItemChange.MenuItemName = menuItem.MenuItemName;
-                //menuItemChange.MenuItemType = menuItem.MenuItemType;
-                if (menuItemChange.MenuItemType != menuItem.MenuItemType)
-                {
-                    db.Sections.RemoveRange(db.MenuItems.Include(m => m.Sections).Where(m => m.MenuItemId == menuItem.MenuItemId).First().Sections);
-                    menuItemChange.Sections = baseNavigation(menuItem.MenuItemType);
-                    menuItemChange.MenuItemType = menuItem.MenuItemType;
-                }
-                db.SaveChanges();
+                db.Sections.RemoveRange(db.MenuItems.Include(m => m.Sections).Where(m => m.MenuItemId == menuItem.MenuItemId).First().Sections);
+                menuItemChange.Sections = baseNavigation(menuItem.MenuItemType);
+                menuItemChange.MenuItemType = menuItem.MenuItemType;
             }
+            db.SaveChanges();
+
             return Ok();
         }
 
@@ -86,24 +83,18 @@ namespace ClownCMS.Controllers
         public MenuItem Put([FromBody] PutMenuItemsAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                MenuItem menuItemValue = new MenuItem() { MenuItemName = putAtribut.MenuItem.MenuItemName, MenuItemType = putAtribut.MenuItem.MenuItemType, Project = db.Projects.Find(putAtribut.ProjectId), Sections = baseNavigation(putAtribut.MenuItem.MenuItemType) };
-                db.MenuItems.Add(menuItemValue);
-                db.SaveChanges();
-                return menuItemValue;
-            }
+            MenuItem menuItemValue = new MenuItem() { MenuItemName = putAtribut.MenuItem.MenuItemName, MenuItemType = putAtribut.MenuItem.MenuItemType, Project = db.Projects.Find(putAtribut.ProjectId), Sections = baseNavigation(putAtribut.MenuItem.MenuItemType) };
+            db.MenuItems.Add(menuItemValue);
+            db.SaveChanges();
+            return menuItemValue;
         }
         [Authorize]
         [HttpDelete]
         public IActionResult Delete([FromBody] MenuItem menuItem)
         {
             _logger.LogInformation("Delete");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                db.MenuItems.Remove(menuItem);
-                db.SaveChanges();
-            }
+            db.MenuItems.Remove(menuItem);
+            db.SaveChanges();
             return Ok();
         }
 

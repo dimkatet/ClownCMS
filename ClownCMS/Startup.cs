@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,7 +26,11 @@ namespace ClownCMS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            // In production, the React files will be served from this directory
+
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(connection));
+
             var authOprions = Configuration.GetSection("Auth").Get<AuthOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -57,6 +62,7 @@ namespace ClownCMS
                     });
             });
 
+            //!!!
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
@@ -94,6 +100,7 @@ namespace ClownCMS
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
+            //!!!
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

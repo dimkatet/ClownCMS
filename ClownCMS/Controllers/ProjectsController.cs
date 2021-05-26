@@ -17,8 +17,10 @@ namespace ClownCMS.Controllers
 
         private readonly ILogger<ProjectsController> _logger;
         private int UserId => Int32.Parse(User.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
-        public ProjectsController(ILogger<ProjectsController> logger)
+        private ApplicationContext db;
+        public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext context)
         {
+            db = context;
             _logger = logger;
             _logger.LogInformation("CREATE");
         }
@@ -27,24 +29,19 @@ namespace ClownCMS.Controllers
         public IEnumerable<Project> Get()
         {
             _logger.LogInformation("FETCH");
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                return db.Projects.ToArray();
-            }
+            return db.Projects.ToArray();
         }
+
         [Authorize]
         [HttpPost]
         public int Post([FromBody] string projectName)
         {
             _logger.LogInformation("POST");
-            using (var db = new ApplicationContext())
+            db.Projects.Add(new Project
             {
-                db.Projects.Add(new Project
-                {
-                    ProjectName = projectName
-                });
-                db.SaveChanges();
-            }
+                ProjectName = projectName
+            });
+            db.SaveChanges();
             return 1;
         }
         [Authorize]
@@ -52,14 +49,11 @@ namespace ClownCMS.Controllers
         public int Delete([FromBody] int projectID)
         {
             _logger.LogInformation("POST");
-            using (var db = new ApplicationContext())
-            {
-                var projects = db.Projects.ToList().Where(x => x.ProjectID == projectID);
-                if(projects.Count() == 0)
-                    return -1;
-                db.Projects.Remove(projects.First());
-                db.SaveChanges();
-            }
+            var projects = db.Projects.ToList().Where(x => x.ProjectID == projectID);
+            if(projects.Count() == 0)
+                return -1;
+            db.Projects.Remove(projects.First());
+            db.SaveChanges();
             return 1;
         }
     }
