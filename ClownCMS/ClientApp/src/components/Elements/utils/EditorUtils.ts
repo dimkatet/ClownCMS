@@ -23,6 +23,7 @@ export const addNewBlockAt = (
     const blocksBefore = blockMap.toSeq().takeUntil((v) => (v === block));
     const blocksAfter = blockMap.toSeq().skipUntil((v) => (v === block)).rest();
     const newBlockKey = genKey();
+    const lineBlockKey = genKey();
 
     const newBlock = new ContentBlock({
         key: newBlockKey,
@@ -33,8 +34,16 @@ export const addNewBlockAt = (
         data: initialData,
     });
 
+    const lineBlock = new ContentBlock({
+        key: lineBlockKey,
+        type: 'unstyled',
+        text: '',
+        characterList: List(),
+        depth: 0
+    })
+
     const newBlockMap = blocksBefore.concat(
-        [[pivotBlockKey, block], [newBlockKey, newBlock]],
+        [[pivotBlockKey, block], [newBlockKey, newBlock], [lineBlockKey, lineBlock]],
         blocksAfter
     ).toOrderedMap();
 
@@ -53,4 +62,11 @@ export const addNewBlockAt = (
     });
 
     return EditorState.push(editorState, newContent as ContentState, 'split-block');
+};
+
+export const getCurrentBlock = (editorState: EditorState) => {
+    const selectionState = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+
+    return contentState.getBlockForKey(selectionState.getStartKey());
 };

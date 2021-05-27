@@ -1,5 +1,4 @@
-﻿import { Console } from 'console';
-import { Action, Reducer } from 'redux';
+﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 
 export interface StartPageState {
@@ -41,38 +40,42 @@ export const actionCreators = {
 
     createProject: (projectName: string): AppThunkAction<Action> => (dispath, getState) => {
         var appState = getState();
-        fetch('projects', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-            },
-            body: JSON.stringify(projectName)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                requestProjects(dispath, getState);
-            });
+        if (appState && appState.startPage) {
+            fetch('projects', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                },
+                body: JSON.stringify(projectName)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    requestProjects(dispath, getState);
+                });
+        }
     },
 
     deleteProject: (projectID: number): AppThunkAction<Action> => (dispath, getState) => {
         var appState = getState();
-        fetch('projects', {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-            },
-            body: JSON.stringify(projectID)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                requestProjects(dispath, getState);
-            });
+        if (appState && appState.startPage) {
+            fetch('projects', {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                },
+                body: JSON.stringify(projectID)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    requestProjects(dispath, getState);
+                });
+        }
     }
 };
 

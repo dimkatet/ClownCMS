@@ -1,14 +1,14 @@
-﻿import { clear } from 'console';
-import { Action, Reducer } from 'redux';
+﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 import { NavMenuItem } from './ProjectStore';
 
 export interface NavigatinonState {
-    isLoading: boolean;
-    menuItem: NavMenuItem;
-    isActual: boolean;
-    isShowContent: boolean;
-    sections: Section[];
+    isLoading: boolean,
+    menuItem: NavMenuItem,
+    isActual: boolean,
+    isShowContent: boolean,
+    sections: Section[],
+    currentCategory: Category
 }
 
 export interface Preview {
@@ -48,6 +48,11 @@ interface SetMenuItemAction {
     menuItem: NavMenuItem;
 }
 
+interface SetCurrentCategory {
+    type: 'SET_CUR_CATEGORY',
+    category: Category
+}
+
 interface NavState {
     type: 'NAV_STATE';
 }
@@ -61,7 +66,7 @@ interface PageState {
     state: boolean;
 }
 
-type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState;
+type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState | SetCurrentCategory;
 
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -106,10 +111,9 @@ const postImage = async (image?: File) => {
 
 }
 
-
-
 export const actionCreators = {
     requestNavigation: (): AppThunkAction<KnownAction> => requestNavigation,
+
     setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
@@ -149,7 +153,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
     deleteSection: (sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
@@ -164,7 +168,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -183,7 +187,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -200,7 +204,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -216,7 +220,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -235,7 +239,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -255,7 +259,7 @@ export const actionCreators = {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                     }
-                }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+                }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
             });
         }
     },
@@ -272,7 +276,7 @@ export const actionCreators = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
-            }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+            }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
 
@@ -294,13 +298,22 @@ export const actionCreators = {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                     }
-                }).then(response => { if (response.status == 200) { requestNavigation(dispatch, getState) } })
+                }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
             })
+        }
+    },
+
+    setCurrentCategory: (category: Category): AppThunkAction<KnownAction> => (dispatch: any, getState: any) => {
+        const appState = getState();
+        if (appState && appState.navigation) {
+            dispatch({ type: 'SET_CUR_CATEGORY', category });
         }
     }
 }
 
-const unloadedState: NavigatinonState = { sections: [], isLoading: false, isActual: false, isShowContent: false, menuItem: {} as NavMenuItem }
+const unloadedState: NavigatinonState = {
+    sections: [], isLoading: false, isActual: false, isShowContent: false, menuItem: {} as NavMenuItem, currentCategory: {} as Category
+}
 
 export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | undefined, incomingAction: Action): NavigatinonState => {
     if (state === undefined) {
@@ -314,7 +327,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isLoading: true,
                 isActual: false,
                 isShowContent: false,
-                menuItem: state.menuItem
+                menuItem: state.menuItem,
+                currentCategory: state.currentCategory
             };
         case 'RECEIVE_NAVIGATION':
             return {
@@ -322,7 +336,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isLoading: false,
                 isActual: false,
                 isShowContent: false,
-                menuItem: state.menuItem
+                menuItem: state.menuItem,
+                currentCategory: state.currentCategory
             };
         case 'SET_MENU_ITEM':
             return {
@@ -330,7 +345,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isLoading: false,
                 isActual: false,
                 isShowContent: false,
-                menuItem: action.menuItem
+                menuItem: action.menuItem,
+                currentCategory: state.currentCategory
             };
         case 'NAV_STATE':
             return {
@@ -338,8 +354,18 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isLoading: false,
                 isActual: true,
                 isShowContent: state.isShowContent,
-                menuItem: state.menuItem
+                menuItem: state.menuItem,
+                currentCategory: state.currentCategory
             };
+        case 'SET_CUR_CATEGORY':
+            return {
+                sections: state.sections,
+                isLoading: false,
+                isActual: true,
+                isShowContent: state.isShowContent,
+                menuItem: state.menuItem,
+                currentCategory: action.category
+            }
         case 'EMPTY_STATE':
             return unloadedState;
         case 'PAGE_STATE':

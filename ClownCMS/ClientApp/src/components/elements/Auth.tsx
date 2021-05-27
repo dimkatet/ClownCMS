@@ -1,5 +1,4 @@
 ﻿import * as React from 'react';
-import { render } from 'react-dom';
 import * as AuthStore from '../../store/AuthStore';
 import PopUp from '../PopUp';
 
@@ -12,9 +11,15 @@ export default function Auth() {
     const [isAdding, setAdding] = React.useState(false);
     const [isAuth, setAuth] = React.useState(localStorage.getItem('access_token') ? true : false);
 
-    React.useEffect(() => { setAuth(localStorage.getItem('access_token') ? true : false) }, [localStorage.getItem('access_token')]);
+    React.useEffect(() => {
+        setAuth(localStorage.getItem('access_token') ? true : false)
+    }, [localStorage.getItem('access_token')]);
+
     const [userName, setUserName] = React.useState(localStorage.getItem('UserName') ? localStorage.getItem('UserName') : "");
-    React.useEffect(() => { setUserName(localStorage.getItem('UserName') ? localStorage.getItem('UserName') : "") }, [localStorage.getItem('UserName')]);
+    React.useEffect(() => {
+        setUserName(localStorage.getItem('UserName') ? localStorage.getItem('UserName') : "")
+    }, [localStorage.getItem('UserName')]);
+
     const [TextEmail, addingTextEmail] = React.useState("");
     const [TextPass, addingTextPass] = React.useState("");
 
@@ -63,6 +68,5 @@ export default function Auth() {
                     </div>
                 </div>
             </PopUp>}
-
     </div>)
 }

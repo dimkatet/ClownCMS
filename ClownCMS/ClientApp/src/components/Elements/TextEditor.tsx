@@ -5,18 +5,17 @@ import {
     ContentState,
     RichUtils,
     CompositeDecorator,
-    convertToRaw,
-    convertFromRaw,
-    Modifier, Entity,
-    AtomicBlockUtils,
+    Modifier,
     ContentBlock,
-    DefaultDraftBlockRenderMap
+    DefaultDraftBlockRenderMap,
+    DraftHandleValue,
+    KeyBindingUtil
 } from 'draft-js';
 import Ribbon from './Ribbon';
 import ImageBlock from './ImageBlock';
 import SliderBlock from './SliderBlock';
 import customStyleMap from './utils/EditorStyles';
-import { addNewBlockAt } from './utils/EditorUtils';
+import { addNewBlockAt, getCurrentBlock } from './utils/EditorUtils';
 import { getCrossingStyles, isCrossingStyle } from './utils/EditorStyles';
 import { Map } from 'immutable';
 import './styles/TextEditor.css';
@@ -32,21 +31,24 @@ interface TextEditorState {
     editorState: EditorState
 }
 
+type SyntheticKeyboardEvent = React.KeyboardEvent<{}>;
+
 class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
 
 
     constructor(probs: TextEditorProbs) {
         super(probs);
         this.state = { editorState: EditorState.createWithContent(this.props.contentState, decorator) };
-        this.toggleInlineStyle = this.toggleInlineStyle.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.handleKeyCommand = this.handleKeyCommand.bind(this);
-        this.setLink = this.setLink.bind(this);
         this.getEditorState = this.getEditorState.bind(this);
         this.setEditorState = this.setEditorState.bind(this);
+        this.toggleInlineStyle = this.toggleInlineStyle.bind(this);
         this.toggleCustomStyle = this.toggleCustomStyle.bind(this);
         this.toggleList = this.toggleList.bind(this);
+        this.handleKeyCommand = this.handleKeyCommand.bind(this);
         this.handleInputFiles = this.handleInputFiles.bind(this);
+        this.handleReturn = this.handleReturn.bind(this);
+        this.setLink = this.setLink.bind(this);
+        this.onChange = this.onChange.bind(this);
 
         this.blockRendererFn = customBlockRenderer(this.setEditorState, this.getEditorState);
     }
@@ -78,6 +80,24 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
         }
         return 'not-handled';
     }
+
+    handleReturn(e: SyntheticKeyboardEvent, editorState: EditorState): DraftHandleValue {
+
+        if (KeyBindingUtil.isSoftNewlineEvent(e)) {
+            this.onChange(RichUtils.insertSoftNewline(editorState));
+            return 'handled';
+        } else if (!e.altKey && !e.metaKey && !e.ctrlKey) {
+            const currentBlock = getCurrentBlock(editorState);
+            const blockType = currentBlock.getType();
+
+            if (blockType === 'SLIDER') {
+                this.onChange(addNewBlockAt(editorState, currentBlock.getKey()));
+                return 'handled';
+            }
+        }
+        return 'not-handled';
+    }
+
     setLink() {
         const urlValue = prompt('Введите ссылку', '');
         const { editorState } = this.state;
@@ -199,6 +219,8 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
                 'slides': res
             })
         ));
+
+        //this.onChange(RichUtils.insertSoftNewline(this.getEditorState()));
         
     }
 
@@ -219,6 +241,7 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
                     customStyleMap={customStyleMap}
                     blockRendererFn={this.blockRendererFn}
                     blockRenderMap={RenderMap}
+                    handleReturn={this.handleReturn}
                     ref='editor'
                 />
             </div>

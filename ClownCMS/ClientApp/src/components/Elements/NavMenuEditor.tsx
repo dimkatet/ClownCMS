@@ -13,6 +13,7 @@ type Props = ProjectStore.ProjectState & typeof ProjectStore.actionCreators & ty
 
 interface State {
     isAdding: boolean,
+    isAuth: boolean,
     addingText: string,
     addingType: number,
     selectedItemID: number,
@@ -23,17 +24,17 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props)
         this.props.requestMenu()
-        this.state = { isAdding: false, addingText: "", addingType: 0, selectedItemID: -1, showAddMenuItem: false};
+        this.state = { isAdding: false, addingText: "", addingType: 0, selectedItemID: -1, showAddMenuItem: false, isAuth: localStorage.getItem('access_token') ? true : false };
     }
 
     private getSave = (id: number) => {
-        if (id == -1)
+        if (id === -1)
             return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
         return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
     }
 
     private getDelete = (id: number) => {
-        if (id == -1)
+        if (id === -1)
             return this.Close;
         return () => { this.props.deleteMenuItem(id); this.Close(); this.props.navigatinonClear(); }
     }
@@ -70,7 +71,7 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                     this.setState({ showAddMenuItem: true });
                 }}
             >
-                {this.props.navMenuItems.map(item =>
+                {this.props.navMenuItems.map((item, index) =>
                     <this.MenuItem
                         menuItemName={item.menuItemName}
                         execute={() => this.props.setCurrentMenuItem(item)}
@@ -83,8 +84,10 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                                 addingType: item.menuItemType,
                                 addingText: item.menuItemName
                             });
-                        }}>
-                        {this.state.selectedItemID == item.menuItemId && <div
+                        }}
+                        key={index}
+                    >
+                        {this.state.selectedItemID === item.menuItemId && this.state.isAuth && < div
                             className='header-item-change'
                             onClick={() => {
                                 this.setState({ isAdding: true });
@@ -94,7 +97,7 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                         </div>}
                     </this.MenuItem>)
                 }
-                <div className='header-item-add'
+                {this.state.isAuth && < div className='header-item-add'
                     onClick={() => this.setState({
                         isAdding: true,
                         addingText: "",
@@ -103,8 +106,8 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                         showAddMenuItem: false
                     })}
                 >
-                    <AddIcon fontSize='large'/>
-                </div>
+                    <AddIcon fontSize='large' />
+                </div>}
 
                 {this.state.isAdding && <PopUp onClose={this.Close}>
                     <div className='pop-up-content'>

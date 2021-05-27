@@ -159,8 +159,13 @@
     background: rgb(180, 180, 180);
 }
 
-.left-menu-section-content{
+.left-menu-section-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
+    height: 100%;
+    width: 100%;
 }
 
 .left-menu-section-change {

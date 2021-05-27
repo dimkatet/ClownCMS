@@ -2,7 +2,6 @@
 import * as ProjectStore from './ProjectStore'
 import * as NavigationStore from './NavigationStore';
 import * as BodyStore from './BodyStore';
-import * as AuthStore from './AuthStore';
 
 // The top-level state object
 export interface ApplicationState {

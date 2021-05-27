@@ -9,14 +9,14 @@ interface ImageBlockProps {
 
 export default class ImageBlock extends React.Component<ImageBlockProps, {}> {
 
-    constructor(props: ImageBlockProps) {
-        super(props);
-    }
-
     render() {
         const src = this.props.block.getData().get('image').src;
         return (
-            <img className='image-block' src={src} />
+            <img
+                className='image-block'
+                src={src}
+                alt='Content'
+            />
         );
     }
 

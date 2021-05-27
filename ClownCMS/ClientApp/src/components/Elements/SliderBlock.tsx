@@ -43,7 +43,6 @@ export default class SliderBlock extends React.Component<SliderBlockProps, Slide
         const { currentSlideIndex } = this.state;
         const newActiveIndex = (currentSlideIndex + slidesLength + 1) % slidesLength;
         this.setCurrentIndex(newActiveIndex);
-        console.log(this.state);
     }
 
     render() {
@@ -81,7 +80,7 @@ export default class SliderBlock extends React.Component<SliderBlockProps, Slide
                             onClick={this.slideForward}
                         >
                             <div className="chevron-arrow-right" />
-                        </div>
+                        </div> 
                     </div>
                 </div>
             </div>

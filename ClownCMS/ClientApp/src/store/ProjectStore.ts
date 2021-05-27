@@ -68,7 +68,7 @@ export const actionCreators = {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token')
                 }
             }).then(data => {
-                if (data.status == 200)
+                if (data.status === 200)
                     dispatch({
                         type: 'CHANGE_PROJECT_MENU_ITEM', navMenuItem: {
                             menuItemId: menuItemId,

@@ -5,10 +5,6 @@ type PopUpProps = { onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEv
 
 class PopUp extends React.Component<PopUpProps>
 {
-    constructor(props: PopUpProps) {
-        super(props);
-    }
-
     public render() {
         return (
             <React.Fragment>

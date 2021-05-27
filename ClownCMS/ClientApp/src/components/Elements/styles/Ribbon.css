@@ -6,7 +6,7 @@
 
 .ribbon-items {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     list-style: none;
     height: 100%;
     margin: 0;
@@ -54,7 +54,7 @@
 
 .selector {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     max-width: 100%;
 }
 

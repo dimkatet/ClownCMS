@@ -1,9 +1,8 @@
 ﻿import * as React from 'react';
 import { convertToHTML } from 'draft-convert';
-import { fontFamilies, fontSizes } from './EditorStyles';
-import SliderBlock from '../SliderBlock';
+import { fontFamilies } from './EditorStyles';
 import '../styles/ImageBlock.css';
-import { ContentBlock, ContentState } from 'draft-js';
+import { ContentState } from 'draft-js';
 
 const styleToHTML = (style: string) => {
     if (style.includes('FONT_SIZE_')) {
@@ -35,7 +34,11 @@ const blockToHTML = (block: any) => {
     switch (block.type) {
         case 'IMAGE':
             const src = block.data.image.src;
-            return <img className='image-block' src={src} />
+            return <img
+                className='image-block'
+                src={src}
+                alt='Content'
+            />
         case 'SLIDER':
             const slides = block.data.slides;
             return {
@@ -51,6 +54,7 @@ const entityToHTML = (entity: any, originalText: string) => {
         return <a
             href={entity.data.url}
             target="_blank"
+            rel='noopener noreferrer'
         >
             {originalText}
         </a>;

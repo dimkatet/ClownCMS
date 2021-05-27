@@ -1,5 +1,4 @@
 ﻿import * as React from 'react';
-import { useState } from 'react';
 import { EditorState } from 'draft-js';
 import IconLink from '@material-ui/icons/Link';
 import UnorderedListIcon from '@material-ui/icons/FormatListBulleted';

@@ -1,5 +1,5 @@
 ﻿import { Action, Reducer } from 'redux';
-import { EditorState, ContentState, convertFromRaw, convertToRaw, EditorBlock, RawDraftContentBlock, RawDraftContentState } from 'draft-js'
+import { EditorState, ContentState, convertFromRaw, convertToRaw, RawDraftContentState } from 'draft-js'
 import { AppThunkAction } from './';
 
 export interface BodyState {
@@ -104,7 +104,6 @@ export const actionCreators = {
     updateContent: (content: ContentState): AppThunkAction<ContentAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.body) {
-            const c = convertToRaw(content);
             dispatch({ type: 'UPDATE_CONTENT', content: content });
         }
     },

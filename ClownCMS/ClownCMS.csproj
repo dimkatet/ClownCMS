@@ -28,14 +28,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\elements\AddSidebarItem.tsx" />
     <None Remove="ClientApp\src\components\elements\Auth.tsx" />
+    <None Remove="ClientApp\src\components\elements\BodyPreview.js" />
+    <None Remove="ClientApp\src\components\elements\BodyPreview.js.map" />
+    <None Remove="ClientApp\src\components\elements\BodyPreview.tsx" />
     <None Remove="ClientApp\src\components\elements\HTMLConverter.tsx" />
     <None Remove="ClientApp\src\components\elements\ImageBlock.tsx" />
+    <None Remove="ClientApp\src\components\elements\PreviewEditor.js" />
+    <None Remove="ClientApp\src\components\elements\PreviewEditor.js.map" />
+    <None Remove="ClientApp\src\components\elements\PreviewEditor.tsx" />
     <None Remove="ClientApp\src\components\elements\Ribbon.tsx" />
+    <None Remove="ClientApp\src\components\elements\SidebarItem.js" />
+    <None Remove="ClientApp\src\components\elements\SidebarItem.js.map" />
+    <None Remove="ClientApp\src\components\elements\SidebarItem.tsx" />
     <None Remove="ClientApp\src\components\elements\SliderBlock.tsx" />
     <None Remove="ClientApp\src\components\elements\TextEditor.tsx" />
     <None Remove="ClientApp\src\components\elements\utils\EditorStyles.ts" />
     <None Remove="ClientApp\src\components\elements\utils\EditorUtils.ts" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\middle-components\LeftMenu.tsx" />
+    <None Remove="ClientApp\src\components\page-structure\inner-components\middle-components\RightMenu.tsx" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
     <None Remove="ClientApp\src\components\elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
