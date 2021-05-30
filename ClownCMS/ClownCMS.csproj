@@ -32,9 +32,11 @@
     <None Remove="ClientApp\src\components\elements\Auth.tsx" />
     <None Remove="ClientApp\src\components\elements\BodyPreview.js" />
     <None Remove="ClientApp\src\components\elements\BodyPreview.js.map" />
-    <None Remove="ClientApp\src\components\elements\BodyPreview.tsx" />
+    <None Remove="ClientApp\src\components\elements\ContentPreview.tsx" />
     <None Remove="ClientApp\src\components\elements\HTMLConverter.tsx" />
     <None Remove="ClientApp\src\components\elements\ImageBlock.tsx" />
+    <None Remove="ClientApp\src\components\elements\NavMenuEditor.js" />
+    <None Remove="ClientApp\src\components\elements\NavMenuEditor.js.map" />
     <None Remove="ClientApp\src\components\elements\PreviewEditor.js" />
     <None Remove="ClientApp\src\components\elements\PreviewEditor.js.map" />
     <None Remove="ClientApp\src\components\elements\PreviewEditor.tsx" />

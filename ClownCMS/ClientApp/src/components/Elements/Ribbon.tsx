@@ -4,6 +4,9 @@ import IconLink from '@material-ui/icons/Link';
 import UnorderedListIcon from '@material-ui/icons/FormatListBulleted';
 import OrderedListIcon from '@material-ui/icons/FormatListNumbered';
 import ImageIcon from '@material-ui/icons/Image';
+import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
+import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
+import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import { fontSizes, fontFamilies } from './utils/EditorStyles';
 import './styles/Ribbon.css';
 
@@ -13,6 +16,7 @@ interface RibbonProbs {
     setLink(): void
     setList(listType: string): void
     setImages(e: React.ChangeEvent<HTMLInputElement>): void
+    setAlign(align: string): void
 }
 
 interface RibbonState {
@@ -140,7 +144,8 @@ class Ribbon extends React.Component<RibbonProbs, RibbonState> {
                     >
                         <OrderedListIcon />
                     </li>
-                    <li className='ribbon-item'>
+                    <li
+                        className='ribbon-item'>
                         <label htmlFor='file'>
                             <ImageIcon />
                         </label>
@@ -149,7 +154,31 @@ class Ribbon extends React.Component<RibbonProbs, RibbonState> {
                             id='file'
                             multiple
                             onChange={this.props.setImages}
-                        />
+                    />
+                    </li>
+                    <li
+                        className='ribbon-item'
+                        onMouseDown={e => {
+                            this.props.setAlign('ALIGN_LEFT');
+                        }}
+                    >
+                        <FormatAlignLeftIcon />
+                    </li>
+                    <li
+                        className='ribbon-item'
+                        onMouseDown={e => {
+                            this.props.setAlign('ALIGN_CENTER');
+                        }}
+                    >
+                        <FormatAlignCenterIcon />
+                    </li>
+                    <li
+                        className='ribbon-item'
+                        onMouseDown={e => {
+                            this.props.setAlign('ALIGN_RIGHT');
+                        }}
+                    >
+                        <FormatAlignRightIcon />
                     </li>
                 </ul>
             </div>

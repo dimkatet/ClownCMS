@@ -5,7 +5,8 @@ import * as NavigationStore from '../../store/NavigationStore';
 import { ApplicationState } from '../../store';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddIcon from '@material-ui/icons/AddCircle';
-import PopUp from '../PopUp';
+import MenuIcon from '@material-ui/icons/Menu';
+import PopUp from './PopUp';
 import './styles/NavMenuEditor.css';
 
 
@@ -17,14 +18,32 @@ interface State {
     addingText: string,
     addingType: number,
     selectedItemID: number,
-    showAddMenuItem: boolean
+    showAddMenuItem: boolean,
+    showingMenu: boolean,
+    windowWidth: number
+    
 }
 
 class NavMenuEditor extends React.PureComponent<Props, State> {
     constructor(props: Props) {
         super(props)
         this.props.requestMenu()
-        this.state = { isAdding: false, addingText: "", addingType: 0, selectedItemID: -1, showAddMenuItem: false, isAuth: localStorage.getItem('access_token') ? true : false };
+        this.state = {
+            isAdding: false,
+            addingText: "",
+            addingType: 0,
+            selectedItemID: -1,
+            showAddMenuItem: false,
+            isAuth: localStorage.getItem('access_token') ? true : false,
+            showingMenu: false,
+            windowWidth: window.innerWidth
+        };
+
+        window.addEventListener('resize', this.updateWidth);
+    }
+
+    private updateWidth = () => {
+        this.setState({ windowWidth: window.innerWidth });
     }
 
     private getSave = (id: number) => {
@@ -71,7 +90,19 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                     this.setState({ showAddMenuItem: true });
                 }}
             >
-                {this.props.navMenuItems.map((item, index) =>
+                <div className='header-item-logo'>
+                    SiteName
+                </div>
+                {this.state.windowWidth <= 575 && <div
+                        className='header-button'
+                        onMouseDown={e => {
+                            this.setState({ showingMenu: !this.state.showingMenu })
+                        }}
+                >
+                    <MenuIcon fontSize='inherit' />
+                </div>}
+                <div className='header-nav-items'>
+                {(this.state.showingMenu || this.state.windowWidth > 575) && this.props.navMenuItems.map((item, index) =>
                     <this.MenuItem
                         menuItemName={item.menuItemName}
                         execute={() => this.props.setCurrentMenuItem(item)}
@@ -96,7 +127,8 @@ class NavMenuEditor extends React.PureComponent<Props, State> {
                             <SettingsIcon fontSize='inherit' />
                         </div>}
                     </this.MenuItem>)
-                }
+                    }
+                    </div>
                 {this.state.isAuth && < div className='header-item-add'
                     onClick={() => this.setState({
                         isAdding: true,

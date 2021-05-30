@@ -7,8 +7,8 @@ import { ContentState } from 'draft-js';
 const styleToHTML = (style: string) => {
     if (style.includes('FONT_SIZE_')) {
         var r = /\d+/;
-        var fSize = style.match(r);
-        return <span style={{ fontSize: fSize + 'pt' }} />;
+        var fSize = style.match(r) + '';
+        return <span style={{ fontSize: parseInt(fSize) / 12 + 'em' }} />;
     }
     if (style.includes('FONT_FAMILY_')) {
         var fFamily = 'Arial';
@@ -26,12 +26,16 @@ const styleToHTML = (style: string) => {
         case 'UNDERLINE':
             return <span className="underline" style={{ textDecoration: 'underline' }}/>;
         default:
-            return null;
+            return <div className='govno'/>;
     }
 }
 
 const blockToHTML = (block: any) => {
     switch (block.type) {
+        case 'unstyled':
+            if (block.text === ' ' || block.text === '')
+                return <br />;
+            return <div className='content-text' />
         case 'IMAGE':
             const src = block.data.image.src;
             return <img
@@ -45,6 +49,19 @@ const blockToHTML = (block: any) => {
                 start: `<div class="slider js-slider" data-slides="${JSON.stringify(slides).replace(/"/g, "'")}"><div>`,
                 end: `</div></div>`
             }
+        case 'ALIGN_CENTER':
+            if (block.text === ' ' || block.text === '')
+                return <br />;
+            return <div className='content-text center' />
+        case 'ALIGN_RIGHT':
+            if (block.text === ' ' || block.text === '')
+                return <br />;
+            return <div className='content-text right' />
+        case 'ALIGN_LEFT':
+            if (block.text === ' ' || block.text === '')
+                return <br />;
+            return <div className='content-text left' />
+
         default:
             return null;
     }

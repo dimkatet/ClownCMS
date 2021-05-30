@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from "react-router-dom";
-import PopUp from './PopUp';
+import PopUp from './elements/PopUp';
 import { ApplicationState } from '../store';
 import * as StartPageStore from '../store/StartPageStore';
 import * as ProjectStore from '../store/ProjectStore';

@@ -5,13 +5,17 @@ import * as NavigationStore from '../../../../store/NavigationStore';
 import * as BodyStore from '../../../../store/BodyStore';
 import SideBarItem from '../../../elements/SidebarItem';
 import AddSidebarItem from '../../../elements/AddSidebarItem';
+import MenuIcon from '@material-ui/icons/Menu';
+import './styles/RightMenu.css';
 
 type RightMenuProps = NavigationStore.NavigatinonState
     & typeof NavigationStore.actionCreators
     & typeof BodyStore.actionCreators;
 
 interface RightMenuState {
-    isAuth: boolean
+    isAuth: boolean,
+    showingMenu: boolean,
+    windowWidth: number
 }
 
 class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
@@ -20,8 +24,12 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
         super(props);
 
         this.state = {
-            isAuth: localStorage.getItem('access_token') ? true : false
+            isAuth: localStorage.getItem('access_token') ? true : false,
+            showingMenu: false,
+            windowWidth: window.innerWidth
         }
+
+        window.addEventListener('resize', this.updateWidth);
     }
 
     public componentDidMount() {
@@ -40,14 +48,18 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
         }
     }
 
-    render() {
+    private updateWidth = () => {
+        this.setState({ windowWidth: window.innerWidth });
+    }
+
+    private renderItems = () => {
         if (this.props.sections.length < 1)
             return null;
         switch (this.props.menuItem.menuItemType) {
             case 2:
                 if (this.props.sections[0].categories.length < 1)
                     return null
-                return <div className='right-menu'>
+                return <div className='right-menu-container'>
                     {this.props.sections[0].categories[0].previews.map(item =>
                         <SideBarItem
                             delete={() => { this.props.deletePreview(item.previewId) }}
@@ -69,7 +81,7 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
             case 3:
                 if (this.props.sections.length < 1)
                     return null;
-                return <div className='right-menu'>
+                return <div className='right-menu-container'>
                     {this.props.sections[0].categories.map(item => {
                         return <SideBarItem
                             delete={() => { this.props.deleteCategory(item.categoryId) }}
@@ -90,8 +102,23 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                         }}
                     />}
                 </div>
-            default: return <div className='right-menu' />;
+            default: return null;
         }
+    }
+
+    render() {
+        return <div className='right-menu'>
+            {this.state.windowWidth <= 575 && (this.props.menuItem.menuItemType == 2 || this.props.menuItem.menuItemType == 3) &&
+                <div
+                    className='right-menu-button'
+                    onMouseDown={e => {
+                        this.setState({ showingMenu: !this.state.showingMenu })
+                    }}
+                >
+                    <MenuIcon />
+                </div>}
+            {(this.state.showingMenu || this.state.windowWidth > 575) && this.renderItems()}
+            </div>
     }
 }
 
