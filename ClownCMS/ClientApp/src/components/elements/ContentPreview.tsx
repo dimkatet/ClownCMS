@@ -2,6 +2,7 @@
 import PreviewEditor from './PreviewEditor';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
+import './styles/ContentPreview.css';
 
 export default function BodyPreview(props: {
     previewName: string,

@@ -9,7 +9,8 @@ import {
     ContentBlock,
     DefaultDraftBlockRenderMap,
     DraftHandleValue,
-    KeyBindingUtil
+    KeyBindingUtil,
+    convertToRaw
 } from 'draft-js';
 import Ribbon from './Ribbon';
 import ImageBlock from './ImageBlock';
@@ -179,6 +180,10 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
         ));
     }
 
+    toggleTextAlign = (align: string) => {
+        this.onChange(RichUtils.toggleBlockType(this.getEditorState(), align));
+    }
+
     handleInputFiles(e: React.ChangeEvent<HTMLInputElement>) {
         const files = e.target.files;
         if (files === null)
@@ -233,12 +238,14 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
                     setLink={this.setLink}
                     setList={this.toggleList}
                     setImages={this.handleInputFiles}
+                    setAlign={this.toggleTextAlign}
                 />
                 <Editor
                     editorState={this.state.editorState}
                     onChange={this.onChange}
                     handleKeyCommand={this.handleKeyCommand}
                     customStyleMap={customStyleMap}
+                    blockStyleFn={customBlockStyleFn}
                     blockRendererFn={this.blockRendererFn}
                     blockRenderMap={RenderMap}
                     handleReturn={this.handleReturn}
@@ -246,6 +253,21 @@ class TextEditor extends React.Component<TextEditorProbs, TextEditorState> {
                 />
             </div>
         );
+    }
+}
+
+const customBlockStyleFn = (contentBlock: ContentBlock) => {
+    const type = contentBlock.getType();
+    switch (type) {
+        case 'ALIGN_CENTER':
+            return 'align-center';
+
+        case 'ALIGN_RIGHT':
+            return 'align-right';
+
+        case 'ALIGN_LEFT':
+            return 'align-left';
+        default: return '';
     }
 }
 
@@ -292,6 +314,7 @@ const customBlockRenderer = (setEditorState: Function, getEditorState: Function)
                 component: SliderBlock,
                 editable: false
             }
+
         default: return null;
     }
 };

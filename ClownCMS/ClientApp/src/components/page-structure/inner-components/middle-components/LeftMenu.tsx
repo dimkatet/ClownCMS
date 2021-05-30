@@ -5,6 +5,8 @@ import * as NavigationStore from '../../../../store/NavigationStore';
 import * as BodyStore from '../../../../store/BodyStore';
 import SideBarItem from '../../../elements/SidebarItem';
 import AddSidebarItem from '../../../elements/AddSidebarItem';
+import MenuIcon from '@material-ui/icons/Menu';
+import './styles/LeftMenu.css';
 
 type LeftMenuProps = NavigationStore.NavigatinonState
     & typeof NavigationStore.actionCreators
@@ -12,7 +14,9 @@ type LeftMenuProps = NavigationStore.NavigatinonState
 
 interface LeftMenuState {
     isAuth: boolean,
-    SelectedID: number
+    SelectedID: number,
+    showingMenu: boolean,
+    windowWidth: number
 }
 
 class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
@@ -22,12 +26,20 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
 
         this.state = {
             isAuth: localStorage.getItem('access_token') ? true : false,
-            SelectedID: -1
+            SelectedID: -1,
+            showingMenu: false,
+            windowWidth: window.innerWidth
         }
+
+        window.addEventListener('resize', this.updateWidth);
     }
 
     public componentDidMount() {
-        
+
+    }
+
+    private updateWidth = () => {
+        this.setState({ windowWidth: window.innerWidth });
     }
 
     public componentDidUpdate() {
@@ -44,11 +56,11 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
         }
     }
 
-    render() {
+    private renderItems = () => {
         switch (this.props.menuItem.menuItemType) {
             case 4:
                 if (this.props.sections.length > 0)
-                    return <div className='left-menu'>
+                    return <div className='left-menu-container'>
                         {this.props.sections[0].categories.map((item, index) =>
                             <SideBarItem
                                 delete={() => { this.props.deleteCategory(item.categoryId) }}
@@ -89,7 +101,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                         />}
                     </div>;
                 return null;
-            case 5: return <div className='left-menu'>
+            case 5: return <div className='left-menu-container'>
                 {this.props.sections.map((item, index) =>
                     <SideBarItem
                         delete={() => { this.props.deleteSection(item.sectionId) }}
@@ -132,8 +144,23 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                 />}
             </div>
 
-            default: return <div className='left-menu' />;
+            default: return null;
         }
+    }
+
+    render() {
+        return <div className='left-menu'>
+            {this.state.windowWidth <= 575 && (this.props.menuItem.menuItemType == 4 || this.props.menuItem.menuItemType == 5) &&
+                <div
+                className='left-menu-button'
+                onMouseDown={e => {
+                    this.setState({ showingMenu: !this.state.showingMenu })
+                }}
+            >
+                <MenuIcon />
+            </div>}
+            {(this.state.showingMenu || this.state.windowWidth > 575) && this.renderItems()}
+        </div>
     }
 }
 

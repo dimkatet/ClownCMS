@@ -1,0 +1,77 @@
+﻿.left-menu {
+    background: rgb(37, 37, 37);
+    height: min-content;
+}
+
+.left-menu-container {
+    height: min-content;
+}
+
+.left-menu-item {
+    margin-left: 10px;
+}
+
+.left-menu-button {
+    color: rgb(127, 127, 127);
+    padding-left: 0.5rem;
+    padding-bottom: 0.4rem;
+}
+
+.left-menu-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: visible;
+    width: 8rem;
+    height: 2rem;
+    background: rgb(127, 127, 127);
+    margin-bottom: 3px;
+    margin-left: 3px;
+    border-radius: 3px;
+}
+
+
+.left-menu-section:hover {
+    background: rgb(180, 180, 180);
+}
+
+.left-menu-section-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.left-menu-section-change {
+    position: absolute;
+    color: rgb(127, 127, 127);
+    right: -23px;
+}
+
+.left-menu-previews {
+    margin-left: 1rem;
+}
+
+.left-menu-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(127, 127, 127);
+    width: 4rem;
+    height: 2rem;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+}
+
+.left-menu-add:hover {
+    background: rgb(180, 180, 180);
+}
+
+.nav-item-edit-buttons {
+    display: flex;
+    justify-content: flex-start;
+}

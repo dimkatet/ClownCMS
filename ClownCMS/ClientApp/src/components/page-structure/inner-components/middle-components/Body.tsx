@@ -9,7 +9,7 @@ import TextEditor from '../../../elements/TextEditor';
 import SliderBlock from '../../../elements/SliderBlock';
 import convertToHTML from '../../../elements/utils/HTMLConverter';
 import PreviewEditor from '../../../elements/PreviewEditor';
-import BodyPreview from '../../../elements/BodyPreview';
+import ContentPreview from '../../../elements/ContentPreview';
 import IconSave from '@material-ui/icons/Save';
 import IconEdit from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
@@ -25,7 +25,8 @@ interface BodyState {
     contentState: ContentState,
     isEditing: boolean,
     isAuth: boolean,
-    isAddingPreview: boolean
+    isAddingPreview: boolean,
+    currentPreviewId: number
 }
 
 class Body extends React.PureComponent<BodyProps, BodyState>
@@ -36,7 +37,8 @@ class Body extends React.PureComponent<BodyProps, BodyState>
             contentState: EditorState.createEmpty().getCurrentContent(),
             isEditing: false,
             isAuth: localStorage.getItem('access_token') ? true : false,
-            isAddingPreview: false
+            isAddingPreview: false,
+            currentPreviewId: -1
         };
         this.updateContent = this.updateContent.bind(this);
         this.insertContent = this.insertContent.bind(this);
@@ -46,8 +48,9 @@ class Body extends React.PureComponent<BodyProps, BodyState>
     }
 
     public componentDidUpdate() {
-        if (!this.state.isEditing)
+        if (!this.state.isEditing) {
             this.insertContent();
+        }
 
         switch (this.props.menuItem.menuItemType) {
             case 1:
@@ -57,9 +60,13 @@ class Body extends React.PureComponent<BodyProps, BodyState>
                 }
                 break;
             case 0:
-                if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {
+                if (this.props.sections.length > 0 &&
+                    this.props.sections[0].categories.length > 0 &&
+                    this.props.sections[0].categories[0].previews.length > 0 &&
+                    this.state.currentPreviewId !== this.props.sections[0].categories[0].previews[0].previewId) {
                     this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId);
                     this.props.openPage();
+                    this.setState({ currentPreviewId: this.props.sections[0].categories[0].previews[0].previewId });
                 }
                 break;
             default: return null;
@@ -96,7 +103,6 @@ class Body extends React.PureComponent<BodyProps, BodyState>
                     onMouseDown={(e) => {
                         if (this.state.isEditing) {
                             this.props.saveContent(this.props.content);
-                            //this.insertContent();
                         } else {
                             const content = document.getElementById('body-content-id');
                             if (content)
@@ -132,7 +138,7 @@ class Body extends React.PureComponent<BodyProps, BodyState>
                             setState(false);
                         }
 
-                        return <BodyPreview
+                        return <ContentPreview
                             execute={() => {
                                 this.props.requestContent(item.previewId);
                                 this.props.openPage();

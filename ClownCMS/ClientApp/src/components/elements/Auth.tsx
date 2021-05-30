@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import * as AuthStore from '../../store/AuthStore';
-import PopUp from '../PopUp';
+import PopUp from './PopUp';
 
 function useForceUpdate() {
     const [value, setValue] = React.useState(0); // integer state

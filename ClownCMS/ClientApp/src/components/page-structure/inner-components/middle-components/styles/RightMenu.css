@@ -1,0 +1,21 @@
+﻿.right-menu {
+    min-height: 93vh;
+    background: rgb(37, 37, 37);
+    height: min-content;
+}
+
+.right-menu-button {
+    color: rgb(127, 127, 127);
+    padding-left: 0.5rem;
+    padding-bottom: 0.4rem;
+}
+
+@media all and (max-width: 575px) {
+    .right-menu {
+        min-height: 0;
+        grid-row-start: 2;
+        grid-column-start: 1;
+        grid-row-end: 3;
+        grid-column-end: 2;
+    }
+}

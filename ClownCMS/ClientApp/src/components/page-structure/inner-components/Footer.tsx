@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import './styles/Footer.css';
 
 
 /*type ProjectProps =
@@ -23,8 +24,8 @@ export default class Footer extends React.PureComponent//<ProjectsProps>
     public render() {
         return (
             <React.Fragment>
-                <div>
-                    i'm footer
+                <div className='wrapper_Footer'>
+                    Prod by Dmitry and Stepan
                 </div>
             </React.Fragment>
         )

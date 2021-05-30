@@ -1,8 +1,22 @@
-﻿
+﻿body::-webkit-scrollbar {
+    width: 0;
+}
+
+
 .wrapper_Base {
     display: grid;
     background-color: rgb(37, 37, 37);
     grid-template-columns: 100%;
     grid-template-rows: 4rem 1fr 3rem;
     min-height: 100vh;
+}
+
+
+@media all and (max-width: 575px) {
+    body {
+        font-size: 12px;
+    }
+    .wrapper_Base {
+        grid-template-rows: min-content 1fr 3rem;
+    }
 }
