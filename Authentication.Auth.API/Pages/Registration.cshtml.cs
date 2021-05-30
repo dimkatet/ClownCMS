@@ -14,11 +14,6 @@ namespace Authentication.Auth.API.Pages
 {
     public class RegistrationModel : PageModel
     {
-        private JWTGenerator jwt;
-        public RegistrationModel(IOptions<AuthOptions> authOprions)
-        {
-            jwt = new JWTGenerator(authOprions);
-        }
         public string Message { get; set; }
         public void OnGet()
         {
@@ -30,12 +25,12 @@ namespace Authentication.Auth.API.Pages
             {
                 using (ApplicationContext db = new ApplicationContext())
                 {
-                    Account user = new Account() { Email = reg.Email, Password = reg.Password, Name = reg.Name };
+                    Account user = new Account() { Email = reg.Email, Password = reg.Password, Name = reg.Name, Secret = UserSupporting.RandomString(45) };
                     db.Accounts.Add(user);
                     db.SaveChanges();
                     HttpContext.Session.SetInt32("Id", user.AccountId); 
                     HttpContext.Session.SetString("Name", user.Name);
-                    Message = $"{jwt.GenerateJWT(user)}, name {user.Name}";
+                    //Message = $"{jwt.GenerateJWT(user)}, name {user.Name}";
                     return Redirect("/");
                 }
             }
@@ -47,8 +42,3 @@ namespace Authentication.Auth.API.Pages
         }
     }
 }
-
-
-/*CookieOptions option = new CookieOptions();
-option.Expires = DateTime.Now.AddDays(2);
-Response.Cookies.Append("Name", user.Name, option);*/

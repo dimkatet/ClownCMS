@@ -16,7 +16,7 @@ namespace Authentication.Auth.API.Models
             Database.EnsureCreated();
             if(this.Accounts.Count() == 0)
             {
-                Account account = new Account() { Email = "admin@gmail.com", Password = "admin", Name = "Admin" };
+                Account account = new Account() { Email = "admin@gmail.com", Password = "admin", Name = "Admin", Secret = "MyKeyPasswordForClownContentManagementSystem"};
                 Accounts.Add(account);
                 this.SaveChanges();
             }

@@ -16,14 +16,13 @@ else
     </form>
     @using (Html.BeginForm("DownloadBots", "Download", FormMethod.Post))
     {
+        <div>SUBD</div>
+        <select name="DBType">
+            <option value="MSSQL">MSSQL</option>
+            <option value="SQLite">SQLite</option>
+        </select>
         <div>Database</div>
-        <input type="text" name="DatabaseName" />
-        <div>Url</div>
-        <input type="text" name="BackUrl"/>
-        //<p>Database</p>
-        //@Html.TextBox("DatabaseName")
-        //<p>Url</p>
-        //@Html.TextBox("BackUrl")
+        <input type="text" name="Connection" />
         <input type="submit" />
     }
 }

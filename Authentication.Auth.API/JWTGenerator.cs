@@ -22,7 +22,7 @@ namespace Authentication.Auth.API
         {
             var authParams = authOptions.Value;
 
-            var securKay = authParams.GetSymmetricSecurityKey();
+            var securKay = AuthOptions.GetSymmetricSecurityKey(user.Secret);
             var credentials = new SigningCredentials(securKay, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>()
@@ -40,19 +40,5 @@ namespace Authentication.Auth.API
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public Account AuthenticateUser(string Email, string Password)
-        {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                try
-                {
-                    return db.Accounts.Where(acc => acc.Email == Email && acc.Password == Password).First();
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
-        }
     }
 }

@@ -28,8 +28,18 @@ namespace ClownCMS
             services.AddControllersWithViews();
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(connection));
+            string subd = Configuration.GetConnectionString("Subd");
+            switch (subd)
+            {
+                case "MSSQL":
+                    services.AddDbContext<ApplicationContext>(options =>
+                        options.UseSqlServer(connection));
+                    break;
+                case "SQLite":
+                    services.AddDbContext<ApplicationContext>(options =>
+                        options.UseSqlite(connection));
+                    break;
+            }
 
             var authOprions = Configuration.GetSection("Auth").Get<AuthOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

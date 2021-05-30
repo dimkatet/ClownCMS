@@ -30,7 +30,7 @@ namespace Authentication.Auth.API
         {
             try
             {
-                Account user = jwt.AuthenticateUser(request.Email, request.Password);
+                Account user = UserSupporting.AuthenticateUser(request.Email, request.Password);
                 return Ok(new
                 {
                     access_token = jwt.GenerateJWT(user),

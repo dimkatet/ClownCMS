@@ -14,11 +14,6 @@ namespace Authentication.Auth.API.Pages
 {
     public class AuthorizationModel : PageModel
     {
-        private JWTGenerator jwt;
-        public AuthorizationModel(IOptions<AuthOptions> authOprions)
-        {
-            jwt = new JWTGenerator(authOprions);
-        }
         public string Message { get; set; }
         public void OnGet()
         {
@@ -28,10 +23,10 @@ namespace Authentication.Auth.API.Pages
         {
             try
             {
-                Account user = jwt.AuthenticateUser(log.Email, log.Password);
+                Account user = UserSupporting.AuthenticateUser(log.Email, log.Password);
                 HttpContext.Session.SetInt32("Id", user.AccountId);
                 HttpContext.Session.SetString("Name", user.Name);
-                Message = $"{jwt.GenerateJWT(user)}, name {user.Name}";
+                //Message = $"{jwt.GenerateJWT(user)}, name {user.Name}";
                 return Redirect("/");
             }
             catch (Exception e)
