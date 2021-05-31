@@ -3,16 +3,39 @@
 @{
     ViewData["Title"] = "Регистрация";
 }
+@section styles{
+    <link href="~/styles/index.css" rel="stylesheet" type="text/css" />
+}
 
-
-<h3>@Model.Message</h3>
-<form method="post">
-    Name
-    <input type="text" name="Name" />
-    Email
-    <input type="text" name="Email" />
-    Password
-    <input type="text" name="Password" />
-    <input type="submit" value="Send" />
-    @Html.AntiForgeryToken()
-</form>
+<div class="background">
+    <div class="menu">
+        <div class="menu-header">
+            @Model.Message
+        </div>
+        <form method="post">
+            <div class="menu-item">
+                Name
+            </div>
+            <div class="menu-item">
+                <input type="text" name="Name" />
+            </div>
+            <div class="menu-item">
+                Email
+            </div>
+            <div class="menu-item">
+                <input type="text" name="Email" />
+            </div>
+            <div class="menu-item">
+                Password
+            </div>
+            <div class="menu-item">
+                <input type="text" name="Password" />
+            </div>
+            <div class="menu-item">
+                <input type="submit" value="Send" />
+            </div>
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+    <img src="~/assets/background.jpg" />
+</div>

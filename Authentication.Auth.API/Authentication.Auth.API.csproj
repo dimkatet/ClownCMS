@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+
 </Project>

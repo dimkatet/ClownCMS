@@ -1,29 +1,54 @@
 ﻿@page
 @model Authentication.Auth.API.IndexModel
-@{
+@section styles{
+    <link href="~/styles/index.css" rel="stylesheet" type="text/css" />
 }
 @if (Model.Name == null || Model.Name == "")
 {
-    <a href="/Authorization">sign in</a>
-    <a href="/Registration">sign up</a>
+    <div class="background">
+        <div class="logo">ClownCMS</div>
+        <div class="buttons-container">
+            <div class="button">
+                <a href="/Authorization">sign in</a>
+            </div>
+            <div class="button">
+                <a href="/Registration">sign up</a>
+            </div>
+        </div>
+        <img src="~/assets/background.jpg" />
+    </div>
 }
 else
 {
-    <h1>Hi @Model.Name</h1>
-    <form method="POST">
-        <input type="submit" asp-page-handler="Exit" value="Exit" />
-        @Html.AntiForgeryToken()
-    </form>
-    @using (Html.BeginForm("DownloadBots", "Download", FormMethod.Post))
-    {
-        <div>SUBD</div>
-        <select name="DBType">
-            <option value="MSSQL">MSSQL</option>
-            <option value="SQLite">SQLite</option>
-        </select>
-        <div>Database</div>
-        <input type="text" name="Connection" />
-        <input type="submit" />
-    }
+    <div class="background">
+        <div class="menu">
+            <div class="menu-header">Hi, @Model.Name</div>
+            <div class="menu-item">
+                <form method="POST">
+                    <input id="exit" type="submit" asp-page-handler="Exit" value="Exit" />
+                    @Html.AntiForgeryToken()
+                </form>
+            </div>
+            @using (Html.BeginForm("DownloadBots", "Download", FormMethod.Post))
+            {
+                <div class="menu-item">SUBD</div>
+                <div class="menu-item">
+                    <select name="DBType">
+                        <option value="MSSQL">MSSQL</option>
+                        <option value="SQLite">SQLite</option>
+                    </select>
+                </div>
+                <div class="menu-item">Database</div>
+                <div class="menu-item">
+                    <input type="text" name="Connection" />
+                </div>
+                <div class="menu-item">
+                    <input type="submit" value="Submit" />
+                </div>
+            }
+        </div>
+        <img src="~/assets/background.jpg" />
+    </div>
 }
+
 
