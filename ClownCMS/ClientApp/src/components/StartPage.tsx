@@ -6,7 +6,10 @@ import { ApplicationState } from '../store';
 import * as StartPageStore from '../store/StartPageStore';
 import * as ProjectStore from '../store/ProjectStore';
 import * as AuthStore from '../store/AuthStore';
-import * as StartPageAssets from '../assets/StartPageAssets';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import DescriptionIcon from '@material-ui/icons/Description';
+import EditIcon from '@material-ui/icons/Edit';
 import Auth from './elements/Auth';
 import './styles/StartPage.css';
 
@@ -19,7 +22,8 @@ type ProjectsProps =
 
 type StartPageState = {
     selectedProjectID: number,
-    renderPopUp: boolean,
+    creatingProject: boolean,
+    editingProject: boolean,
     newProjectName: string
 };
 
@@ -28,7 +32,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 
     constructor(props: any) {
         super(props);
-        this.state = { selectedProjectID: -1, renderPopUp: false, newProjectName: '' };
+        this.state = { selectedProjectID: -1, creatingProject: false, editingProject: false, newProjectName: '' };
     }
 
     public componentDidMount() {
@@ -61,16 +65,30 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                         <h4> Начало работы </h4>
                         {this.renderButtons()}
                     </div>
-                    {this.state.renderPopUp && <PopUp onClose={() => { this.setState({ renderPopUp: false, newProjectName: '' }) }}>
+                    {(this.state.creatingProject || this.state.editingProject) && <PopUp onClose={() => {
+                        this.setState({
+                            creatingProject: false,
+                            editingProject: false,
+                            newProjectName: ''
+                        })
+                    }}>
                         <div className='pop-up-content'>
                             <div>Введите название проекта:</div>
                             <div>
-                                <input 
+                                <input
                                     value={this.state.newProjectName}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
-                                            this.props.createProject(this.state.newProjectName);
-                                            this.setState({ renderPopUp: false, newProjectName: '' });
+                                            if (this.state.creatingProject) {
+                                                this.props.createProject(this.state.newProjectName);
+                                            } else {
+                                                this.props.editProject(this.state.newProjectName, this.state.selectedProjectID);
+                                            }
+                                            this.setState({
+                                                creatingProject: false,
+                                                editingProject: false,
+                                                newProjectName: ''
+                                            });
                                         }
                                     }}
                                     onChange={(e) => {
@@ -78,11 +96,19 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                                     }} />
                             </div>
                             <div>
-                                <button 
+                                <button
                                     onClick={() => {
-                                        this.props.createProject(this.state.newProjectName);
-                                        this.setState({ renderPopUp: false, newProjectName: '' });
-                                }}>
+                                        if (this.state.creatingProject) {
+                                            this.props.createProject(this.state.newProjectName);
+                                        } else {
+                                            this.props.editProject(this.state.newProjectName, this.state.selectedProjectID);
+                                        }
+                                        this.setState({
+                                            creatingProject: false,
+                                            editingProject: false,
+                                            newProjectName: ''
+                                        });
+                                    }}>
                                     Создать
                                 </button>
                             </div>
@@ -94,31 +120,58 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
     }
 
     public renderButtons() {
-        const buttons = this.state.selectedProjectID !== -1 ?
-            <div>
-                <StartPagesAction text='Открыть'
-                    action={() => {
-                        if (this.state.selectedProjectID !== -1) {
-                            this.props.selectProject(this.state.selectedProjectID);
-                            this.props.history.push('/index');
-                        }
-                    }}
-                    img={StartPageAssets.OpenProject} />
-                <StartPagesAction text='Удалить'
-                    action={() => {
-                        this.props.deleteProject(this.state.selectedProjectID);
-                        this.setState({ selectedProjectID: -1 });
-                    }}
-                    img={StartPageAssets.DeleteProject} />
-            </div> : null;
+        const buttons = this.state.selectedProjectID !== -1 && <div>
+            <StartPagesAction text='Open'
+                action={() => {
+                    if (this.state.selectedProjectID !== -1) {
+                        this.props.selectProject(this.state.selectedProjectID);
+                        this.props.history.push('/index');
+                    }
+                }}
+            >
+                <div className='start-page-action-logo'>
+                    <DescriptionIcon fontSize='inherit' />
+                </div>
+            </StartPagesAction>   
+            <StartPagesAction text='Edit'
+                action={() => {
+                    this.setState({
+                        newProjectName: this.props.projects.find(p => {
+                            if (p.projectID === this.state.selectedProjectID)
+                                return true;
+                            return false;
+                        }).projectName,
+                        editingProject: true
+                    });
+                }}
+            >
+                <div id='edit-project' className='start-page-action-logo'>
+                    <EditIcon fontSize='inherit' />
+                </div>
+            </StartPagesAction>
+            <StartPagesAction text='Delete'
+                action={() => {
+                    this.props.deleteProject(this.state.selectedProjectID);
+                    this.setState({ selectedProjectID: -1 });
+                }}
+            >
+                <div className='start-page-action-logo'>
+                    <DeleteForeverIcon fontSize='inherit' />
+                </div>
+            </StartPagesAction>
+        </div>
         return (
             <div>
                 <StartPagesAction
-                    text='Создать'
+                    text='Create'
                     action={() => {
-                        this.setState({ renderPopUp: true });
+                        this.setState({ creatingProject: true });
                     }}
-                    img={StartPageAssets.CreateProject} />
+                >
+                    <div className='start-page-action-logo'>
+                        <NoteAddIcon fontSize='inherit' />
+                    </div>
+                </StartPagesAction>
                 {buttons}
             </div>
         )
@@ -131,11 +184,13 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                     projectName={project.projectName}
                     action={() => {
                         this.setState({ selectedProjectID: project.projectID });
-                    }} />)}
+                    }}
+                />)}
             </div>
         )
     }
 }
+
 
 const ProjectPreview = (props: any) => {
     return (
@@ -149,11 +204,12 @@ const ProjectPreview = (props: any) => {
 
 const StartPagesAction = (props: any) => {
     return (
-        <div>
-            <button className='startPageAction' onClick={props.action}>
-                <div><props.img /></div>
-                <p>{props.text}</p>
-            </button>
+        <div
+            className='start-page-action'
+            onClick={props.action}
+        >
+            {props.children}
+            <p>{props.text}</p>
         </div>
     )
 }

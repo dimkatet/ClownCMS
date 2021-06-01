@@ -52,7 +52,6 @@ export const actionCreators = {
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     requestProjects(dispath, getState);
                 });
         }
@@ -74,6 +73,30 @@ export const actionCreators = {
                 .then(data => {
                     console.log(data);
                     requestProjects(dispath, getState);
+                });
+        }
+    },
+
+    editProject: (projectName: string, projectId: number): AppThunkAction<Action> => (dispath, getState) => {
+        var appState = getState();
+        if (appState && appState.startPage) {
+            const item = {
+                projectName: projectName,
+                projectId: projectId
+            }
+            fetch('projects', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                },
+                body: JSON.stringify(item)
+            })
+                .then(response => response.ok)
+                .then(data => {
+                    requestProjects(dispath, getState);
+                    console.log(data);
                 });
         }
     }
