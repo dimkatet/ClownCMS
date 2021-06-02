@@ -9,6 +9,10 @@ export interface BodyState {
     content: ContentState
 };
 
+interface ResetBodyAction {
+    type: 'RESET_BODY'
+}
+
 interface RequestContentsAction {
     type: 'REQUEST_CONTENT'
 };
@@ -32,8 +36,14 @@ interface SavePreviewIdAction {
     previewId: number
 };
 
-type ContentAction = RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction | SavePreviewIdAction;
+type ContentAction = ResetBodyAction | RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction | SavePreviewIdAction;
 
+const resetBody = (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.navigation) {
+        dispatch({ type: 'RESET_BODY' });
+    }
+}
 
 const postImage = async (url: string) => {
     if (!url.includes('blob'))
@@ -81,6 +91,8 @@ const findBlocks = async (content: RawDraftContentState) => {
 }
 
 export const actionCreators = {
+    resetBody: (): AppThunkAction<ContentAction> => resetBody,
+
     requestContent: (previewId: number): AppThunkAction<ContentAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.body) {
@@ -145,6 +157,8 @@ export const reducer: Reducer<BodyState> = (state: BodyState | undefined, incomi
     }
     const action = incomingAction as ContentAction;
     switch (action.type) {
+        case 'RESET_BODY':
+            return unloadedState;
         case 'RECEIVE_CONTENT':
             return {
                 isLoading: false,

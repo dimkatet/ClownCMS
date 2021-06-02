@@ -16,7 +16,7 @@
 
 .wrapper_Header {
     display: grid;
-    grid-template-columns: 10vw 1fr 5vw 5vw;
+    grid-template-columns: 20vw 1fr 10vw 10vw;
     border-bottom: 2px solid rgb(127, 127, 127);
 }
 
@@ -34,6 +34,7 @@
     margin-left: 1rem;
     font-size: 1.5rem;
     font-family: Roboto, "Gill Sans", sans-serif;
+    cursor: pointer;
 }
 
 .header-button {
@@ -82,12 +83,14 @@
     align-items: center;
 }
 
-.header-item-change:hover{
-    color: rgb(0, 0, 0);
-}
+    .header-item-change:hover {
+        color: rgb(0, 0, 0);
+    }
 
 .header-item-add {
-    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     right: 0;
     color: rgb(127, 127, 127);
     margin: 5px;
@@ -95,12 +98,12 @@
     grid-column-end: 5;
 }
 
-.header-item-add:hover {
-    color: rgb(180, 180, 180);
-}
+    .header-item-add:hover {
+        color: rgb(180, 180, 180);
+    }
 
-@media all and (max-width: 575px){
-    .wrapper_Header{
+@media all and (max-width: 575px) {
+    .wrapper_Header {
         display: grid;
         grid-template-areas:
             "logo button"

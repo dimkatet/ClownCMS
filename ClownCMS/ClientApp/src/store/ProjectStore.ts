@@ -3,15 +3,20 @@ import { AppThunkAction } from './';
 import config from './project_config.json';
 
 export interface ProjectState {
-    isLoading: boolean;
-    ProjectId: number;
-    navMenuItems: NavMenuItem[];
+    isLoading: boolean,
+    ProjectId: number,
+    navMenuItems: NavMenuItem[],
+    projectData: ProjectData    
 }
 
 export interface NavMenuItem {
     menuItemId: number;
     menuItemName: string;
     menuItemType: number;
+}
+
+interface ProjectData {
+    projectName: string
 }
 
 interface RequestProjectMenuAction {
@@ -21,6 +26,12 @@ interface RequestProjectMenuAction {
 interface ReceiveProjectsMenuAction {
     type: 'RECEIVE_PROJECT_MENU';
     navMenuItems: NavMenuItem[];
+}
+
+interface ReceiveProjectData {
+    type: 'RECEIVE_PROJECT_DATA',
+    projectData: ProjectData
+
 }
 
 interface ChangeProjectsMenuItemAction {
@@ -50,10 +61,25 @@ const requestMenu = (dispatch: any, getState: any) => {
     }
 }
 
-type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction;
+const requestProjectData = (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.project) {
+        fetch('projects/' + appState.project.ProjectId, { method: 'GET' })
+            .then(response => response.text() as Promise<string>)
+            .then(data => {
+                dispatch({ type: 'RECEIVE_PROJECT_DATA', projectData: { projectName: data } });
+            })
+    }
+}
+
+type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction | ReceiveProjectData;
 
 export const actionCreators = {
+
     requestMenu: (): AppThunkAction<KnownAction> => requestMenu,
+
+    requestProjectData: (): AppThunkAction<KnownAction> => requestProjectData,
+
     setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
@@ -81,6 +107,7 @@ export const actionCreators = {
             dispatch({ type: 'REQUEST_PROJECT_MENU' });
         }
     },
+
     addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         //if (response.status != 200) return;
         const appState = getState();
@@ -110,6 +137,7 @@ export const actionCreators = {
             dispatch({ type: 'REQUEST_PROJECT_MENU' });
         }
     },
+
     deleteMenuItem: ( menuItemId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
@@ -134,7 +162,7 @@ export const actionCreators = {
     }
 };
 
-const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId}
+const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId, projectData: {} as ProjectData }
 
 export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, incomingAction: Action): ProjectState => {
     if (state === undefined) {
@@ -146,13 +174,22 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
             return {
                 navMenuItems: state.navMenuItems,
                 isLoading: true,
-                ProjectId: state.ProjectId
+                ProjectId: state.ProjectId,
+                projectData: state.projectData
             };
         case 'RECEIVE_PROJECT_MENU':
             return {
                 navMenuItems: action.navMenuItems,
                 isLoading: false,
-                ProjectId: state.ProjectId
+                ProjectId: state.ProjectId,
+                projectData: state.projectData
+            };
+        case 'RECEIVE_PROJECT_DATA':
+            return {
+                navMenuItems: state.navMenuItems,
+                isLoading: state.isLoading,
+                ProjectId: state.ProjectId,
+                projectData: action.projectData
             };
         case 'CHANGE_PROJECT_MENU_ITEM':
             let index = state.navMenuItems.findIndex(x => x.menuItemId === action.navMenuItem.menuItemId)
@@ -162,19 +199,22 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
             return {
                 navMenuItems: navMenuItems,
                 isLoading: false,
-                ProjectId: state.ProjectId
+                ProjectId: state.ProjectId,
+                projectData: state.projectData
             };
         case 'ADD_PROJECT_MENU_ITEM':
             return {
                 navMenuItems: [...state.navMenuItems, action.navMenuItem],
                 isLoading: false,
-                ProjectId: state.ProjectId
+                ProjectId: state.ProjectId,
+                projectData: state.projectData
             };
         case 'SELECT_PROJECT_ACTION':
             return {
                 navMenuItems: state.navMenuItems,
                 isLoading: state.isLoading,
-                ProjectId: action.projectID
+                ProjectId: action.projectID,
+                projectData: state.projectData
             }
         default: break;
     }

@@ -61,6 +61,7 @@ namespace Authentication.Auth.API
 
             app.UseCors();
             app.UseSession();
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

@@ -35,6 +35,10 @@ export interface Section {
     categories: Category[];
 }
 
+interface ResetNavigationAction {
+    type: 'RESET_NAVIGATION'
+}
+
 interface ReceiveNavigationAction {
     type: 'RECEIVE_NAVIGATION';
     sections: Section[];
@@ -67,7 +71,14 @@ interface PageState {
     state: boolean;
 }
 
-type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState | SetCurrentCategory;
+type KnownAction = ResetNavigationAction | RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState | SetCurrentCategory;
+
+const resetNavigation = (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.navigation) {
+        dispatch({ type: 'RESET_NAVIGATION' });
+    }
+}
 
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -113,6 +124,9 @@ const postImage = async (image?: File) => {
 }
 
 export const actionCreators = {
+
+    resetNavigation: (): AppThunkAction<KnownAction> => resetNavigation,
+
     requestNavigation: (): AppThunkAction<KnownAction> => requestNavigation,
 
     setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
@@ -313,7 +327,12 @@ export const actionCreators = {
 }
 
 const unloadedState: NavigatinonState = {
-    sections: [], isLoading: false, isActual: false, isShowContent: false, menuItem: {} as NavMenuItem, currentCategory: {} as Category
+    sections: [],
+    isLoading: false,
+    isActual: false,
+    isShowContent: false,
+    menuItem: {} as NavMenuItem,
+    currentCategory: {} as Category
 }
 
 export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | undefined, incomingAction: Action): NavigatinonState => {
@@ -322,6 +341,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
     }
     const action = incomingAction as KnownAction;
     switch (action.type) {
+        case 'RESET_NAVIGATION':
+            return unloadedState;
         case 'REQUEST_NAVIGATION':
             return {
                 sections: state.sections,

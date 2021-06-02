@@ -28,8 +28,18 @@ namespace ClownCMS.Controllers
         [HttpGet]
         public IEnumerable<Project> Get()
         {
-            _logger.LogInformation("FETCH");
+            _logger.LogInformation("GET");
             return db.Projects.ToArray();
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            _logger.LogInformation("GET DATA");
+            var project = db.Projects.Find(id);
+            if (project == null)
+                return BadRequest();
+            return Ok(project.ProjectName);
         }
 
         [Authorize]
@@ -48,7 +58,7 @@ namespace ClownCMS.Controllers
         [HttpDelete]
         public IActionResult Delete([FromBody] int projectID)
         {
-            _logger.LogInformation("POST");
+            _logger.LogInformation("DELETE");
             var projects = db.Projects.ToList().Where(x => x.ProjectID == projectID);
             if(projects.Count() == 0)
                 return BadRequest();
@@ -56,5 +66,25 @@ namespace ClownCMS.Controllers
             db.SaveChanges();
             return Ok();
         }
+
+        [Authorize]
+        [HttpPut]
+        public IActionResult Put([FromBody] EditPtojectAtribut atribut)
+        {
+            _logger.LogInformation("PUT");
+            var project = db.Projects.Find(atribut.ProjectId);
+            if (project == null)
+                return BadRequest();
+            project.ProjectName = atribut.ProjectName;
+            db.SaveChanges();
+            return Ok();
+        }
+
+    }
+
+    public class EditPtojectAtribut
+    {
+        public string ProjectName { get; set; }
+        public int ProjectId { get; set; }
     }
 }

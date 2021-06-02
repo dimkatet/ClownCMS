@@ -57,7 +57,6 @@
     <None Remove="ClientApp\src\components\page-structure\inner-components\middle-components\LeftMenu.tsx" />
     <None Remove="ClientApp\src\components\page-structure\inner-components\middle-components\RightMenu.tsx" />
     <None Remove="ClientApp\src\components\PopUp.tsx" />
-    <None Remove="ClientApp\src\components\elements\NavMenuEditor.tsx" />
     <None Remove="ClientApp\src\components\NavigationEditor.tsx" />
     <None Remove="ClientApp\src\components\page-structure\inner-components\Footer.tsx" />
     <None Remove="ClientApp\src\components\page-structure\inner-components\Header.tsx" />

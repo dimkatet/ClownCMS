@@ -52,6 +52,21 @@ class Body extends React.PureComponent<BodyProps, BodyState>
             this.insertContent();
         }
 
+
+        if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {
+            if (this.props.currentCategory.categoryId === undefined && this.props.previewId === -1) {
+                if (this.props.sections[0].categories[0].previews.length > 1) {
+                    this.props.setCurrentCategory(this.props.sections[0].categories[0]);
+                    this.props.navigatinonUpdated();
+                    this.props.closePage();
+                } else {
+                    this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId);
+                    this.props.openPage();
+                }
+            }
+        }
+
+
         switch (this.props.menuItem.menuItemType) {
             case 1:
                 if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) {
