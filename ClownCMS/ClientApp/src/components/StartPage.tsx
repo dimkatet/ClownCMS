@@ -136,12 +136,14 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
             </StartPagesAction>   
             <StartPagesAction text='Edit'
                 action={() => {
+                    var project = this.props.projects.find(p => {
+                        if (p.projectID === this.state.selectedProjectID)
+                            return true;
+                        return false;
+                    });
+                    var Name = project === undefined ? "" : project.projectName;
                     this.setState({
-                        newProjectName: this.props.projects.find(p => {
-                            if (p.projectID === this.state.selectedProjectID)
-                                return true;
-                            return false;
-                        }).projectName,
+                        newProjectName: Name,
                         editingProject: true
                     });
                 }}
