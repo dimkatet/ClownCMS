@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import { ContentBlock, ContentState } from 'draft-js';
 import './styles/SliderBlock.css';
+import config from '../../store/project_config.json';
+
 
 interface SliderBlockProps {
     block?: ContentBlock,
@@ -63,7 +65,7 @@ export default class SliderBlock extends React.Component<SliderBlockProps, Slide
                                         className="slide"
                                     >
                                         <div className="slide-inner">
-                                            <img src={slide.src} alt="" />
+                                            <img src={config.URL.slice(0, -1) + slide.src} alt="" />
                                         </div>
                                     </div>
                                 ))

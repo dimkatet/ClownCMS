@@ -1,6 +1,7 @@
 ﻿import { Action, Reducer } from 'redux';
 import { EditorState, ContentState, convertFromRaw, convertToRaw, RawDraftContentState } from 'draft-js'
 import { AppThunkAction } from './';
+import config from './project_config.json';
 
 export interface BodyState {
     isLoading: boolean,
@@ -83,7 +84,7 @@ export const actionCreators = {
     requestContent: (previewId: number): AppThunkAction<ContentAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.body) {
-            fetch('pages/' + previewId, { method: 'GET' })
+            fetch(config.URL + 'pages/' + previewId, { method: 'GET' })
                 .then(response => {
                     if (response.ok) {
                         dispatch({ type: 'SAVE_PREVIEWID', previewId: previewId});

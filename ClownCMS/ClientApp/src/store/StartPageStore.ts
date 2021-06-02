@@ -1,5 +1,6 @@
 ﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
+import config from './project_config.json';
 
 export interface StartPageState {
     isLoading: boolean;
@@ -26,7 +27,7 @@ type KnownAction = RequestProjectsAction | ReceiveProjectsAction;
 const requestProjects = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.startPage) {
-        fetch('projects', { method: 'GET' })
+        fetch(config.URL + 'projects', { method: 'GET' })
             .then(response => response.json() as Promise<Project[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECTS', projects: data });
@@ -50,11 +51,7 @@ export const actionCreators = {
                 },
                 body: JSON.stringify(projectName)
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    requestProjects(dispath, getState);
-                });
+                .then(response => { if (response.status == 200) requestProjects(dispath, getState); });
         }
     },
 
@@ -70,11 +67,7 @@ export const actionCreators = {
                 },
                 body: JSON.stringify(projectID)
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    requestProjects(dispath, getState);
-                });
+                .then(response => { if (response.status == 200) requestProjects(dispath, getState);});
         }
     }
 };

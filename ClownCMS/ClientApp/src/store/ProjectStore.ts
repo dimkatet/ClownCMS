@@ -1,5 +1,6 @@
 ﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
+import config from './project_config.json';
 
 export interface ProjectState {
     isLoading: boolean;
@@ -40,7 +41,7 @@ interface SelectProjectAction {
 const requestMenu = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.project) {
-        fetch('menuItems/' + appState.project.ProjectId, { method: 'GET' })
+        fetch(config.URL + 'menuItems/' + appState.project.ProjectId, { method: 'GET' })
             .then(response => response.json() as Promise<NavMenuItem[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECT_MENU', navMenuItems: data });
@@ -133,7 +134,7 @@ export const actionCreators = {
     }
 };
 
-const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: 1}
+const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId}
 
 export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, incomingAction: Action): ProjectState => {
     if (state === undefined) {

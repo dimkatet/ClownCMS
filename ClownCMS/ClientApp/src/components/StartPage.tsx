@@ -9,6 +9,7 @@ import * as AuthStore from '../store/AuthStore';
 import * as StartPageAssets from '../assets/StartPageAssets';
 import Auth from './elements/Auth';
 import './styles/StartPage.css';
+import DownloadProject from '../store/Download';
 
 type ProjectsProps =
     StartPageStore.StartPageState
@@ -110,6 +111,11 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                         this.setState({ selectedProjectID: -1 });
                     }}
                     img={StartPageAssets.DeleteProject} />
+                <StartPagesAction text='Скачать'
+                    action={() => {
+                        DownloadProject(this.state.selectedProjectID);
+                    }}
+                    img={StartPageAssets.OpenProject} />
             </div> : null;
         return (
             <div>

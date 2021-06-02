@@ -1,6 +1,7 @@
 ﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 import { NavMenuItem } from './ProjectStore';
+import config from './project_config.json';
 
 export interface NavigatinonState {
     isLoading: boolean,
@@ -71,7 +72,7 @@ type KnownAction = RequestNavigationAction | ReceiveNavigationAction | SetMenuIt
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.navigation && appState.navigation.menuItem.menuItemId) {
-        fetch('navigation/' + appState.navigation.menuItem.menuItemId, { method: 'GET' })
+        fetch(config.URL + 'navigation/' + appState.navigation.menuItem.menuItemId, { method: 'GET' })
             .then(response => response.json() as Promise<Section[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_NAVIGATION', sections: data });

@@ -2,6 +2,7 @@
 import { convertToHTML } from 'draft-convert';
 import { fontFamilies } from './EditorStyles';
 import '../styles/ImageBlock.css';
+import config from '../../../store/project_config.json';
 import { ContentState } from 'draft-js';
 
 const styleToHTML = (style: string) => {
@@ -40,7 +41,7 @@ const blockToHTML = (block: any) => {
             const src = block.data.image.src;
             return <img
                 className='image-block'
-                src={src}
+                src={config.URL.slice(0, -1) + src}
                 alt='Content'
             />
         case 'SLIDER':

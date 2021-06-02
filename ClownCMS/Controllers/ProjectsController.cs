@@ -34,7 +34,7 @@ namespace ClownCMS.Controllers
 
         [Authorize]
         [HttpPost]
-        public int Post([FromBody] string projectName)
+        public IActionResult Post([FromBody] string projectName)
         {
             _logger.LogInformation("POST");
             db.Projects.Add(new Project
@@ -42,19 +42,19 @@ namespace ClownCMS.Controllers
                 ProjectName = projectName
             });
             db.SaveChanges();
-            return 1;
+            return Ok();
         }
         [Authorize]
         [HttpDelete]
-        public int Delete([FromBody] int projectID)
+        public IActionResult Delete([FromBody] int projectID)
         {
             _logger.LogInformation("POST");
             var projects = db.Projects.ToList().Where(x => x.ProjectID == projectID);
             if(projects.Count() == 0)
-                return -1;
+                return BadRequest();
             db.Projects.Remove(projects.First());
             db.SaveChanges();
-            return 1;
+            return Ok();
         }
     }
 }

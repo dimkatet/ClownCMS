@@ -3,6 +3,7 @@ import PreviewEditor from './PreviewEditor';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './styles/ContentPreview.css';
+import config from '../../store/project_config.json';
 
 export default function BodyPreview(props: {
     previewName: string,
@@ -40,7 +41,7 @@ export default function BodyPreview(props: {
                 {props.imageURL && <div className='preview-image-container'>
                     <img
                         className='preview-image'
-                        src={props.imageURL}
+                        src={config.URL.slice(0, -1) + props.imageURL}
                         alt='Preview'
                     />
                 </div>}

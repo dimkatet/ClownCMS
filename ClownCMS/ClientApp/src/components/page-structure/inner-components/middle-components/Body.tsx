@@ -95,7 +95,7 @@ class Body extends React.PureComponent<BodyProps, BodyState>
         });
     }
 
-    private renderContnet = () => {
+    private renderContent = () => {
         return <div className='body-container'>
             {this.state.isAuth && <div>
                 <div
@@ -182,7 +182,7 @@ class Body extends React.PureComponent<BodyProps, BodyState>
 
     public render() {
         return <div className='body'>
-            {this.props.isShowContent && this.renderContnet()}
+            {this.props.isShowContent && this.renderContent()}
             {this.props.isActual && !this.props.isShowContent && this.renderContentPreviews()}
         </div>
     }
