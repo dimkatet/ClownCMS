@@ -7,15 +7,15 @@
     overflow-y: hidden;
 }
 
-.DraftEditor-root {
+.text-editor .DraftEditor-root {
     background-color: cadetblue;
     overflow-y: visible;
     height: 100%;
     min-height: 300px;
 }
 
-.DraftEditor-editorContainer,
-.public-DraftEditor-content {
+.text-editor .DraftEditor-editorContainer,
+.text-editor .public-DraftEditor-content {
     height: 100%;
 }
 

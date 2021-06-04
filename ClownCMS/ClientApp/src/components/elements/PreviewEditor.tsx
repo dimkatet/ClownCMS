@@ -56,6 +56,7 @@ export default function PreviewEditor(props: {
 
             <div>
                 <button
+                    className='preview-editor-button'
                     onClick={() => {
                         props.onSubmit(name, description, image, imageURL)
                     }}

@@ -1,5 +1,6 @@
 ﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
+import { ContentState, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import config from './project_config.json';
 
 export interface ProjectState {
@@ -16,7 +17,8 @@ export interface NavMenuItem {
 }
 
 interface ProjectData {
-    projectName: string
+    projectName: string,
+    footerContent: ContentState
 }
 
 interface RequestProjectMenuAction {
@@ -49,6 +51,16 @@ interface SelectProjectAction {
     projectID: number
 }
 
+interface UpdateFooterAction {
+    type: 'UPDATE_FOOTER',
+    content: ContentState
+};
+
+interface SaveFooterAction {
+    type: 'SAVE_FOOTER',
+    status: boolean
+};
+
 const requestMenu = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.project) {
@@ -65,14 +77,21 @@ const requestProjectData = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.project) {
         fetch('projects/' + appState.project.ProjectId, { method: 'GET' })
-            .then(response => response.text() as Promise<string>)
+            .then(response => response.json() as Promise<{ projectName: string, footerContent: string }>)
             .then(data => {
-                dispatch({ type: 'RECEIVE_PROJECT_DATA', projectData: { projectName: data } });
+                const content = convertFromRaw(JSON.parse(data.footerContent));
+                dispatch({
+                    type: 'RECEIVE_PROJECT_DATA',
+                    projectData: {
+                        projectName: data.projectName,
+                        footerContent: content
+                    }
+                });
             })
     }
 }
 
-type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction | ReceiveProjectData;
+type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction | ReceiveProjectData | UpdateFooterAction | SaveFooterAction;
 
 export const actionCreators = {
 
@@ -159,10 +178,40 @@ export const actionCreators = {
         if (appState && appState.project) {
             dispatch({ type: 'SELECT_PROJECT_ACTION', projectID: projectID });
         }
+    },
+
+    updateFooter: (content: ContentState): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.project) {
+            dispatch({ type: 'UPDATE_FOOTER', content: content });
+        }
+    },
+
+    saveFooter: (content: ContentState): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        console.log('load');
+        if (appState && appState.project) {
+            const c = convertToRaw(content);
+            const item = {
+                projectId: appState.project.ProjectId,
+                footerContent: JSON.stringify(c)
+            }
+            fetch('projects/footer', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                },
+                body: JSON.stringify(item)
+            })
+                .then(response => response.ok)
+                .then(status => dispatch({ type: 'SAVE_FOOTER', status }));
+        }
     }
 };
 
-const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId, projectData: {} as ProjectData }
+const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId, projectData: { projectName: '', footerContent: EditorState.createEmpty().getCurrentContent() } }
 
 export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, incomingAction: Action): ProjectState => {
     if (state === undefined) {
@@ -216,6 +265,19 @@ export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, 
                 ProjectId: action.projectID,
                 projectData: state.projectData
             }
+        case 'UPDATE_FOOTER':
+            return {
+                navMenuItems: state.navMenuItems,
+                isLoading: state.isLoading,
+                ProjectId: state.ProjectId,
+                projectData: {
+                    projectName: state.projectData.projectName,
+                    footerContent: action.content
+                }
+            }
+        case 'SAVE_FOOTER':
+            console.log('Footer saved');
+            return state;
         default: break;
     }
 

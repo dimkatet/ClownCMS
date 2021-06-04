@@ -24,7 +24,6 @@
 }
 
 .pop-up-container button {
-    width: 300px;
     height: 40px;
     color: white;
     background-color: rgb(51, 51, 55);
@@ -96,4 +95,12 @@
     color: rgb(51, 51, 55);
     border-color: rgb(63, 63, 64);
     background-color: rgb(63, 63, 64);
+}
+
+.pop-up-content div {
+    margin: 20px;
+}
+
+.preview-editor-button{
+    width: 100%;
 }

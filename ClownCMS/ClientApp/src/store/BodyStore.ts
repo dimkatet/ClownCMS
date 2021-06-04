@@ -31,6 +31,7 @@ interface SaveContentAction {
     type: 'SAVE_CONTENT',
     status: boolean
 };
+
 interface SavePreviewIdAction {
     type: 'SAVE_PREVIEWID',
     previewId: number
@@ -131,8 +132,8 @@ export const actionCreators = {
                         previewId: appState.body.previewId,
                         content: JSON.stringify(c)
                     }
-                    fetch('pages', {
-                        method: 'POST',
+                    fetch('project/footer', {
+                        method: 'PUT',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',

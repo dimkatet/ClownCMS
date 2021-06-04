@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import * as AuthStore from '../../store/AuthStore';
+import PersonIcon from '@material-ui/icons/Person';
 import PopUp from './PopUp';
+import './styles/Auth.css';
 
 function useForceUpdate() {
     const [value, setValue] = React.useState(0); // integer state
@@ -28,11 +30,26 @@ export default function Auth() {
 
     var actions = AuthStore.actionCreators;
     return (<div >
-        {!isAuth &&
-            <div ><p onClick={() => { setAdding(true); }}>sign in</p></div >}
+        {!isAuth && <div
+            className='sign-in-block'
+            onClick={() => {
+                setAdding(true);
+            }}>
+                <PersonIcon fontSize='inherit' />
+            <div className='auth-button'> sign in </div>
+            </div >}
 
-        {isAuth &&
-            <div><p>{userName}</p> <button onClick={() => { actions.authClear(); forceUpdate1(); }}>exit</button></div>}
+        {isAuth && <div className='auth-block'>
+            {userName}
+            <div
+                className='auth-button'
+                onClick={() => {
+                    actions.authClear();
+                    forceUpdate1();
+                }}>
+                exit
+                </div>
+        </div>}
 
         {!isAuth && isAdding &&
             <PopUp onClose={() => {
@@ -58,7 +75,8 @@ export default function Auth() {
                             }} />
                     </div>
                     <div>
-                        <button onClick={async () => {
+                    <button className='sign-in-submit-button'
+                        onClick={async () => {
                             await actions.requestAuth(TextEmail, TextPass);
                             setAdding(false);
                             addingTextEmail("");

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace ClownCMS.Controllers
 
         private readonly ILogger<ProjectsController> _logger;
         private int UserId => Int32.Parse(User.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
+        private static string DefaultFooter = "{\"blocks\":[{\"key\":\"eihf9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}";
         private ApplicationContext db;
         public ProjectsController(ILogger<ProjectsController> logger, ApplicationContext context)
         {
@@ -36,10 +38,14 @@ namespace ClownCMS.Controllers
         public IActionResult Get(int id)
         {
             _logger.LogInformation("GET DATA");
-            var project = db.Projects.Find(id);
+            var project = db.Projects.Include(p => p.ProjectData).Where(data => data.ProjectID == id).First();
             if (project == null)
                 return BadRequest();
-            return Ok(project.ProjectName);
+            return Ok(new GetProjectData
+            {
+                ProjectName = project.ProjectName,
+                FooterContent = project.ProjectData.FooterContent
+            });
         }
 
         [Authorize]
@@ -49,11 +55,16 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("POST");
             db.Projects.Add(new Project
             {
-                ProjectName = projectName
+                ProjectName = projectName,
+                ProjectData = new ProjectData
+                {
+                    FooterContent = DefaultFooter
+                }
             });
             db.SaveChanges();
             return Ok();
         }
+
         [Authorize]
         [HttpDelete]
         public IActionResult Delete([FromBody] int projectID)
@@ -68,14 +79,28 @@ namespace ClownCMS.Controllers
         }
 
         [Authorize]
+        [Route("name")]
         [HttpPut]
         public IActionResult Put([FromBody] EditPtojectAtribut atribut)
         {
-            _logger.LogInformation("PUT");
+            _logger.LogInformation("PUT PROJECT NAME");
             var project = db.Projects.Find(atribut.ProjectId);
             if (project == null)
                 return BadRequest();
             project.ProjectName = atribut.ProjectName;
+            db.SaveChanges();
+            return Ok();
+        }
+
+        [Route("footer")]
+        [HttpPut]
+        public IActionResult Put([FromBody] EditFooterAtribut atribut)
+        {
+            _logger.LogInformation("PUT FOOTER");
+            var project = db.Projects.Include(p => p.ProjectData).Where(data => data.ProjectID == atribut.ProjectId).First();
+            if (project == null)
+                return BadRequest();
+            project.ProjectData.FooterContent = atribut.FooterContent;
             db.SaveChanges();
             return Ok();
         }
@@ -86,5 +111,17 @@ namespace ClownCMS.Controllers
     {
         public string ProjectName { get; set; }
         public int ProjectId { get; set; }
+    }
+
+    public class EditFooterAtribut
+    {
+        public string FooterContent { get; set; }
+        public int ProjectId { get; set; }
+    }
+
+    public class GetProjectData
+    {
+        public string ProjectName { get; set; }
+        public string FooterContent { get; set; }
     }
 }

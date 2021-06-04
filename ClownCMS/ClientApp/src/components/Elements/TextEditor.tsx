@@ -9,8 +9,7 @@ import {
     ContentBlock,
     DefaultDraftBlockRenderMap,
     DraftHandleValue,
-    KeyBindingUtil,
-    convertToRaw
+    KeyBindingUtil
 } from 'draft-js';
 import Ribbon from './Ribbon';
 import ImageBlock from './ImageBlock';

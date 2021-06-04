@@ -39,6 +39,7 @@
     <None Remove="ClientApp\src\components\elements\BodyPreview.js" />
     <None Remove="ClientApp\src\components\elements\BodyPreview.js.map" />
     <None Remove="ClientApp\src\components\elements\ContentPreview.tsx" />
+    <None Remove="ClientApp\src\components\elements\FooterEditor.tsx" />
     <None Remove="ClientApp\src\components\elements\HTMLConverter.tsx" />
     <None Remove="ClientApp\src\components\elements\ImageBlock.tsx" />
     <None Remove="ClientApp\src\components\elements\NavMenuEditor.js" />

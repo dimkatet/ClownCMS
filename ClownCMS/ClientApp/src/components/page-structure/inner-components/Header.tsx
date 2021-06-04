@@ -197,12 +197,21 @@ class Header extends React.Component<HeaderProps, HeaderState>
                                 }} />
                         </div>
                         <div className='wrapper_button'>
-                            <button onClick={() => { this.getDelete(this.state.selectedItemID)(); }}>
+                            <button
+                                className='nav-item-create-buttons'
+                                onClick={() => {
+                                    this.getDelete(this.state.selectedItemID)();
+                                }}
+                            >
                                 Удалить
-                        </button>
-                            <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType); }}>
+                            </button>
+                            <button
+                                className='nav-item-create-buttons'
+                                onClick={() => {
+                                    this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType);
+                                }}>
                                 Сохранить
-                        </button>
+                            </button>
                         </div>
                     </div>
 
