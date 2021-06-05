@@ -1,6 +1,6 @@
 ﻿
 export default async (id: number) => {
-    await fetch('http://localhost:59831/downloadProject', {
+    await fetch('https://clowncms.azurewebsites.net/downloadProject', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -44,7 +45,9 @@ namespace ClownCMS.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] string projectName)
+        public IActionResult Post(  [FromBody]
+                                    [StringLength(20, MinimumLength = 2, ErrorMessage = "not valid length")]
+                                    string projectName)
         {
             _logger.LogInformation("POST");
             db.Projects.Add(new Project
@@ -84,6 +87,7 @@ namespace ClownCMS.Controllers
 
     public class EditPtojectAtribut
     {
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "not valid length")]
         public string ProjectName { get; set; }
         public int ProjectId { get; set; }
     }

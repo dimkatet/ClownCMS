@@ -1,7 +1,7 @@
 ﻿//59831
 export const actionCreators = {
     requestAuth: async (Email: string, Password: string) => {
-        await fetch('http://localhost:59831/auth/login', {
+        await fetch('https://clowncms.azurewebsites.net/auth/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: Email,

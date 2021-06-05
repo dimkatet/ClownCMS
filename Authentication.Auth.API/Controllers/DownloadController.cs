@@ -48,7 +48,7 @@ namespace Authentication.Auth.API
             string path = "";
             foreach (string node in dir)
             {
-                if (node == "net5.0")
+                if (node == "site")
                 {
                     break;
                 }

@@ -25,7 +25,7 @@ namespace Authentication.Auth.API.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=authsdb;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=tcp:clowncms.database.windows.net,1433;Initial Catalog=authdb;Persist Security Info=False;User ID=cmsadmin;Password=clown2021-714;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
 

@@ -56,12 +56,6 @@ class Header extends React.Component<HeaderProps, HeaderState>
         this.props.requestMenu();
     }
 
-    componentDidUpdate() {
-        if (this.props.menuItem.menuItemId === undefined && this.props.navMenuItems.length > 0) {
-            this.props.setCurrentMenuItem(this.props.navMenuItems[0]);
-        }
-    }
-
     private updateWidth = () => {
         this.setState({ windowWidth: window.innerWidth });
     }
