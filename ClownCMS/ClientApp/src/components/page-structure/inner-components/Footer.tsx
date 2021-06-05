@@ -37,6 +37,7 @@ class Footer extends React.Component<ProjectProps, FooterState>{
         if (!this.state.isEditing) {
             this.insertContent();
         }
+        console.log('FOOTER UPDATE');
     }
 
     insertContent() {

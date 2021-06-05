@@ -134,3 +134,7 @@
         .projectsList::-webkit-scrollbar-thumb:hover {
             background: rgb(63, 63, 64);
         }
+
+.edit-project-button{
+    width: 100%;
+}

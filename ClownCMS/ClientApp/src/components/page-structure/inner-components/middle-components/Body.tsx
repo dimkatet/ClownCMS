@@ -48,6 +48,8 @@ class Body extends React.PureComponent<BodyProps, BodyState>
     }
 
     public componentDidUpdate() {
+        console.log('BODY UPDATE');
+
         if (!this.state.isEditing) {
             this.insertContent();
         }

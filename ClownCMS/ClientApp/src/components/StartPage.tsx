@@ -99,6 +99,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                             </div>
                             <div>
                                 <button
+                                    className='edit-project-button'
                                     onClick={() => {
                                         if (this.state.creatingProject) {
                                             this.props.createProject(this.state.newProjectName);
