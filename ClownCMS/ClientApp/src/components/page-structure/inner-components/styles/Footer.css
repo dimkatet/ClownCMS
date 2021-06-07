@@ -4,3 +4,12 @@
     padding-top: 0.25rem;
     border-top: 2px solid rgb(127, 127, 127);
 }
+
+.footer-content{
+    margin: 0 2rem 0 2rem;
+}
+
+.footer-edit-button {
+    position: absolute;
+    color: white;
+}

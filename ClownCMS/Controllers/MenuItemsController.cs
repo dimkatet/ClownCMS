@@ -16,13 +16,14 @@ namespace ClownCMS.Controllers
         private readonly ILogger<MenuItemsController> _logger;
 
         private ApplicationContext db;
+        private static string DefaultContent = "{\"blocks\":[{\"key\":\"eihf9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}";
         private List<Section> baseNavigation(int menuType)
         {
             Section section = new Section();
             Category category = new Category();
             Preview preview = new Preview() { Page = new Page()
             {
-                Content = "{\"blocks\":[{\"key\":\"eihf9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}"
+                Content = DefaultContent
             }};
             switch(menuType)
             {
@@ -51,6 +52,7 @@ namespace ClownCMS.Controllers
             _logger.LogInformation("FETCH");
             return db.MenuItems.Where(p=>p.ProjectId == id).ToArray();
         }
+
         [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] MenuItem menuItem)
@@ -83,11 +85,17 @@ namespace ClownCMS.Controllers
         public MenuItem Put([FromBody] PutMenuItemsAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
-            MenuItem menuItemValue = new MenuItem() { MenuItemName = putAtribut.MenuItem.MenuItemName, MenuItemType = putAtribut.MenuItem.MenuItemType, Project = db.Projects.Find(putAtribut.ProjectId), Sections = baseNavigation(putAtribut.MenuItem.MenuItemType) };
+            MenuItem menuItemValue = new MenuItem() { 
+                MenuItemName = putAtribut.MenuItem.MenuItemName, 
+                MenuItemType = putAtribut.MenuItem.MenuItemType, 
+                Project = db.Projects.Find(putAtribut.ProjectId), 
+                Sections = baseNavigation(putAtribut.MenuItem.MenuItemType) 
+            };
             db.MenuItems.Add(menuItemValue);
             db.SaveChanges();
             return menuItemValue;
         }
+
         [Authorize]
         [HttpDelete]
         public IActionResult Delete([FromBody] MenuItem menuItem)

@@ -15,7 +15,7 @@ type RightMenuProps = NavigationStore.NavigatinonState
 interface RightMenuState {
     isAuth: boolean,
     showingMenu: boolean,
-    windowWidth: number
+    isMobile: boolean
 }
 
 class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
@@ -26,7 +26,7 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
         this.state = {
             isAuth: localStorage.getItem('access_token') ? true : false,
             showingMenu: false,
-            windowWidth: window.innerWidth
+            isMobile: window.innerWidth > 575 ? false : true
         }
 
         window.addEventListener('resize', this.updateWidth);
@@ -46,10 +46,16 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                 }
             })
         }
+
+        console.log('RIGHT MENU UPDATE');
     }
 
     private updateWidth = () => {
-        this.setState({ windowWidth: window.innerWidth });
+        if (this.state.isMobile && window.innerWidth > 575) {
+            this.setState({ isMobile: false });
+        } else if (!this.state.isMobile && window.innerWidth <= 575) {
+            this.setState({ isMobile: true });
+        }
     }
 
     private renderItems = () => {
@@ -108,7 +114,7 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
 
     render() {
         return <div className='right-menu'>
-            {this.state.windowWidth <= 575 && (this.props.menuItem.menuItemType == 2 || this.props.menuItem.menuItemType == 3) &&
+            {this.state.isMobile && (this.props.menuItem.menuItemType == 2 || this.props.menuItem.menuItemType == 3) &&
                 <div
                     className='right-menu-button'
                     onMouseDown={e => {
@@ -117,7 +123,7 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                 >
                     <MenuIcon />
                 </div>}
-            {(this.state.showingMenu || this.state.windowWidth > 575) && this.renderItems()}
+            {(this.state.showingMenu || !this.state.isMobile) && this.renderItems()}
             </div>
     }
 }

@@ -16,7 +16,7 @@ interface LeftMenuState {
     isAuth: boolean,
     SelectedID: number,
     showingMenu: boolean,
-    windowWidth: number
+    isMobile: boolean
 }
 
 class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
@@ -28,7 +28,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
             isAuth: localStorage.getItem('access_token') ? true : false,
             SelectedID: -1,
             showingMenu: false,
-            windowWidth: window.innerWidth
+            isMobile: window.innerWidth > 575 ? false : true
         }
 
         window.addEventListener('resize', this.updateWidth);
@@ -39,7 +39,11 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
     }
 
     private updateWidth = () => {
-        this.setState({ windowWidth: window.innerWidth });
+        if (this.state.isMobile && window.innerWidth > 575) {
+            this.setState({ isMobile: false });
+        } else if (!this.state.isMobile && window.innerWidth <= 575) {
+            this.setState({ isMobile: true });
+        }
     }
 
     public componentDidUpdate() {
@@ -54,6 +58,8 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                 })
             });
         }
+
+        console.log('LEFT MENU UPDATE');
     }
 
     private renderItems = () => {
@@ -150,7 +156,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
 
     render() {
         return <div className='left-menu'>
-            {this.state.windowWidth <= 575 && (this.props.menuItem.menuItemType == 4 || this.props.menuItem.menuItemType == 5) &&
+            {this.state.isMobile && (this.props.menuItem.menuItemType == 4 || this.props.menuItem.menuItemType == 5) &&
                 <div
                 className='left-menu-button'
                 onMouseDown={e => {
@@ -159,7 +165,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
             >
                 <MenuIcon />
             </div>}
-            {(this.state.showingMenu || this.state.windowWidth > 575) && this.renderItems()}
+            {(this.state.showingMenu || !this.state.isMobile) && this.renderItems()}
         </div>
     }
 }

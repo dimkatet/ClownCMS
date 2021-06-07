@@ -78,7 +78,7 @@ export const actionCreators = {
                 projectName: projectName,
                 projectId: projectId
             }
-            fetch('projects', {
+            fetch('projects/name', {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

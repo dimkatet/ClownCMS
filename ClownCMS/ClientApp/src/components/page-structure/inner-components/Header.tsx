@@ -23,9 +23,8 @@ interface HeaderState {
     addingText: string,
     addingType: number,
     selectedItemID: number,
-    showAddMenuItem: boolean,
     showingMenu: boolean,
-    windowWidth: number
+    isMobile: boolean
 }
 
 class Header extends React.Component<HeaderProps, HeaderState>
@@ -42,10 +41,9 @@ class Header extends React.Component<HeaderProps, HeaderState>
             addingText: "",
             addingType: 0,
             selectedItemID: defaultId,
-            showAddMenuItem: false,
             isAuth: localStorage.getItem('access_token') ? true : false,
             showingMenu: false,
-            windowWidth: window.innerWidth
+            isMobile: window.innerWidth > 575 ? false : true
         };
 
         window.addEventListener('resize', this.updateWidth);
@@ -57,7 +55,11 @@ class Header extends React.Component<HeaderProps, HeaderState>
     }
 
     private updateWidth = () => {
-        this.setState({ windowWidth: window.innerWidth });
+        if (this.state.isMobile && window.innerWidth > 575) {
+            this.setState({ isMobile: false });
+        } else if (!this.state.isMobile && window.innerWidth <= 575) {
+            this.setState({ isMobile: true });
+        }
     }
 
     private getSave = (id: number) => {
@@ -74,36 +76,10 @@ class Header extends React.Component<HeaderProps, HeaderState>
 
     private Close = () => this.setState({ isAdding: false, addingText: "", addingType: 3, selectedItemID: -1 })
 
-    private MenuItem = (props: any) => {
-        return (
-            <div
-                className='header-item'
-                onMouseOver={props.actionChange}
-            >
-                <div
-                    className='header-item-content'
-                    onClick={props.execute}
-                >
-                    {props.menuItemName}
-                </div>
-                { props.children}
-            </div >
-        )
-    }
 
     public render() {
         return (
-            <div className='wrapper_Header'
-                onMouseLeave={() => this.setState({
-                    addingText: '',
-                    addingType: 3,
-                    selectedItemID: -1,
-                    showAddMenuItem: false
-                })}
-                onMouseOver={() => {
-                    this.setState({ showAddMenuItem: true });
-                }}
-            >
+            <div className='wrapper_Header'>
                 <div
                     className='header-item-logo'
                     onMouseDown={e => {
@@ -116,7 +92,7 @@ class Header extends React.Component<HeaderProps, HeaderState>
                 >
                     {this.props.projectData.projectName}
                 </div>
-                {this.state.windowWidth <= 575 && <div
+                {this.state.isMobile && <div
                     className='header-button'
                     onMouseDown={e => {
                         this.setState({ showingMenu: !this.state.showingMenu })
@@ -125,86 +101,131 @@ class Header extends React.Component<HeaderProps, HeaderState>
                     <MenuIcon fontSize='inherit' />
                 </div>}
                 <div className='header-nav-items'>
-                    {(this.state.showingMenu || this.state.windowWidth > 575) && this.props.navMenuItems.map((item, index) =>
-                        <this.MenuItem
-                            menuItemName={item.menuItemName}
-                            execute={() => this.props.setCurrentMenuItem(item)}
-                            actionClear={() => {
-                                this.setState({ selectedItemID: -1, addingType: 3, addingText: "" });
-                            }}
-                            actionChange={() => {
-                                this.setState({
-                                    selectedItemID: item.menuItemId,
-                                    addingType: item.menuItemType,
-                                    addingText: item.menuItemName
-                                });
-                            }}
-                            key={index}
-                        >
-                            {this.state.selectedItemID === item.menuItemId && this.state.isAuth && < div
-                                className='header-item-change'
-                                onClick={() => {
-                                    this.setState({ isAdding: true });
-                                }}
-                            >
-                                <SettingsIcon fontSize='inherit' />
-                            </div>}
-                        </this.MenuItem>)
-                    }
+                    {(this.state.showingMenu || !this.state.isMobile) && this.props.navMenuItems.map((item, index) => <MenuItem
+                        menuItemId={item.menuItemId}
+                        menuItemName={item.menuItemName}
+                        menuItemType={item.menuItemType}
+                        execute={() => this.props.setCurrentMenuItem(item)}
+                        edit={(text: string, type: number, id: number) => this.setState({
+                            isAdding: true,
+                            addingText: text,
+                            addingType: type,
+                            selectedItemID: id
+                        })}
+                        isAuth={this.state.isAuth}
+                        key={index}
+                    />)}
                 </div>
                 {this.state.isAuth && < div className='header-item-add'
                     onClick={() => this.setState({
                         isAdding: true,
                         addingText: "",
                         addingType: 3,
-                        selectedItemID: -1,
-                        showAddMenuItem: false
+                        selectedItemID: -1
                     })}
                 >
                     <AddIcon fontSize='large' />
                 </div>}
 
-                {this.state.isAdding && <PopUp onClose={this.Close}>
-                    <div className='pop-up-content'>
-                        <div>Введите тип элемента</div>
-                        <div>
-                            <select value={this.state.addingType} onChange={(event) => { this.setState({ addingType: Number(event.target.value) }); }}>
-                                <option value="0">form0</option>
-                                <option value="1">form1</option>
-                                <option value="2">form2</option>
-                                <option value="3">form3</option>
-                                <option value="4">form4</option>
-                                <option value="5">form5</option>
-                            </select>
-                        </div>
-                        <div>Введите название элемента</div>
-                        <div>
-                            <input
-                                value={this.state.addingText}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType);
-                                    }
-                                }}
-                                onChange={(e) => {
-                                    this.setState({ addingText: e.target.value })
-                                }} />
-                        </div>
-                        <div className='wrapper_button'>
-                            <button onClick={() => { this.getDelete(this.state.selectedItemID)(); }}>
-                                Удалить
-                        </button>
-                            <button onClick={() => { this.getSave(this.state.selectedItemID)(this.state.addingText, this.state.addingType); }}>
-                                Сохранить
-                        </button>
-                        </div>
-                    </div>
-
-                </PopUp>}
+                {this.state.isAdding && <MenuItemEditor
+                    onClose={() => { this.setState({ isAdding: false }) }}
+                    addingType={this.state.addingType}
+                    addingText={this.state.addingText}
+                    onSubmit={(text: string, type: number) => { this.getSave(this.state.selectedItemID)(text, type); }}
+                    onDelete={() => this.getDelete(this.state.selectedItemID)() }
+                />}
 
             </div>
         )
     }
+}
+
+const MenuItem = (props: {
+    menuItemName: string,
+    menuItemType: number,
+    menuItemId: number,
+    execute(): void,
+    edit(text: string, type: number, id: number): void,
+    isAuth: boolean
+}) => {
+    const [isOver, setIsOver] = React.useState(false);
+    return (
+        <div
+            className='header-item'
+            onMouseOver={() => { setIsOver(true); }}
+            onMouseLeave={() => { setIsOver(false); }}
+        >
+            <div
+                className='header-item-content'
+                onClick={props.execute}
+            >
+                {props.menuItemName}
+            </div>
+            {isOver && props.isAuth && < div
+                className='header-item-change'
+                onClick={() => props.edit(props.menuItemName, props.menuItemType, props.menuItemId)}
+            >
+                <SettingsIcon fontSize='inherit' />
+            </div>}
+        </div >
+    )
+}
+
+const MenuItemEditor = (props: {
+    onClose(): void,
+    addingType: number,
+    addingText: string,
+    onSubmit(text: string, type: number ): void,
+    onDelete(): void
+}) => {
+    const [text, setText] = React.useState(props.addingText);
+    const [type, setType] = React.useState(props.addingType);
+    return <PopUp onClose={props.onClose}>
+        <div className='pop-up-content'>
+            <div>Введите тип элемента</div>
+            <div>
+                <select value={type} onChange={(event) => { setType(Number(event.target.value)); }}>
+                    <option value="0">form0</option>
+                    <option value="1">form1</option>
+                    <option value="2">form2</option>
+                    <option value="3">form3</option>
+                    <option value="4">form4</option>
+                    <option value="5">form5</option>
+                </select>
+            </div>
+            <div>Введите название элемента</div>
+            <div>
+                <input
+                    value={text}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            props.onSubmit(text, type);
+                        }
+                    }}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                    }} />
+            </div>
+            <div className='wrapper_button'>
+                <button
+                    className='nav-item-create-buttons'
+                    onClick={() => {
+                        props.onDelete();
+                    }}
+                >
+                    Удалить
+                </button>
+                <button
+                    className='nav-item-create-buttons'
+                    onClick={() => {
+                        props.onSubmit(text, type);
+                    }}>
+                    Сохранить
+                </button>
+            </div>
+        </div>
+
+    </PopUp>
 }
 
 export default connect(

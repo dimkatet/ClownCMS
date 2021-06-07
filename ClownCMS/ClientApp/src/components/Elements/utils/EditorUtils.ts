@@ -6,6 +6,33 @@
 } from 'draft-js';
 import { List, Map } from 'immutable';
 
+export const getSelectionRange = () => {
+    const selection = window.getSelection();
+    if (selection === null || selection.rangeCount === 0) return null;
+
+    return selection.getRangeAt(0);
+};
+
+export const getSelectionCoords = (selectionRange: Range) => {
+    if (document === null)
+        return null;
+    const element = document.getElementById('footer-editor');
+    if (element === null)
+        return null;
+    const editorBounds = element.getBoundingClientRect();
+    const rangeBounds = selectionRange.getBoundingClientRect();
+    const rangeWidth = rangeBounds.right - rangeBounds.left;
+    // 107px is width of inline toolbar
+    const offsetLeft = rangeBounds.left + (rangeWidth / 2) - (107 / 2);
+    // 42px is height of inline toolbar
+    const offsetTop = rangeBounds.top + rangeBounds.height + 5;
+
+    return {
+        left: offsetLeft,
+        top: offsetTop
+    };
+};
+
 export const addNewBlockAt = (
     editorState: EditorState,
     pivotBlockKey: string,

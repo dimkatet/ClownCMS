@@ -1,7 +1,8 @@
 ﻿import * as React from 'react';
-import './styles/PopUp.css'    
+import './styles/PopUp.css'
+import CloseIcon from '@material-ui/icons/Close';
 
-type PopUpProps = { onClose: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void };
+type PopUpProps = { onClose: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void };
 
 class PopUp extends React.Component<PopUpProps>
 {
@@ -10,7 +11,12 @@ class PopUp extends React.Component<PopUpProps>
             <React.Fragment>
                 <div className='pop-up-bg' >
                     <div className='pop-up-container'>
-                        <button className='close-btn' onClick={this.props.onClose}>X</button>
+                        <div
+                            className='close-btn'
+                            onMouseDown={this.props.onClose}
+                        >
+                            <CloseIcon fontSize='inherit'/>
+                        </div>
                         {this.props.children}
                     </div>
                 </div>

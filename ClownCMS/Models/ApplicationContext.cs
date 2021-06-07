@@ -15,6 +15,7 @@ namespace ClownCMS
         public DbSet<Preview> Previews { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<ProjectData> ProjectsData { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)

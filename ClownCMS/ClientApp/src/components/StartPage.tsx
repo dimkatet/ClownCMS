@@ -10,6 +10,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import DescriptionIcon from '@material-ui/icons/Description';
 import EditIcon from '@material-ui/icons/Edit';
+import BackupIcon from '@material-ui/icons/Backup';
 import Auth from './elements/Auth';
 import './styles/StartPage.css';
 import DownloadProject from '../store/Download';
@@ -53,7 +54,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
             <React.Fragment>
                 <div className='startPage'>
                     <h2>ClownCMS</h2>
-                    <div className='header'>
+                    <div className='auth-container'>
                         <Auth />
                     </div>
                     <div className='projectsPreviewList'>
@@ -98,6 +99,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                             </div>
                             <div>
                                 <button
+                                    className='edit-project-button'
                                     onClick={() => {
                                         if (this.state.creatingProject) {
                                             this.props.createProject(this.state.newProjectName);
@@ -134,6 +136,13 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
                     <DescriptionIcon fontSize='inherit' />
                 </div>
             </StartPagesAction>   
+            <StartPagesAction text='Export'
+                action={() => {
+                    DownloadProject(this.state.selectedProjectID);}}>
+                <div className='start-page-action-logo'>
+                    <BackupIcon fontSize='inherit' />
+                </div>
+            </StartPagesAction>
             <StartPagesAction text='Edit'
                 action={() => {
                     var project = this.props.projects.find(p => {
@@ -160,13 +169,6 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
             >
                 <div className='start-page-action-logo'>
                     <DeleteForeverIcon fontSize='inherit' />
-                </div>
-            </StartPagesAction>
-            <StartPagesAction text='Скачать'
-                action={() => {
-                    DownloadProject(this.state.selectedProjectID);}}>
-                <div className='start-page-action-logo'>
-                    <DescriptionIcon fontSize='inherit' />
                 </div>
             </StartPagesAction>
         </div>
@@ -204,7 +206,7 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 
 const ProjectPreview = (props: any) => {
     return (
-        <div className='projectPreview'>
+        <div className='project-preview'>
             <button onFocus={props.action}>
                 {props.projectName}
             </button>
