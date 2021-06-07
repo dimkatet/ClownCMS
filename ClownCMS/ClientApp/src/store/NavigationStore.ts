@@ -1,6 +1,7 @@
 ﻿import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 import { NavMenuItem } from './ProjectStore';
+import * as BodyStore from './BodyStore';
 import config from './project_config.json';
 
 export interface NavigatinonState {
@@ -9,7 +10,8 @@ export interface NavigatinonState {
     isActual: boolean,
     isShowContent: boolean,
     sections: Section[],
-    currentCategory: Category
+    currentCategory: Category,
+    matchState: Match
 }
 
 export interface Preview {
@@ -20,8 +22,7 @@ export interface Preview {
     categoryId: number;
 }
 
-export interface Category
-{
+export interface Category {
     categoryId: number;
     categoryName: string;
     sectionId: number;
@@ -33,6 +34,13 @@ export interface Section {
     sectionName: string;
     menuItemId: number;
     categories: Category[];
+}
+
+export interface Match {
+    menuItemId: string,
+    sectionId: string,
+    categoryId: string,
+    previewId: string
 }
 
 interface ResetNavigationAction {
@@ -71,7 +79,12 @@ interface PageState {
     state: boolean;
 }
 
-type KnownAction = ResetNavigationAction | RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState | SetCurrentCategory;
+interface SetMatchAction {
+    type: 'SET_MATCH',
+    matchState: Match
+}
+
+export type NavigationAction = ResetNavigationAction | RequestNavigationAction | ReceiveNavigationAction | SetMenuItemAction | NavState | EmptyState | PageState | SetCurrentCategory | SetMatchAction;
 
 const resetNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -82,15 +95,50 @@ const resetNavigation = (dispatch: any, getState: any) => {
 
 const requestNavigation = (dispatch: any, getState: any) => {
     const appState = getState();
-    if (appState && appState.navigation && appState.navigation.menuItem.menuItemId) {
+    if (appState && appState.navigation && appState.navigation.menuItem) {
         fetch(config.URL + 'navigation/' + appState.navigation.menuItem.menuItemId, { method: 'GET' })
             .then(response => response.json() as Promise<Section[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_NAVIGATION', sections: data });
+                navigationHandler(data)(dispatch, getState);
             });
         dispatch({ type: 'REQUEST_NAVIGATION' });
     }
 }
+
+const navigationHandler = (data: Section[]): AppThunkAction<NavigationAction> => (dispatch: any, getState: any) => {
+    const appState = getState();
+    if (appState && appState.navigation && data.length > 0 && data[0].categories.length > 0) {
+        const type = appState.navigation.menuItem.menuItemType;
+        let section = data.find(item => {
+            if (item.sectionId === parseInt(appState.navigation.matchState.sectionId))
+                return true;
+            return false;
+        }) || data[0];
+        /*section = section ? section : data[0];*/
+        let category = section.categories.find(item => {
+            if (item.categoryId === parseInt(appState.navigation.matchState.categoryId))
+                return true;
+            return false;
+        }) || section.categories[0];
+        /*category = category ? category : section.categories[0];*/
+        let preview = category.previews.find(item => {
+            if (item.previewId === parseInt(appState.navigation.matchState.previewId))
+                return true;
+            return false;
+        }) || category.previews[0];
+        if (type === 0 || type === 2 || type === 4 || (preview && preview.previewId === parseInt(appState.navigation.matchState.previewId))) {
+            actionCreators.setCurrentCategory(category)(dispatch, getState);
+            BodyStore.actionCreators.requestContent(preview.previewId)(dispatch, getState);
+            actionCreators.openPage()(dispatch, getState);
+        } else if (type === 1 || type === 3 || type === 5) {
+            actionCreators.setCurrentCategory(category)(dispatch, getState);
+            Updated(dispatch, getState);
+        }
+    }
+}
+
+
 const Updated = (dispatch: any, getState: any) => {
     const appState = getState();
     if (appState && appState.navigation) {
@@ -125,11 +173,22 @@ const postImage = async (image?: File) => {
 
 export const actionCreators = {
 
-    resetNavigation: (): AppThunkAction<KnownAction> => resetNavigation,
+    setMatch: (matchState: Match): AppThunkAction<NavigationAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.navigation && appState.project) {
+            dispatch({ type: 'SET_MATCH', matchState: matchState });
+            if (appState.project.navMenuItems.length > 0) {
+                const menuItem = appState.project.navMenuItems.find(item => item.menuItemId === parseInt(matchState.menuItemId) ? true : false) || appState.project.navMenuItems[0];
+                actionCreators.setCurrentMenuItem(menuItem)(dispatch, getState);
+            }
+        }
+    },
 
-    requestNavigation: (): AppThunkAction<KnownAction> => requestNavigation,
+    resetNavigation: (): AppThunkAction<NavigationAction> => resetNavigation,
 
-    setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    requestNavigation: (): AppThunkAction<NavigationAction> => requestNavigation,
+
+    setCurrentMenuItem: (MenuItem: NavMenuItem): AppThunkAction<NavigationAction> => (dispatch: any, getState: any) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'SET_MENU_ITEM', menuItem: MenuItem });
@@ -137,25 +196,25 @@ export const actionCreators = {
         }
     },
 
-    navigatinonUpdated: (): AppThunkAction<KnownAction> => Updated,
+    navigatinonUpdated: (): AppThunkAction<NavigationAction> => Updated,
 
-    navigatinonClear: (): AppThunkAction<KnownAction> => Clear,
+    navigatinonClear: (): AppThunkAction<NavigationAction> => Clear,
 
-    openPage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    openPage: (): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'PAGE_STATE', state: true });
         }
     },
 
-    closePage: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    closePage: (): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'PAGE_STATE', state: false });
         }
     },
 
-    setSection: (sectionId: number, sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    setSection: (sectionId: number, sectionName: string): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('section', {
@@ -171,7 +230,7 @@ export const actionCreators = {
             }).then(response => { if (response.status === 200) { requestNavigation(dispatch, getState) } })
         }
     },
-    deleteSection: (sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    deleteSection: (sectionId: number): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('section', {
@@ -187,7 +246,7 @@ export const actionCreators = {
         }
     },
 
-    addSection: (sectionName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    addSection: (sectionName: string): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('section', {
@@ -206,7 +265,7 @@ export const actionCreators = {
         }
     },
 
-    setCategory: (categoryId: number, categoryName: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    setCategory: (categoryId: number, categoryName: string): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('category', {
@@ -223,7 +282,7 @@ export const actionCreators = {
         }
     },
 
-    deleteCategory: (categoryId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    deleteCategory: (categoryId: number): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('category', {
@@ -239,7 +298,7 @@ export const actionCreators = {
         }
     },
 
-    addCategory: (categoryName: string, sectionId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    addCategory: (categoryName: string, sectionId: number): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('category', {
@@ -258,7 +317,7 @@ export const actionCreators = {
         }
     },
 
-    setPreview: (previewId: number, previewName: string, previewDescription: string, imageURL: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    setPreview: (previewId: number, previewName: string, previewDescription: string, imageURL: string, image?: File): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             postImage(image).then(urn => {
@@ -279,7 +338,7 @@ export const actionCreators = {
         }
     },
 
-    deletePreview: (previewId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    deletePreview: (previewId: number): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation) {
             fetch('preview', {
@@ -295,7 +354,7 @@ export const actionCreators = {
         }
     },
 
-    addPreview: (categoryId: number, previewName: string, previewDescription: string, image?: File): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    addPreview: (categoryId: number, previewName: string, previewDescription: string, image?: File): AppThunkAction<NavigationAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.navigation && previewName) {
             postImage(image).then(urn => {
@@ -318,29 +377,32 @@ export const actionCreators = {
         }
     },
 
-    setCurrentCategory: (category: Category): AppThunkAction<KnownAction> => (dispatch: any, getState: any) => {
+    setCurrentCategory: (category: Category): AppThunkAction<NavigationAction> => (dispatch: any, getState: any) => {
         const appState = getState();
         if (appState && appState.navigation) {
             dispatch({ type: 'SET_CUR_CATEGORY', category });
         }
-    }
+    },
 }
 
-const unloadedState: NavigatinonState = {
+export const unloadedState: NavigatinonState = {
     sections: [],
     isLoading: false,
     isActual: false,
     isShowContent: false,
     menuItem: {} as NavMenuItem,
-    currentCategory: {} as Category
+    currentCategory: {} as Category,
+    matchState: {} as Match
 }
 
 export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | undefined, incomingAction: Action): NavigatinonState => {
     if (state === undefined) {
         return unloadedState;
     }
-    const action = incomingAction as KnownAction;
+    const action = incomingAction as NavigationAction;
     switch (action.type) {
+        case 'SET_MATCH':
+            return { ...state, matchState: action.matchState };
         case 'RESET_NAVIGATION':
             return unloadedState;
         case 'REQUEST_NAVIGATION':
@@ -350,7 +412,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isActual: false,
                 isShowContent: false,
                 menuItem: state.menuItem,
-                currentCategory: state.currentCategory
+                currentCategory: state.currentCategory,
+                matchState: state.matchState
             };
         case 'RECEIVE_NAVIGATION':
             return {
@@ -359,7 +422,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isActual: false,
                 isShowContent: false,
                 menuItem: state.menuItem,
-                currentCategory: state.currentCategory
+                currentCategory: state.currentCategory,
+                matchState: state.matchState
             };
         case 'SET_MENU_ITEM':
             return {
@@ -368,7 +432,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isActual: false,
                 isShowContent: false,
                 menuItem: action.menuItem,
-                currentCategory: state.currentCategory
+                currentCategory: state.currentCategory,
+                matchState: state.matchState
             };
         case 'NAV_STATE':
             return {
@@ -377,7 +442,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isActual: true,
                 isShowContent: state.isShowContent,
                 menuItem: state.menuItem,
-                currentCategory: state.currentCategory
+                currentCategory: state.currentCategory,
+                matchState: state.matchState
             };
         case 'SET_CUR_CATEGORY':
             return {
@@ -386,7 +452,8 @@ export const reducer: Reducer<NavigatinonState> = (state: NavigatinonState | und
                 isActual: true,
                 isShowContent: state.isShowContent,
                 menuItem: state.menuItem,
-                currentCategory: action.category
+                currentCategory: action.category,
+                matchState: state.matchState
             }
         case 'EMPTY_STATE':
             return unloadedState;

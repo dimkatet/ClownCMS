@@ -4,11 +4,14 @@ import {
     EditorState,
     ContentState,
     RichUtils,
+    CompositeDecorator,
+    ContentBlock,
 } from 'draft-js';
 import {
     getSelectionRange,
     getSelectionCoords
 } from './utils/EditorUtils';
+import IconLink from '@material-ui/icons/Link';
 import './styles/FooterEditor.css';
 
 interface FooterEditorProps {
@@ -30,8 +33,16 @@ interface FooterEditorState {
 export default class FooterEditor extends React.Component<FooterEditorProps, FooterEditorState>{
     constructor(props: any) {
         super(props);
+
+        const decorator = new CompositeDecorator([
+            {
+                strategy: findLinkEntities,
+                component: Link
+            }
+        ]);
+
         this.state = {
-            editorState: EditorState.createWithContent(this.props.contentState),
+            editorState: EditorState.createWithContent(this.props.contentState, decorator),
             inlineToolbar: { show: false }
         };
 
@@ -94,6 +105,28 @@ export default class FooterEditor extends React.Component<FooterEditorProps, Foo
         return 'not-handled';
     }
 
+    private setLink = () => {
+        const urlValue = prompt('Введите ссылку', '');
+        const { editorState } = this.state;
+        const contentState = editorState.getCurrentContent();
+
+        const contentStateWithEntity = contentState.createEntity(
+            'LINK',
+            'SEGMENTED',
+            { url: urlValue }
+        );
+
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+
+        this.onChange(RichUtils.toggleLink(
+            newEditorState,
+            newEditorState.getSelection(),
+            entityKey
+        ));
+    }
+
+
     render() {
         const {
             editorState,
@@ -105,6 +138,7 @@ export default class FooterEditor extends React.Component<FooterEditorProps, Foo
                 editorState={editorState}
                 onToggle={this.toggleInlineStyle}
                 position={inlineToolbar.position}
+                setLink={this.setLink}
             />}
             <Editor
                 editorState={this.state.editorState}
@@ -115,17 +149,41 @@ export default class FooterEditor extends React.Component<FooterEditorProps, Foo
     }
 }
 
+function findLinkEntities(contentBlock: ContentBlock, callback: (start: number, end: number) => void, contentState: ContentState) {
+    contentBlock.findEntityRanges(
+        (character) => {
+            const entityKey = character.getEntity();
+            return (
+                entityKey !== null &&
+                contentState.getEntity(entityKey).getType() === 'LINK'
+            );
+        },
+        callback
+    );
+}
+
+const Link = (props: { contentState: ContentState, entityKey: string, children: any}) => {
+    const { url } = props.contentState
+        .getEntity(props.entityKey).getData();
+
+    return (
+        <a href={url} title={url} className="ed-link">
+            {props.children}
+        </a>
+    );
+};
 
 const INLINE_STYLES = [
     { label: 'B', style: 'BOLD' },
     { label: 'I', style: 'ITALIC' },
-    { label: 'H', style: 'HIGHLIGHT' }
+    { label: 'U', style: 'UNDERLINE' }
 ];
 
 const InlineToolbar = (props: {
     editorState: EditorState,
     onToggle(style: string): void,
-    position?: { top: number, left: number }
+    position?: { top: number, left: number },
+    setLink(): void
 }) => {
     const currentStyle = props.editorState.getCurrentInlineStyle();
 
@@ -147,6 +205,13 @@ const InlineToolbar = (props: {
                         {type.label}
                     </li>
                 )}
+                <li
+                    key="add-link-button"
+                    className="toolbar-item"
+                    onMouseDown={props.setLink}
+                >
+                    <IconLink />
+                </li>
             </ul>
         </div>
     );

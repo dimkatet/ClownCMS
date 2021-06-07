@@ -37,7 +37,7 @@ interface SavePreviewIdAction {
     previewId: number
 };
 
-type ContentAction = ResetBodyAction | RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction | SavePreviewIdAction;
+export type ContentAction = ResetBodyAction | RequestContentsAction | ReceiveContentAction | UpdateContentAction | SaveContentAction | SavePreviewIdAction;
 
 const resetBody = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -127,13 +127,13 @@ export const actionCreators = {
         if (appState && appState.body) {
             const c = convertToRaw(content);
             findBlocks(c).then(() => {
-                if (appState.body ) {
+                if (appState.body) {
                     const item = {
                         previewId: appState.body.previewId,
                         content: JSON.stringify(c)
                     }
-                    fetch('project/footer', {
-                        method: 'PUT',
+                    fetch('pages', {
+                        method: 'POST',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ export const actionCreators = {
 
 };
 
-const unloadedState: BodyState = { isLoading: false, content: EditorState.createEmpty().getCurrentContent(), previewId: -1};
+export const unloadedState: BodyState = { isLoading: false, content: EditorState.createEmpty().getCurrentContent(), previewId: -1};
 
 export const reducer: Reducer<BodyState> = (state: BodyState | undefined, incomingAction: Action): BodyState => {
     if (state === undefined) {

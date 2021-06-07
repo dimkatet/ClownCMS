@@ -2,6 +2,7 @@
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
+import { Link } from 'react-router-dom';
 
 export default function SiderBarItem(props: any) {
 
@@ -18,10 +19,10 @@ export default function SiderBarItem(props: any) {
             }
         >
             {!isEdit && <div>
-                <div className='left-menu-section'
+                <div className={`left-menu-section ${props.isCurrent ? 'active' : null}`}
                 >
                     <div className='left-menu-section-content' onClick={props.execute}>
-                        {text}
+                        {props.link ? <Link to={props.link}>{text}</Link> : <p>{text}</p>}
                     </div>
                     {isOver && props.isAuth && <SettingsIcon
                         className='left-menu-section-change'

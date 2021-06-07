@@ -2,6 +2,7 @@
 import { AppThunkAction } from './';
 import { ContentState, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import config from './project_config.json';
+import * as NavigationStore from './NavigationStore'
 
 export interface ProjectState {
     isLoading: boolean,
@@ -68,6 +69,10 @@ const requestMenu = (dispatch: any, getState: any) => {
             .then(response => response.json() as Promise<NavMenuItem[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECT_MENU', navMenuItems: data });
+                if (data.length > 0) {
+                    const menuItem = data.find(item => item.menuItemId === parseInt(appState.navigation.matchState.menuItemId) ? true : false) || data[0];
+                    NavigationStore.actionCreators.setCurrentMenuItem(menuItem)(dispatch, getState);
+                }
             });
         dispatch({ type: 'REQUEST_PROJECT_MENU' });
     }
@@ -91,15 +96,15 @@ const requestProjectData = (dispatch: any, getState: any) => {
     }
 }
 
-type KnownAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction | ReceiveProjectData | UpdateFooterAction | SaveFooterAction;
+export type ProjectAction = RequestProjectMenuAction | ReceiveProjectsMenuAction | ChangeProjectsMenuItemAction | AddProjectsMenuItemAction | SelectProjectAction | ReceiveProjectData | UpdateFooterAction | SaveFooterAction;
 
 export const actionCreators = {
 
-    requestMenu: (): AppThunkAction<KnownAction> => requestMenu,
+    requestMenu: (): AppThunkAction<ProjectAction> => requestMenu,
 
-    requestProjectData: (): AppThunkAction<KnownAction> => requestProjectData,
+    requestProjectData: (): AppThunkAction<ProjectAction> => requestProjectData,
 
-    setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    setMenuItem: (menuItemId: number, menuItemName: string, menuItemType: number): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
             fetch('menuItems', {
@@ -127,7 +132,7 @@ export const actionCreators = {
         }
     },
 
-    addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    addMenuItem: (menuItemName: string, menuItemType: number): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         //if (response.status != 200) return;
         const appState = getState();
         if (appState && appState.project) {
@@ -157,7 +162,7 @@ export const actionCreators = {
         }
     },
 
-    deleteMenuItem: ( menuItemId: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    deleteMenuItem: (menuItemId: number): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
             fetch('menuItems', {
@@ -173,21 +178,21 @@ export const actionCreators = {
         }
     },
 
-    selectProject: (projectID: number): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    selectProject: (projectID: number): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
             dispatch({ type: 'SELECT_PROJECT_ACTION', projectID: projectID });
         }
     },
 
-    updateFooter: (content: ContentState): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    updateFooter: (content: ContentState): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         const appState = getState();
         if (appState && appState.project) {
             dispatch({ type: 'UPDATE_FOOTER', content: content });
         }
     },
 
-    saveFooter: (content: ContentState): AppThunkAction<KnownAction> => (dispatch, getState) => {
+    saveFooter: (content: ContentState): AppThunkAction<ProjectAction> => (dispatch, getState) => {
         const appState = getState();
         console.log('load');
         if (appState && appState.project) {
@@ -211,13 +216,13 @@ export const actionCreators = {
     }
 };
 
-const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId, projectData: { projectName: '', footerContent: EditorState.createEmpty().getCurrentContent() } }
+export const unloadedState: ProjectState = { navMenuItems: [], isLoading: false, ProjectId: config.Project.ProjectId, projectData: { projectName: '', footerContent: EditorState.createEmpty().getCurrentContent() } }
 
 export const reducer: Reducer<ProjectState> = (state: ProjectState | undefined, incomingAction: Action): ProjectState => {
     if (state === undefined) {
         return unloadedState;
     }
-    const action = incomingAction as KnownAction;
+    const action = incomingAction as ProjectAction;
     switch (action.type) {
         case 'REQUEST_PROJECT_MENU':
             return {

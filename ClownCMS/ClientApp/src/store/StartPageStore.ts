@@ -22,7 +22,7 @@ interface ReceiveProjectsAction {
 }
 
 
-type KnownAction = RequestProjectsAction | ReceiveProjectsAction;
+export type ProjectsAction = RequestProjectsAction | ReceiveProjectsAction;
 
 const requestProjects = (dispatch: any, getState: any) => {
     const appState = getState();
@@ -31,15 +31,15 @@ const requestProjects = (dispatch: any, getState: any) => {
             .then(response => response.json() as Promise<Project[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECTS', projects: data });
-            });
+            }); 
         dispatch({ type: 'REQUEST_PROJECTS' });
     }
 }
 
 export const actionCreators = {
-    requestProjects: (): AppThunkAction<KnownAction> => requestProjects,
+    requestProjects: (): AppThunkAction<ProjectsAction> => requestProjects,
 
-    createProject: (projectName: string): AppThunkAction<Action> => (dispath, getState) => {
+    createProject: (projectName: string): AppThunkAction<ProjectsAction> => (dispath, getState) => {
         var appState = getState();
         if (appState && appState.startPage) {
             fetch('projects', {
@@ -55,7 +55,7 @@ export const actionCreators = {
         }
     },
 
-    deleteProject: (projectID: number): AppThunkAction<Action> => (dispath, getState) => {
+    deleteProject: (projectID: number): AppThunkAction<ProjectsAction> => (dispath, getState) => {
         var appState = getState();
         if (appState && appState.startPage) {
             fetch('projects', {
@@ -71,7 +71,7 @@ export const actionCreators = {
         }
     },
 
-    editProject: (projectName: string, projectId: number): AppThunkAction<Action> => (dispath, getState) => {
+    editProject: (projectName: string, projectId: number): AppThunkAction<ProjectsAction> => (dispath, getState) => {
         var appState = getState();
         if (appState && appState.startPage) {
             const item = {
@@ -96,14 +96,14 @@ export const actionCreators = {
     }
 };
 
-const unloadedState: StartPageState = { projects: [], isLoading: false };
+export const unloadedState: StartPageState = { projects: [], isLoading: false };
 
 export const reducer: Reducer<StartPageState> = (state: StartPageState | undefined, incomingAction: Action): StartPageState => {
     if (state === undefined) {
         return unloadedState;
     }
 
-    const action = incomingAction as KnownAction;
+    const action = incomingAction as ProjectsAction;
     switch (action.type) {
         case 'REQUEST_PROJECTS':
             return {

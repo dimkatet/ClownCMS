@@ -9,7 +9,7 @@ const styleToHTML = (style: string) => {
     if (style.includes('FONT_SIZE_')) {
         var r = /\d+/;
         var fSize = style.match(r) + '';
-        return <span style={{ fontSize: parseInt(fSize) / 12 + 'em' }} />;
+        return <span style={{ fontSize: parseInt(fSize) / 12 + 'rem' }} />;
     }
     if (style.includes('FONT_FAMILY_')) {
         var fFamily = 'Arial';

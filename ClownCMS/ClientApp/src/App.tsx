@@ -8,9 +8,9 @@ import './custom.css'
 
 export default () => (
     <Switch>
-        <Route exact path='/index' component={Base} />
+        <Route exact path='/index/:menuItemId?/:sectionId?/:categoryId?/:previewId?' component={Base} />
         <Route exact path='/' component={StartPage} >
-            {config.IsProject == true? < Redirect to="/index" /> : null}
+            {config.IsProject === true? < Redirect to="/index" /> : null}
         </Route>
     </Switch>
 );
