@@ -2,7 +2,6 @@
 import { AppThunkAction } from './';
 import { ContentState, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import config from './project_config.json';
-import * as NavigationStore from './NavigationStore';
 
 export interface ProjectState {
     isLoading: boolean,
@@ -69,9 +68,6 @@ const requestMenu = (dispatch: any, getState: any) => {
             .then(response => response.json() as Promise<NavMenuItem[]>)
             .then(data => {
                 dispatch({ type: 'RECEIVE_PROJECT_MENU', navMenuItems: data });
-                if (data.length > 0) {
-                    dispatch(NavigationStore.actionCreators.setCurrentMenuItem(data[0]));
-                }
             });
         dispatch({ type: 'REQUEST_PROJECT_MENU' });
     }
