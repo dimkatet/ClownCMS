@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import './styles/RightMenu.css';
 
 type RightMenuProps = NavigationStore.NavigatinonState
+    & BodyStore.BodyState
     & typeof NavigationStore.actionCreators
     & typeof BodyStore.actionCreators;
 
@@ -46,8 +47,6 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                 }
             })
         }
-
-        console.log('RIGHT MENU UPDATE');
     }
 
     private updateWidth = () => {
@@ -68,13 +67,16 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                 return <div className='right-menu-container'>
                     {this.props.sections[0].categories[0].previews.map(item =>
                         <SideBarItem
+                            link={`/index/${this.props.menuItem.menuItemId}/${this.props.sections[0].categories[0].sectionId}/${this.props.sections[0].categories[0].categoryId}/${item.previewId}`}
                             delete={() => { this.props.deletePreview(item.previewId) }}
                             save={(text: string) => { this.props.setPreview(item.previewId, text, '', '') }}
                             execute={() => {
+                                /*this.props.addSnapshot();*/
                                 this.props.requestContent(item.previewId);
                                 this.props.openPage();
                             }}
                             Name={item.previewName}
+                            isCurrent={this.props.previewId === item.previewId ? true : false}
                             isAuth={this.state.isAuth}
                             key={item.previewId}
                         />)}
@@ -90,14 +92,17 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
                 return <div className='right-menu-container'>
                     {this.props.sections[0].categories.map(item => {
                         return <SideBarItem
+                            link={`/index/${this.props.menuItem.menuItemId}/${item.sectionId}/${item.categoryId}`}
                             delete={() => { this.props.deleteCategory(item.categoryId) }}
                             save={(text: string) => { this.props.setCategory(item.categoryId, text) }}
                             execute={() => {
+                                /*this.props.addSnapshot();*/
                                 this.props.setCurrentCategory(item);
                                 this.props.navigatinonUpdated();
                                 this.props.closePage();
                             }}
                             Name={item.categoryName}
+                            isCurrent={this.props.currentCategory.categoryId === item.categoryId ? true : false}
                             isAuth={this.state.isAuth}
                             key={item.categoryId}
                         />
@@ -129,6 +134,6 @@ class RightMenu extends React.Component<RightMenuProps, RightMenuState>{
 }
 
 export default connect(
-    (state: ApplicationState) => state.navigation,
+    (state: ApplicationState) => ({ ...state.navigation, ...state.body }),
     { ...NavigationStore.actionCreators, ...BodyStore.actionCreators }
 )(RightMenu as any);

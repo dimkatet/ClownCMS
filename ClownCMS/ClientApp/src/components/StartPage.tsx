@@ -46,7 +46,6 @@ class StartPage extends React.PureComponent<ProjectsProps, StartPageState>
 
     private ensureDataFetched() {
         this.props.requestProjects();
-
     }
 
     public render() {

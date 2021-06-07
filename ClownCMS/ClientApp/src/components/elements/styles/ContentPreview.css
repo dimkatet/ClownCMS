@@ -23,7 +23,14 @@
     border-radius: 10px;
     overflow: hidden;
     border-radius: 10px;
+    color: black;
+    text-decoration: none;
 }
+
+    .preview-container:hover {
+        color: black;
+        text-decoration: none;
+    }
 
 .preview-header {
     height: 7%;
@@ -31,9 +38,9 @@
     padding-left: 0.5rem;
 }
 
-.preview-header h3{
-    font-size: 1.7rem;
-}
+    .preview-header h3 {
+        font-size: 1.7rem;
+    }
 
 .preview-description {
     height: 28%;

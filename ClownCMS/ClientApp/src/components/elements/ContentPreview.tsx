@@ -4,12 +4,14 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './styles/ContentPreview.css';
 import config from '../../store/project_config.json';
+import { Link } from 'react-router-dom';
 
 export default function BodyPreview(props: {
     previewName: string,
     previewDescription: string,
     imageURL?: string,
     execute: () => void,
+    link: string,
     edit: (setState: Function) => (name: string, description: string, image?: File, imageURL?: string) => void,
     delete: () => void,
     isAuth: boolean
@@ -26,9 +28,10 @@ export default function BodyPreview(props: {
                 setOver(false)
             }
         >
-            <div
+            <Link
                 className='preview-container'
                 onClick={props.execute}
+                to={props.link}
             >
                 <div className='preview-header'>
                     <h3>
@@ -45,7 +48,7 @@ export default function BodyPreview(props: {
                         alt='Preview'
                     />
                 </div>}
-            </div>
+            </Link>
             {onOver && props.isAuth && <div className='preview-buttons'>
                 <div
                     className='preview-settings'

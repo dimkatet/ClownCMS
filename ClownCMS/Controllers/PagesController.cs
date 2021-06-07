@@ -28,12 +28,12 @@ namespace ClownCMS.Controllers
         public IActionResult Get(int id)
         {
             _logger.LogInformation("GET");
-            Page p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First().Page;
+            var p = db.Previews.Include(p => p.Page).Where(p=>p.PreviewId == id).First();
             if (p == null)
-            {
+            {  
                 return BadRequest(new { massage = "Page dont exists" });
             }
-            return Json(p.Content);
+            return Json(p.Page.Content);
                 
         }
         [Authorize]

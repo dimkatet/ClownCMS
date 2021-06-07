@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import './styles/LeftMenu.css';
 
 type LeftMenuProps = NavigationStore.NavigatinonState
+    & BodyStore.BodyState
     & typeof NavigationStore.actionCreators
     & typeof BodyStore.actionCreators;
 
@@ -35,7 +36,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
     }
 
     public componentDidMount() {
-
+        
     }
 
     private updateWidth = () => {
@@ -47,7 +48,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
     }
 
     public componentDidUpdate() {
-        if (this.props.menuItem.menuItemType === 5) {
+        /*if (this.props.menuItem.menuItemType === 5) {
             this.props.sections.map((item, index) => {
                 item.categories.map(category => {
                     if (!this.props.isActual && this.props.currentCategory &&
@@ -57,9 +58,7 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                     }
                 })
             });
-        }
-
-        console.log('LEFT MENU UPDATE');
+        }*/
     }
 
     private renderItems = () => {
@@ -77,21 +76,26 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                                     this.props.navigatinonUpdated();
                                 }}
                                 Name={item.categoryName}
+                                isCurrent={this.props.currentCategory.categoryId === item.categoryId ? true : false}
                                 isAuth={this.state.isAuth}
+
                                 key={item.categoryId}
                             >
                                 {<div className='left-menu-previews'>
                                     {(this.state.SelectedID === item.categoryId) && (item.previews.length > 0) && item.previews.map((prev, index) =>
                                         <SideBarItem
+                                            link={`/index/${this.props.menuItem.menuItemId}/${item.sectionId}/${item.categoryId}/${prev.previewId}`}
                                             delete={() => { this.props.deletePreview(prev.previewId) }}
                                             save={(text: string) => { this.props.setPreview(prev.previewId, text, '', '') }}
                                             execute={() => {
+                                                /*this.props.addSnapshot();*/
                                                 this.props.requestContent(prev.previewId);
                                                 this.props.openPage();
                                             }}
                                             Name={prev.previewName}
+                                            isCurrent={this.props.previewId === prev.previewId ? true : false}
                                             isAuth={this.state.isAuth}
-                                            key={prev.categoryId}
+                                            key={prev.previewId}
                                         />)}
                                     {this.state.SelectedID === item.categoryId && this.state.isAuth && <AddSidebarItem
                                         save={(text: string) => {
@@ -118,20 +122,24 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
                             else this.setState({ SelectedID: item.sectionId })
                         }}
                         Name={item.sectionName}
+                        isCurrent={this.props.currentCategory.sectionId === item.sectionId ? true : false}
                         isAuth={this.state.isAuth}
                         key={item.sectionId}
                     >
                         {<div className='left-menu-previews'>
                             {(this.state.SelectedID === item.sectionId) && (item.categories.length > 0) && item.categories.map((category, index) =>
                                 <SideBarItem
+                                    link={`/index/${this.props.menuItem.menuItemId}/${category.sectionId}/${category.categoryId}`}
                                     delete={() => { this.props.deleteCategory(category.categoryId) }}
                                     save={(text: string) => { this.props.setCategory(category.categoryId, text) }}
                                     execute={() => {
+                                        /*this.props.addSnapshot();*/
                                         this.props.setCurrentCategory(category);
                                         this.props.navigatinonUpdated();
                                         this.props.closePage();
                                     }}
                                     Name={category.categoryName}
+                                    isCurrent={this.props.currentCategory.categoryId === category.categoryId ? true : false}
                                     isAuth={this.state.isAuth}
                                     key={category.categoryId}
                                 />
@@ -171,6 +179,6 @@ class LeftMenu extends React.Component<LeftMenuProps, LeftMenuState>{
 }
 
 export default connect(
-    (state: ApplicationState) => state.navigation,
+    (state: ApplicationState) => ({ ...state.navigation, ...state.body }),
     { ...NavigationStore.actionCreators, ...BodyStore.actionCreators }
 )(LeftMenu as any);

@@ -48,45 +48,9 @@ class Body extends React.PureComponent<BodyProps, BodyState>
     }
 
     public componentDidUpdate() {
-        console.log('BODY UPDATE');
 
         if (!this.state.isEditing) {
             this.insertContent();
-        }
-
-
-        if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0 && this.props.sections[0].categories[0].previews.length > 0) {
-            if (this.props.currentCategory.categoryId === undefined && this.props.previewId === -1) {
-                if (this.props.sections[0].categories[0].previews.length > 1) {
-                    this.props.setCurrentCategory(this.props.sections[0].categories[0]);
-                    this.props.navigatinonUpdated();
-                    this.props.closePage();
-                } else {
-                    this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId);
-                    this.props.openPage();
-                }
-            }
-        }
-
-
-        switch (this.props.menuItem.menuItemType) {
-            case 1:
-                if (this.props.sections.length > 0 && this.props.sections[0].categories.length > 0) {
-                    this.props.setCurrentCategory(this.props.sections[0].categories[0]);
-                    this.props.navigatinonUpdated();
-                }
-                break;
-            case 0:
-                if (this.props.sections.length > 0 &&
-                    this.props.sections[0].categories.length > 0 &&
-                    this.props.sections[0].categories[0].previews.length > 0 &&
-                    this.state.currentPreviewId !== this.props.sections[0].categories[0].previews[0].previewId) {
-                    this.props.requestContent(this.props.sections[0].categories[0].previews[0].previewId);
-                    this.props.openPage();
-                    this.setState({ currentPreviewId: this.props.sections[0].categories[0].previews[0].previewId });
-                }
-                break;
-            default: return null;
         }
     }
 
@@ -146,7 +110,6 @@ class Body extends React.PureComponent<BodyProps, BodyState>
 
     private renderContentPreviews = () => {
         if (this.props.menuItem.menuItemType === 1 || this.props.menuItem.menuItemType === 3 || this.props.menuItem.menuItemType === 5) {
-
             return <React.Fragment>
                 <div className='body-previews'>
                     {this.props.currentCategory.previews.map((item, index) => {
@@ -156,7 +119,9 @@ class Body extends React.PureComponent<BodyProps, BodyState>
                         }
 
                         return <ContentPreview
+                            link={`/index/${this.props.menuItem.menuItemId}/${this.props.currentCategory.sectionId}/${this.props.currentCategory.categoryId}/${item.previewId}`}
                             execute={() => {
+                                /*this.props.addSnapshot();*/
                                 this.props.requestContent(item.previewId);
                                 this.props.openPage();
                             }}

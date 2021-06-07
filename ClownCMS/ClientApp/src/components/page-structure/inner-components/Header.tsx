@@ -4,18 +4,22 @@ import * as ProjectStore from '../../../store/ProjectStore';
 import * as NavigationStore from '../../../store/NavigationStore';
 import * as BodyStore from '../../../store/BodyStore';
 import { ApplicationState } from '../../../store';
+import { RouteComponentProps } from "react-router-dom";
 import SettingsIcon from '@material-ui/icons/Settings';
 import AddIcon from '@material-ui/icons/AddCircle';
 import MenuIcon from '@material-ui/icons/Menu';
 import PopUp from '../../elements/PopUp';
 import './styles/Header.css';
+import { Link } from 'react-router-dom';
 
 
-type HeaderProps = ProjectStore.ProjectState &
-    NavigationStore.NavigatinonState &
-    typeof ProjectStore.actionCreators &
-    typeof NavigationStore.actionCreators &
-    typeof BodyStore.actionCreators;
+type HeaderProps = ProjectStore.ProjectState 
+    & NavigationStore.NavigatinonState
+    & BodyStore.BodyState
+    & RouteComponentProps
+    & typeof ProjectStore.actionCreators 
+    & typeof NavigationStore.actionCreators 
+    & typeof BodyStore.actionCreators;
 
 interface HeaderState {
     isAdding: boolean,
@@ -50,15 +54,10 @@ class Header extends React.Component<HeaderProps, HeaderState>
     }
 
     componentDidMount() {
-        this.props.requestProjectData();
-        this.props.requestMenu();
+
     }
 
     componentDidUpdate() {
-        if (this.props.menuItem.menuItemId === undefined && this.props.navMenuItems.length > 0) {
-            this.props.setCurrentMenuItem(this.props.navMenuItems[0]);
-        }
-        console.log('HEADER UPDATE');
     }
 
     private updateWidth = () => {
@@ -71,18 +70,34 @@ class Header extends React.Component<HeaderProps, HeaderState>
 
     private getSave = (id: number) => {
         if (id === -1)
-            return (menuItemName: string, menuItemType: number) => { this.props.addMenuItem(menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
-        return (menuItemName: string, menuItemType: number) => { this.props.setMenuItem(id, menuItemName, menuItemType); this.Close(); this.props.navigatinonClear(); }
+            return (menuItemName: string, menuItemType: number) => {
+                this.props.addMenuItem(menuItemName, menuItemType);
+                this.Close();
+                this.props.navigatinonClear();
+            }
+        return (menuItemName: string, menuItemType: number) => {
+            this.props.setMenuItem(id, menuItemName, menuItemType);
+            this.Close();
+            this.props.navigatinonClear();
+        }
     }
 
     private getDelete = (id: number) => {
         if (id === -1)
             return this.Close;
-        return () => { this.props.deleteMenuItem(id); this.Close(); this.props.navigatinonClear(); }
+        return () => {
+            this.props.deleteMenuItem(id);
+            this.Close();
+            this.props.navigatinonClear();
+        }
     }
 
-    private Close = () => this.setState({ isAdding: false, addingText: "", addingType: 3, selectedItemID: -1 })
-
+    private Close = () => this.setState({
+        isAdding: false,
+        addingText: "",
+        addingType: 3,
+        selectedItemID: -1
+    })
 
     public render() {
         return (
@@ -91,6 +106,7 @@ class Header extends React.Component<HeaderProps, HeaderState>
                     className='header-item-logo'
                     onMouseDown={e => {
                         if (this.props.navMenuItems.length > 0) {
+                            /*this.props.addSnapshot();*/
                             this.props.setCurrentMenuItem(this.props.navMenuItems[0]);
                         }
                         this.props.resetNavigation();
@@ -112,7 +128,11 @@ class Header extends React.Component<HeaderProps, HeaderState>
                         menuItemId={item.menuItemId}
                         menuItemName={item.menuItemName}
                         menuItemType={item.menuItemType}
-                        execute={() => this.props.setCurrentMenuItem(item)}
+                        currentItemId={this.props.menuItem.menuItemId}
+                        execute={() => {
+                            /*this.props.addSnapshot();*/
+                            this.props.setCurrentMenuItem(item);
+                        }}
                         edit={(text: string, type: number, id: number) => this.setState({
                             isAdding: true,
                             addingText: text,
@@ -151,6 +171,7 @@ const MenuItem = (props: {
     menuItemName: string,
     menuItemType: number,
     menuItemId: number,
+    currentItemId: number,
     execute(): void,
     edit(text: string, type: number, id: number): void,
     isAuth: boolean
@@ -158,23 +179,24 @@ const MenuItem = (props: {
     const [isOver, setIsOver] = React.useState(false);
     return (
         <div
-            className='header-item'
+            className={`header-item ${props.currentItemId === props.menuItemId ? 'active' : null}`}
             onMouseOver={() => { setIsOver(true); }}
             onMouseLeave={() => { setIsOver(false); }}
         >
-            <div
+            <Link
                 className='header-item-content'
                 onClick={props.execute}
+                to={`/index/${props.menuItemId}`}
             >
                 {props.menuItemName}
-            </div>
+            </Link>
             {isOver && props.isAuth && < div
                 className='header-item-change'
                 onClick={() => props.edit(props.menuItemName, props.menuItemType, props.menuItemId)}
             >
                 <SettingsIcon fontSize='inherit' />
             </div>}
-        </div >
+        </div>
     )
 }
 
@@ -236,6 +258,6 @@ const MenuItemEditor = (props: {
 }
 
 export default connect(
-    (state: ApplicationState) => ({ ...state.project, ...state.navigation }),
+    (state: ApplicationState) => ({ ...state.project, ...state.navigation, ...state.body }),
     { ...ProjectStore.actionCreators, ...NavigationStore.actionCreators, ...BodyStore.actionCreators }
 )(Header as any);

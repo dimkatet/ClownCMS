@@ -10,6 +10,18 @@
     color: black;
 }
 
+.footer-content {
+    white-space: pre-wrap;
+}
+
+.footer-content a {
+    color: white;
+}
+
+.DraftEditor-root a {
+    color: #0366d6;
+}
+
 .toolbar {
     position: absolute;
     z-index: 9999;

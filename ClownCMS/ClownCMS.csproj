@@ -67,10 +67,14 @@
     <None Remove="ClientApp\src\store\BodyStore.ts" />
     <None Remove="ClientApp\src\store\configureStore.ts" />
     <None Remove="ClientApp\src\store\Download.ts" />
+    <None Remove="ClientApp\src\store\FutureStore.ts" />
+    <None Remove="ClientApp\src\store\GlobalActions.ts" />
     <None Remove="ClientApp\src\store\index.ts" />
     <None Remove="ClientApp\src\store\NavigationStore.ts" />
 	<None Remove="ClientApp\src\components\page-structure\Base.tsx" />
     <None Remove="ClientApp\src\store\NavMenuStore.ts" />
+    <None Remove="ClientApp\src\store\PastStore.ts" />
+    <None Remove="ClientApp\src\store\PresentStore.ts" />
     <None Remove="ClientApp\src\store\StartPageStore.ts" />
     <None Remove="ClientApp\src\store\ProjectStore.ts" />
   </ItemGroup>

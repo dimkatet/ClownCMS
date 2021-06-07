@@ -13,6 +13,7 @@
     transition: all 0.15s linear;
     cursor: pointer;
     position: absolute;
+    top: -0.1rem;
 }
 
 .edit-button:hover {
@@ -21,16 +22,19 @@
 
 
 .body-container {
-    background: rgb(220 220 220);
+    /*background: rgb(220 220 220);*/
+    background-color: white;
     height: 100%;
     position: relative;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    padding-top: 0.7rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
 }
 
 .body-content {
-    margin-left: 5rem;
-    margin-right: 5rem;
+    margin-left: 3.5rem;
+    margin-right: 3.5rem;
+    white-space: pre-wrap;
 }
 
 .body-previews {
@@ -89,5 +93,9 @@
     .body-content {
         margin-left: 0.5em;
         margin-right: 0.5em;
+    }
+
+    .edit-button{
+        position:relative;
     }
 }
