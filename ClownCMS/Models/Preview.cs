@@ -10,7 +10,7 @@ namespace ClownCMS
     public class Preview
     {
         public int PreviewId { get; set; }
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "not valid length")]
+        [StringLength(40, MinimumLength = 2, ErrorMessage = "not valid length")]
         public string PreviewName { get; set; }
         public string PreviewDescription { get; set; }
         public string ImageURL { get; set; }
