@@ -44,12 +44,7 @@ namespace ClownCMS.Controllers
             Page page = db.Previews.Include(p => p.Page).Where(p => p.PreviewId == _page.previewId).First().Page;
             if (page == null)
             {
-                db.Add(new Page
-                {
-                    Content = _page.content
-                });
-                db.SaveChanges();
-                return Ok();
+                return BadRequest(new { massage = "Page dont exists" });
             }
             page.Content = _page.content;
             db.SaveChanges();
