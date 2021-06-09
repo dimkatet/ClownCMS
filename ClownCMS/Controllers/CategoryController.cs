@@ -33,14 +33,14 @@ namespace ClownCMS.Controllers
             return Ok();
         }
 
-        public class PutSectionAtribut
+        public class PutCategoryAtribut
         {
             public Category Category { get; set; }
             public int SectionId { get; set; }
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] PutSectionAtribut putAtribut)
+        public IActionResult Put([FromBody] PutCategoryAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
             Category categoryValue = new Category() { CategoryName = putAtribut.Category.CategoryName, Section = db.Sections.Find(putAtribut.SectionId) };

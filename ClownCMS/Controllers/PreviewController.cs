@@ -37,14 +37,14 @@ namespace ClownCMS.Controllers
             return Ok();
         }
 
-        public class PutSectionAtribut
+        public class PutPreviewAtribut
         {
             public Preview Preview { get; set; }
             public int CategoryId { get; set; }
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] PutSectionAtribut putAtribut)
+        public IActionResult Put([FromBody] PutPreviewAtribut putAtribut)
         {
             _logger.LogInformation("PUT");
             Preview previewValue = new Preview() { 
